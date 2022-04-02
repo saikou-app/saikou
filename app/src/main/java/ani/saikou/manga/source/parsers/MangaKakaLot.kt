@@ -65,7 +65,7 @@ class MangaKakaLot(override val name: String="MangaKakaLot") :MangaParser() {
     override fun search(string: String): ArrayList<Source> {
         val response = arrayListOf<Source>()
         try{
-            Jsoup.connect("$host/search/story/${string.replace(" ", "_")}").get().select(".story_item").forEach {
+            Jsoup.connect("$host/search/story/${string.replace(" ", "_").replace(Regex("\\W"),"")}").get().select(".story_item").forEach {
                 if (it.select(".story_name > a").text()!=""){
                     response.add(Source(
                         link = it.select("a").attr("href"),
