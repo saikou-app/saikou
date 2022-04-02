@@ -12,7 +12,6 @@ object MangaSources : MangaReadSources() {
         "MANGADEX",
         "MANGAREADER",
         "MANGAKAKALOT",
-        "MANGANATO",
     )
 
     override operator fun get(i:Int):MangaParser?{
@@ -23,7 +22,6 @@ object MangaSources : MangaReadSources() {
             3->mangaParsers.getOrPut(i) { MangaDex() }
             4->mangaParsers.getOrPut(i) { MangaReaderTo() }
             5->mangaParsers.getOrPut(i) { MangaKakaLot() }
-            6->mangaParsers.getOrPut(i) { MangaNato() }
             else -> null
         }
         return a
