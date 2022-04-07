@@ -9,6 +9,7 @@ import ani.saikou.*
 import ani.saikou.anilist.Anilist
 import ani.saikou.anilist.AnilistHomeViewModel
 import ani.saikou.media.MediaDetailsActivity
+import ani.saikou.others.AppUpdater
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -61,8 +62,8 @@ class TVMainActivity : FragmentActivity() {
             if (!load) {
                 Anilist.getSavedToken(this)
                 scope.launch(Dispatchers.IO) {
-                    model.genres.postValue(Anilist.query.getGenresAndTags())
-                    //AppUpdater.check(this@MainActivity)
+                    model.genres.postValue(Anilist.query.getGenresAndTags(this@TVMainActivity))
+                    AppUpdater.check(this@TVMainActivity)
                 }
                 load = true
             }

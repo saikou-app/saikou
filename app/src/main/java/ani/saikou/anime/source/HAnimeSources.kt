@@ -13,7 +13,6 @@ object HAnimeSources : WatchSources() {
         "ZORO",
         "TWIST",
         "TENSHI",
-            "MONOSCHINOS",
     )
 
     private val hParsers:MutableMap<Int,AnimeParser> = mutableMapOf()
@@ -27,7 +26,6 @@ object HAnimeSources : WatchSources() {
             5 -> animeParsers.getOrPut(i) { Zoro() }
             6 -> animeParsers.getOrPut(i) { Twist() }
             7 -> animeParsers.getOrPut(i) { Tenshi() }
-            8 -> animeParsers.getOrPut(i) { Monoschinos() }
             else -> null
         }
         return a

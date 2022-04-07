@@ -9,7 +9,6 @@ import androidx.leanback.app.VideoSupportFragment
 import androidx.leanback.app.VideoSupportFragmentGlueHost
 import androidx.leanback.media.PlaybackGlue
 import androidx.media.session.MediaButtonReceiver
-import ani.saikou.STATE_RESUME_POSITION
 import ani.saikou.anime.Episode
 import ani.saikou.anime.VideoCache
 import ani.saikou.anime.source.AnimeSources
@@ -59,13 +58,6 @@ class TVMediaPlayer: VideoSupportFragment(), VideoPlayerGlue.OnActionClickedList
 
         settings = loadData("player_settings") ?: PlayerSettings().apply { saveData("player_settings",this) }
         uiSettings = loadData("ui_settings") ?: UserInterfaceSettings().apply { saveData("ui_settings",this) }
-
-        if (savedInstanceState != null) {
-            //currentWindow = savedInstanceState.getInt(STATE_RESUME_WINDOW)
-            playbackPosition = savedInstanceState.getLong(STATE_RESUME_POSITION)
-            //isFullscreen = savedInstanceState.getInt(STATE_PLAYER_FULLSCREEN)
-            //isPlayerPlaying = savedInstanceState.getBoolean(STATE_PLAYER_PLAYING)
-        }
 
         val episodeObserverRunnable = Runnable {
             model.getEpisode().observe(this) {
