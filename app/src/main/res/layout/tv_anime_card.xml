@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="-16dp"
-    android:layout_marginEnd="-16dp"
+    android:layout_height="250dp"
     android:clipToPadding="false"
-    android:gravity="center_horizontal"
-    android:orientation="vertical">
-
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-16dp"
-        android:layout_marginBottom="-16dp"
-        android:clipToPadding="false"
-        android:padding="24dp">
+    android:background="@android:color/transparent"
+    android:gravity="center_horizontal">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/itemCompactCard"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:translationZ="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
             app:cardCornerRadius="16dp"
             app:cardElevation="4dp">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <ImageView
                 android:id="@+id/itemCompactImage"
                 android:layout_width="108dp"
                 android:layout_height="160dp"
@@ -42,8 +33,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:background="@drawable/item_score"
-                android:backgroundTint="#BFFFFFFF"
-                android:backgroundTintMode="multiply"
                 android:orientation="horizontal"
                 android:paddingStart="8dp"
                 android:paddingEnd="6dp">
@@ -71,27 +60,14 @@
 
         </androidx.cardview.widget.CardView>
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/itemCompactOngoing"
-            android:layout_width="16dp"
-            android:layout_height="16dp"
-            android:layout_gravity="bottom"
-            android:translationZ="8dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="4dp">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/item_ongoing" />
-        </androidx.cardview.widget.CardView>
-    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/itemCompactType"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
+        android:layout_below="@id/itemCompactCard"
         android:layout_marginBottom="4dp"
         android:gravity="center"
         android:orientation="horizontal"
@@ -130,7 +106,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@id/itemCompactType"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="10dp"
         android:orientation="vertical">
@@ -142,6 +119,7 @@
             android:ellipsize="end"
             android:lineSpacingExtra="-4sp"
             android:maxLines="2"
+            android:fontFamily="@font/poppins"
             android:transitionName="mediaTitle"
             tools:text="@string/get_recommendations" />
 
@@ -168,4 +146,15 @@
 
     </LinearLayout>
 
-</LinearLayout>
+    <View
+        android:id="@+id/itemCompactOngoing"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:layout_alignTop="@id/itemCompactCard"
+        android:layout_alignLeft="@id/itemCompactCard"
+        android:elevation="10dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/item_ongoing" />
+
+</RelativeLayout>

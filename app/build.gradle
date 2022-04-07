@@ -78,7 +78,7 @@ dependencies {
     implementation 'jp.wasabeef:glide-transformations:4.3.0'
 
     // TV
-    implementation 'androidx.leanback:leanback:1.0.0'
+    implementation 'androidx.leanback:leanback:1.2.0-alpha02'
     implementation 'com.google.android.exoplayer:extension-leanback:2.17.1'
 
 }

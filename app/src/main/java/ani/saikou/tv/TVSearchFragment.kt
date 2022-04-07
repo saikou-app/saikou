@@ -1,21 +1,40 @@
 package ani.saikou.tv
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
+import android.view.inputmethod.CompletionInfo
+import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.leanback.app.RowsSupportFragment
 import androidx.leanback.app.SearchSupportFragment
 import androidx.leanback.widget.*
+import androidx.leanback.widget.ObjectAdapter.DataObserver
+import androidx.leanback.widget.SearchBar.SearchBarListener
+import androidx.leanback.widget.SearchBar.SearchBarPermissionListener
 import androidx.lifecycle.lifecycleScope
+import ani.saikou.anilist.Anilist
 import ani.saikou.anilist.AnilistSearch
 import ani.saikou.anilist.SearchResults
+import ani.saikou.loadData
 import ani.saikou.media.Media
+import ani.saikou.tv.components.SearchFragment
 import ani.saikou.tv.presenters.AnimePresenter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
 
-class TVSearch: SearchSupportFragment(), SearchSupportFragment.SearchResultProvider {
+class TVSearchFragment: SearchFragment(), SearchSupportFragment.SearchResultProvider {
 
     lateinit var rowAdapter: ArrayObjectAdapter
     private val scope = lifecycleScope
@@ -32,10 +51,38 @@ class TVSearch: SearchSupportFragment(), SearchSupportFragment.SearchResultProvi
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        //AnimePresenter(0, requireActivity())
-        rowAdapter = ArrayObjectAdapter(ListRowPresenter())
 
-        val notSet = model.notSet
+        rowAdapter = ArrayObjectAdapter(AnimePresenter(0, requireActivity()))
+        super.setSearchResultProvider(this)
+
+        val intent = requireActivity().intent
+        type = intent.getStringExtra("type") ?: type
+        genre = intent.getStringExtra("genre")
+        sortBy = intent.getStringExtra("sortBy")
+        //style = loadData<Int>("searchStyle") ?: 0
+        adult = if (Anilist.adult) intent.getBooleanExtra("hentai", false) else false
+        listOnly = intent.getBooleanExtra("listOnly",false)
+
+        setOnItemViewClickedListener { itemViewHolder, item, rowViewHolder, row ->
+            val intent = Intent(requireActivity().applicationContext, TVAnimeDetailActivity::class.java)
+            intent.putExtra("media", item as Media)
+            startActivity(intent)
+        }
+
+        setOnItemViewSelectedListener { itemViewHolder, item, rowViewHolder, row ->
+            if (model.searchResults.hasNextPage && model.searchResults.results.isNotEmpty() && !loading) {
+                viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+                    loading=true
+                    model.loadNextPage(model.searchResults)
+                }
+            }
+        }
+
+        setObservers()
+        search(null,genre,tag,sortBy,adult,listOnly)
+    }
+
+    private fun setObservers(){
         if(model.notSet) {
             model.notSet = false
             model.searchResults = SearchResults(type,
@@ -60,21 +107,9 @@ class TVSearch: SearchSupportFragment(), SearchSupportFragment.SearchResultProvi
                     hasNextPage = it.hasNextPage
                 }
 
-                val prev = model.searchResults.results.size
                 model.searchResults.results.addAll(it.results)
-                val listRowAdapter = ArrayObjectAdapter(AnimePresenter(0, requireActivity()))
-
-                listRowAdapter.addAll(0,it.results)
-                rowAdapter.add(ListRow(HeaderItem("Results"), listRowAdapter))
+                rowAdapter.addAll(rowAdapter.size(),it.results)
             }
-        }
-
-
-        setSearchResultProvider(this)
-        setOnItemViewClickedListener { itemViewHolder, item, rowViewHolder, row ->
-            val intent = Intent(requireActivity().applicationContext, TVAnimeDetailActivity::class.java)
-            intent.putExtra("media", item as Media)
-            startActivity(intent)
         }
     }
 
@@ -88,7 +123,6 @@ class TVSearch: SearchSupportFragment(), SearchSupportFragment.SearchResultProvi
         adult: Boolean = false,
         listOnly: Boolean? = null
     ) {
-        val size = model.searchResults.results.size
         model.searchResults.results.clear()
         rowAdapter.clear()
 
@@ -127,11 +161,11 @@ class TVSearch: SearchSupportFragment(), SearchSupportFragment.SearchResultProvi
     }
 
     override fun onQueryTextChange(newQuery: String?): Boolean {
+        search(newQuery)
         return true
     }
 
     override fun onQueryTextSubmit(query: String?): Boolean {
-        search(query)
         return true
     }
 

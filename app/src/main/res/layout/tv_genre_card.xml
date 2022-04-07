@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:clipToPadding="false"
+    android:background="@android:color/transparent">
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/genreCard"
+        android:layout_width="wrap_content"
+        android:layout_height="46dp"
+        android:layout_margin="8dp"
+        android:minWidth="250dp"
+        app:cardCornerRadius="16dp">
+
+        <ImageView
+            android:id="@+id/genreImage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.6"
+            android:background="@color/bg_black" />
+
+        <TextView
+            android:id="@+id/genreTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:ellipsize="end"
+            android:fontFamily="@font/poppins_bold"
+            android:padding="12dp"
+            android:textAlignment="center"
+            android:textAllCaps="true"
+            android:textColor="@color/bg_white"
+            android:textSize="14sp"
+            tools:text="@string/genres" />
+    </androidx.cardview.widget.CardView>
+</RelativeLayout>

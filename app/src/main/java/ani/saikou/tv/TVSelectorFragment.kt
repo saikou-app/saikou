@@ -45,6 +45,8 @@ class TVSelectorFragment: VerticalGridSupportFragment() {
             prevEpisode = it.getSerializable("prev") as? Episode
         }
 
+        title = "Select quality"
+
         val presenter = VerticalGridPresenter()
         presenter.numberOfColumns = 1
         gridPresenter = presenter

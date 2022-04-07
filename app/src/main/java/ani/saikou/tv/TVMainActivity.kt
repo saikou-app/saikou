@@ -68,7 +68,7 @@ class TVMainActivity : FragmentActivity() {
             }
 
             supportFragmentManager.beginTransaction()
-                .replace(R.id.main_browse_fragment, TVAnimeBrowser())
+                .replace(R.id.main_browse_fragment, TVAnimeFragment())
                 .commitNow()
         }
     }

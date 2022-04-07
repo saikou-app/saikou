@@ -41,9 +41,9 @@ class VideoPlayerGlue(
         fun onNext()
     }
 
-    private val mRepeatAction: RepeatAction
-    private val mThumbsUpAction: ThumbsUpAction
-    private val mThumbsDownAction: ThumbsDownAction
+    //private val mRepeatAction: RepeatAction
+    //private val mThumbsUpAction: ThumbsUpAction
+    //private val mThumbsDownAction: ThumbsDownAction
     private val mSkipPreviousAction: SkipPreviousAction
     private val mSkipNextAction: SkipNextAction
     private val mFastForwardAction: FastForwardAction
@@ -62,9 +62,9 @@ class VideoPlayerGlue(
 
     override fun onCreateSecondaryActions(adapter: ArrayObjectAdapter) {
         super.onCreateSecondaryActions(adapter)
-        adapter.add(mThumbsDownAction)
-        adapter.add(mThumbsUpAction)
-        adapter.add(mRepeatAction)
+        //adapter.add(mThumbsDownAction)
+        //adapter.add(mThumbsUpAction)
+        //adapter.add(mRepeatAction)
     }
 
     override fun onActionClicked(action: Action) {
@@ -78,7 +78,7 @@ class VideoPlayerGlue(
 
     // Should dispatch actions that the super class does not supply callbacks for.
     private fun shouldDispatchAction(action: Action): Boolean {
-        return action === mRewindAction || action === mFastForwardAction || action === mThumbsDownAction || action === mThumbsUpAction || action === mRepeatAction
+        return action === mRewindAction || action === mFastForwardAction //|| action === mRepeatAction
     }
 
     private fun dispatchAction(action: Action) {
@@ -143,10 +143,10 @@ class VideoPlayerGlue(
         mSkipNextAction = SkipNextAction(context)
         mFastForwardAction = FastForwardAction(context)
         mRewindAction = RewindAction(context)
-        mThumbsUpAction = ThumbsUpAction(context)
+        /*mThumbsUpAction = ThumbsUpAction(context)
         mThumbsUpAction.index = ThumbsUpAction.INDEX_OUTLINE
         mThumbsDownAction = ThumbsDownAction(context)
-        mThumbsDownAction.index = ThumbsDownAction.INDEX_OUTLINE
-        mRepeatAction = RepeatAction(context)
+        mThumbsDownAction.index = ThumbsDownAction.INDEX_OUTLINE*/
+        //mRepeatAction = RepeatAction(context)
     }
 }

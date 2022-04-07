@@ -1,6 +1,7 @@
 package ani.saikou.tv
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -9,9 +10,12 @@ import androidx.leanback.app.VerticalGridSupportFragment
 import androidx.leanback.widget.ArrayObjectAdapter
 import androidx.leanback.widget.Presenter
 import androidx.leanback.widget.VerticalGridPresenter
+import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.anime.source.AnimeSources
 import ani.saikou.anime.source.HAnimeSources
 import ani.saikou.anime.source.WatchSources
+import ani.saikou.databinding.ItemEpisodeListBinding
+import ani.saikou.databinding.TvItemSourceBinding
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
 
@@ -23,6 +27,8 @@ class TVSourceSelectorFragment: VerticalGridSupportFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        title = "Select source"
 
         val presenter = VerticalGridPresenter()
         presenter.numberOfColumns = 1
@@ -64,16 +70,18 @@ class TVSourceSelectorFragment: VerticalGridSupportFragment() {
 
     private inner class SourceAdapter : Presenter() {
 
-        override fun onCreateViewHolder(parent: ViewGroup?): ViewHolder {
-            return ViewHolder(TextView(parent?.context))
+        inner class SourceViewHolder(val binding: TvItemSourceBinding) : Presenter.ViewHolder(binding.root)
+
+            override fun onCreateViewHolder(parent: ViewGroup?): ViewHolder {
+            return SourceViewHolder(TvItemSourceBinding.inflate(LayoutInflater.from(parent?.context), parent, false))
         }
 
         override fun onBindViewHolder(viewHolder: ViewHolder?, item: Any?) {
-            viewHolder?.view?.let {
-                (viewHolder?.view as TextView).text = item as String
-                it.setOnClickListener {
-                    onSourceChange(item)
-                }
+            val holder = viewHolder as SourceViewHolder
+
+            holder.binding.sourceName.text = item as String
+            holder.binding.root.setOnClickListener {
+                onSourceChange(item)
             }
         }
 
