@@ -1,5 +1,6 @@
 package ani.saikou.anime.source.extractors
 
+import android.util.Log
 import ani.saikou.anime.Episode
 import ani.saikou.anime.source.Extractor
 import ani.saikou.getSize
@@ -16,6 +17,7 @@ import org.jsoup.Jsoup
 
 class FPlayer(private val getSize:Boolean): Extractor() {
     override fun getStreamLinks(name: String, url: String): Episode.StreamLinks {
+        Log.i("bruh","aaa")
         val apiLink = url.replace("/v/","/api/source/")
         val tempQuality = mutableListOf<Episode.Quality>()
         try{

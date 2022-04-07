@@ -55,4 +55,20 @@
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowBackground">@drawable/shape_corner_16dp</item>
     </style>
+
+    <style name="Theme.SaikouTV" parent="Theme.Leanback">
+        <item name="android:statusBarColor">@color/status</item>
+        <item name="colorPrimary">@color/pink_500</item>
+        <item name="colorPrimaryVariant">@color/pink_700</item>
+        <item name="colorOnPrimary">@color/bg_white</item>
+        <item name="colorSecondary">@color/violet_400</item>
+        <item name="colorSecondaryVariant">@color/violet_700</item>
+        <item name="colorOnSecondary">@color/bg_black</item>
+        <item name="colorSecondaryContainer">?attr/colorSecondary</item>
+        <item name="colorOnSecondaryContainer">?attr/colorOnSecondary</item>
+        <item name="colorOnSurfaceVariant">@color/nav_tab</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textColor">@color/bg_white</item>
+    </style>
+
 </resources>

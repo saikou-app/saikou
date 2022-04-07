@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="-16dp"
+    android:layout_marginEnd="-16dp"
+    android:clipToPadding="false"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="-16dp"
+        android:layout_marginBottom="-16dp"
+        android:clipToPadding="false"
+        android:padding="24dp">
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/itemCompactCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:translationZ="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="4dp">
+
+            <ImageView
+                android:id="@+id/itemCompactImage"
+                android:layout_width="108dp"
+                android:layout_height="160dp"
+                android:scaleType="centerCrop"
+                android:transitionName="mediaCover"
+                tools:ignore="ContentDescription,ImageContrastCheck"
+                tools:srcCompat="@tools:sample/backgrounds/scenic" />
+
+            <LinearLayout
+                android:id="@+id/itemCompactScoreBG"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/item_score"
+                android:backgroundTint="#BFFFFFFF"
+                android:backgroundTintMode="multiply"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="6dp">
+
+                <TextView
+                    android:id="@+id/itemCompactScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:paddingTop="2dp"
+                    android:textColor="@color/bg_white"
+                    android:textSize="12sp"
+                    tools:ignore="TextContrastCheck"
+                    tools:text="0.0" />
+
+                <ImageView
+                    android:id="@+id/imageView2"
+                    android:layout_width="12dp"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/ic_round_star_24"
+                    tools:ignore="ContentDescription" />
+
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/itemCompactOngoing"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_gravity="bottom"
+            android:translationZ="8dp"
+            app:cardCornerRadius="8dp"
+            app:cardElevation="4dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/item_ongoing" />
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/itemCompactType"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginBottom="4dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:visibility="gone"
+        tools:ignore="UseCompoundDrawables">
+
+        <ImageView
+            android:id="@+id/itemCompactTypeImage"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:alpha="0.58"
+            app:srcCompat="@drawable/ic_round_movie_filter_24"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/itemCompactRelation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:alpha="0.58"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:paddingStart="4dp"
+            android:paddingEnd="4dp"
+            android:singleLine="true"
+            android:textAlignment="textEnd"
+            android:textAllCaps="true"
+            android:textSize="12sp"
+            android:textStyle="italic"
+            android:transitionName="mediaTitle"
+            tools:ignore="TextContrastCheck"
+            tools:text="Relation  " />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/itemCompactTitle"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:lineSpacingExtra="-4sp"
+            android:maxLines="2"
+            android:transitionName="mediaTitle"
+            tools:text="@string/get_recommendations" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/itemCompactUserProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/itemCompactTotal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:alpha="0.58"
+                tools:ignore="TextContrastCheck"
+                tools:text="/??" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="lb_details_v2_card_height">320dp</dimen>
+</resources>
