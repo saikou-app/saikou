@@ -92,8 +92,6 @@ class TVAnimeDetailFragment: DetailsSupportFragment() {
         detailsOverview = DetailsOverviewRow(media)
         detailsOverview.actionsAdapter = actions
 
-
-
         adapter = rowsAdapter
 
         initializeBackground()
@@ -227,9 +225,7 @@ class TVAnimeDetailFragment: DetailsSupportFragment() {
     }
 
     private fun clearEpisodes() {
-        episodePresenters.forEach {
-            rowsAdapter.remove(it)
-        }
+        rowsAdapter.removeItems(1,rowsAdapter.size()-1)
         episodePresenters.clear()
     }
 
