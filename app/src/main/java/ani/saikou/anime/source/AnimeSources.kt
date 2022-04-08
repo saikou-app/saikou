@@ -10,7 +10,7 @@ object AnimeSources : WatchSources() {
         "9ANIME-DUB",
         "ZORO",
         "TWIST",
-        "TENSHI"
+        "TENSHI",
     )
 
     val animeParsers:MutableMap<Int,AnimeParser> = mutableMapOf()
