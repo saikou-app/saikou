@@ -5,10 +5,12 @@ import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Dialog
+import android.app.PictureInPictureParams
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.Animatable
@@ -21,6 +23,7 @@ import android.os.Handler
 import android.os.Looper
 import android.provider.Settings.System
 import android.support.v4.media.session.MediaSessionCompat
+import android.util.Rational
 import android.util.TypedValue
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -29,6 +32,7 @@ import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.math.MathUtils.clamp
@@ -94,6 +98,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private lateinit var exoScreen: ImageButton
     private lateinit var exoNext: ImageButton
     private lateinit var exoPrev: ImageButton
+    private lateinit var exoPip: ImageButton
     private lateinit var exoBrightness: Slider
     private lateinit var exoVolume: Slider
     private lateinit var exoBrightnessCont: View
@@ -200,6 +205,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         exoVolume = playerView.findViewById(R.id.exo_volume)
         exoBrightnessCont = playerView.findViewById(R.id.exo_brightness_cont)
         exoVolumeCont = playerView.findViewById(R.id.exo_volume_cont)
+        exoPip = playerView.findViewById(R.id.exo_pip)
+
         animeTitle = playerView.findViewById(R.id.exo_anime_title)
         episodeTitle = playerView.findViewById(R.id.exo_ep_sel)
 
@@ -255,6 +262,15 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                     exoPlayer.play()
                 }
             }
+        }
+
+        // Picture-in-picture
+        if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 26) {
+            exoPip.setOnClickListener {
+                    enterPipMode()
+            }
+        } else {
+            exoPip.visibility = View.GONE
         }
 
         //Lock Button
@@ -1089,6 +1105,32 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             val uriString = "market://details?id=com.instantbits.cast.webvideo"
             intent.data = Uri.parse(uriString)
             startActivity(intent)
+        }
+    }
+
+    // Enter PiP Mode
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun enterPipMode() {
+        val aspectRatio = Rational(16, 9)
+        val params = PictureInPictureParams
+            .Builder()
+            .setAspectRatio(aspectRatio)
+            .build()
+        enterPictureInPictureMode(params)
+    }
+
+    // Enter PiP when user leaves player through gestures
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onUserLeaveHint() {
+        enterPipMode()
+    }
+
+    // Hide/Show on PiP change
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
+        if (isInPictureInPictureMode) {
+            // Hide Menu
+        } else {
+            // Show Menu
         }
     }
 }

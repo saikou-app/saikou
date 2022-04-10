@@ -366,6 +366,15 @@
                             android:backgroundTint="#00FFFFFF"
                             app:srcCompat="@drawable/ic_round_lock_open_24"
                             tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+                        <ImageButton
+                            android:id="@+id/exo_pip"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:src="@drawable/ic_baseline_picture_in_picture_24"
+                            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
                     </LinearLayout>
 
                     <TextView

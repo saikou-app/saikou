@@ -64,6 +64,7 @@
             android:exported="true" />
         <activity
             android:name=".anime.ExoplayerView"
+            android:supportsPictureInPicture="true"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:exported="true" />
         <activity
