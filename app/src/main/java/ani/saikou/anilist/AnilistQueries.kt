@@ -18,6 +18,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import java.io.Serializable
 import java.net.UnknownHostException
+import kotlin.random.Random
 
 val httpClient =  OkHttpClient()
 
@@ -465,15 +466,15 @@ class AnilistQueries{
             } } } }
         return responseArray
     }
-
     private fun bannerImage(type: String): String? {
-        val response = executeQuery("""{ MediaListCollection(userId: ${Anilist.userid}, type: $type, sort:[SCORE_DESC,UPDATED_TIME_DESC],chunk:1,perChunk:1) { lists { entries{ media { bannerImage } } } } } """)
+        val response = executeQuery("""{ MediaListCollection(userId: ${Anilist.userid}, type: $type, chunk:1,perChunk:25) { lists { entries{ media { bannerImage } } } } } """)
         val data = if (response!=null) response["data"] else null
         if(data!=null && data!=JsonNull) {
             val b = if(data.jsonObject["MediaListCollection"]!=JsonNull) data.jsonObject["MediaListCollection"] else null
             val list = b?.jsonObject?.get("lists")?.jsonArray
             if (list != null && list.isNotEmpty()) {
-                val a = list[0].jsonObject["entries"]?.jsonArray?.get(0)?.jsonObject?.get("media")?.jsonObject?.get("bannerImage")?.toString()?.trim('"')
+                val entrieslist = list[Random.nextInt(0, list.size-1)].jsonObject["entries"]
+                val a = entrieslist?.jsonArray?.get(Random.nextInt(0, entrieslist.jsonArray.size-1))?.jsonObject?.get("media")?.jsonObject?.get("bannerImage")?.toString()?.trim('"')
                 return if (a != null && a != "null") a else null
             }
         }
