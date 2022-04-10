@@ -845,6 +845,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
     override fun onPause() {
         super.onPause()
+        if (Build.VERSION.SDK_INT >= 26) {
+            playerView.useController = !isInPictureInPictureMode
+        }
         orientationListener?.disable()
         if(isInitialized) {
             playerView.player?.pause()
@@ -1123,14 +1126,5 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onUserLeaveHint() {
         enterPipMode()
-    }
-
-    // Hide/Show on PiP change
-    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration) {
-        if (isInPictureInPictureMode) {
-            // Hide Menu
-        } else {
-            // Show Menu
-        }
     }
 }
