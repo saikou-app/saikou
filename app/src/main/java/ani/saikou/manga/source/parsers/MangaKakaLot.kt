@@ -17,12 +17,12 @@ class MangaKakaLot(override val name: String="MangaKakaLot") :MangaParser() {
         val arr = mutableMapOf<String, MangaChapter>()
         try {
             Jsoup.connect(link).get().select(if (link.contains("readmanganato.com")) ".row-content-chapter > .a-h" else ".chapter-list > .row > span").reversed().forEach {
-                val chap = Regex("(Chapter ([A-Za-z0-9.]+))(: ?(.+))?").find(it.select("a").text())?.destructured
+                val chap = Regex("((?<=Chapter )[0-9.]+)([\\s:]+)?(.+)?").find(it.select("a").text())?.destructured
                 if(chap!=null) {
-                    arr[chap.component2()] = MangaChapter(
-                        number = chap.component2(),
+                    arr[chap.component1()] = MangaChapter(
+                        number = chap.component1(),
                         link = it.select("a").attr("href"),
-                        title = chap.component4()
+                        title = chap.component3()
                     )
                 }
             }
