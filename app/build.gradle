@@ -14,7 +14,7 @@ android {
         minSdk 21
         targetSdk 31
         versionCode 37
-        versionName "1.1.4"
+        versionName "1.1.5.1"
         signingConfig signingConfigs.debug
     }
 

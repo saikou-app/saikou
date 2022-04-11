@@ -43,14 +43,30 @@
                     android:layout_margin="16dp"
                     android:orientation="vertical">
 
-                    <ImageButton
-                        android:id="@+id/exo_rotate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="48dp"
-                        android:backgroundTint="#00FFFFFF"
-                        android:visibility="gone"
-                        app:srcCompat="@drawable/ic_round_screen_rotation_alt_24"
-                        tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <ImageButton
+                            android:id="@+id/exo_rotate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_round_screen_rotation_alt_24"
+                            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+                        <ImageButton
+                            android:id="@+id/exo_pip"
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:backgroundTint="#00FFFFFF"
+                            android:scaleX="-1"
+                            android:src="@drawable/ic_round_picture_in_picture_alt_24"
+                            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+                    </LinearLayout>
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/exo_skip"
@@ -241,7 +257,7 @@
 
                     <ImageButton
                         android:id="@+id/exo_next_ep"
-                        style="@style/ExoMediaButton.Pause"
+                        android:background="?android:attr/selectableItemBackground"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_weight="1"
@@ -365,14 +381,6 @@
                             android:layout_height="48dp"
                             android:backgroundTint="#00FFFFFF"
                             app:srcCompat="@drawable/ic_round_lock_open_24"
-                            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
-
-                        <ImageButton
-                            android:id="@+id/exo_pip"
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
-                            android:backgroundTint="#00FFFFFF"
-                            android:src="@drawable/ic_baseline_picture_in_picture_24"
                             tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
 
                     </LinearLayout>

@@ -294,7 +294,7 @@ class MangaReaderActivity : AppCompatActivity() {
                 progressDialog?.setCancelable(false)
                     ?.setPositiveButton("Yes") { dialog, _ ->
                         saveData("${media.id}_save_progress",true)
-                        updateAnilistProgress(media.id, media.manga!!.selectedChapter!!)
+                        updateAnilistProgress(media, media.manga!!.selectedChapter!!)
                         dialog.dismiss()
                         runnable.run()
                     }
@@ -307,7 +307,7 @@ class MangaReaderActivity : AppCompatActivity() {
             }
             else {
                 if(loadData<Boolean>("${media.id}_save_progress")!=false && if(media.isAdult) settings.updateForH else true)
-                    updateAnilistProgress(media.id, media.manga!!.selectedChapter!!)
+                    updateAnilistProgress(media, media.manga!!.selectedChapter!!)
                 runnable.run()
             }
         } else {

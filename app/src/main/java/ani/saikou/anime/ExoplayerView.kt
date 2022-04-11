@@ -72,6 +72,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -109,7 +110,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private lateinit var episodeTitle : Spinner
 
     private var orientationListener : OrientationEventListener? =null
-    private var progressDialog : AlertDialog.Builder?=null
 
     private lateinit var media: Media
     private lateinit var episode: Episode
@@ -118,7 +118,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private lateinit var episodeTitleArr: ArrayList<String>
     private var currentEpisodeIndex = 0
     private var epChanging = false
-    private var showProgressDialog = true
 
     private var notchHeight:Int=0
     private var currentWindow = 0
@@ -130,6 +129,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private var changingServer = false
     private var interacted = false
 
+    private var pipEnabled = false
+    private var aspectRatio = Rational(16, 9)
+
     private var t1=Timer()
     private var t2=Timer()
 
@@ -138,12 +140,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
     private val handler = Handler(Looper.getMainLooper())
     private val model: MediaDetailsViewModel by viewModels()
-
-    override fun onDestroy() {
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        VideoCache.release()
-        super.onDestroy()
-    }
 
     override fun onAttachedToWindow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -211,6 +207,11 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         episodeTitle = playerView.findViewById(R.id.exo_ep_sel)
 
         playerView.controllerShowTimeoutMs = 5000
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            playerView.useController = !isInPictureInPictureMode
+        }
+
         val audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
         if (System.getInt(contentResolver, System.ACCELEROMETER_ROTATION, 0) != 1) {
             var rotation = 0
@@ -265,13 +266,18 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         }
 
         // Picture-in-picture
-        if (packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && Build.VERSION.SDK_INT >= 26) {
-            exoPip.setOnClickListener {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            pipEnabled = packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && settings.pip
+            if (pipEnabled && !settings.alwaysMinimize) {
+                exoPip.visibility = View.VISIBLE
+                exoPip.setOnClickListener {
                     enterPipMode()
+                }
+            } else {
+                exoPip.visibility = View.GONE
             }
-        } else {
-            exoPip.visibility = View.GONE
         }
+
 
         //Lock Button
         var locked = false
@@ -336,19 +342,22 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         val overshoot = AnimationUtils.loadInterpolator(this,R.anim.over_shoot)
         val controllerDuration = (uiSettings.animationSpeed*200).toLong()
         fun handleController(){
-            if(playerView.isControllerFullyVisible){
-                ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_controller),"alpha",1f,0f).setDuration(controllerDuration).start()
-                ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_bottom_cont),"translationY",0f,128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
-                ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_timeline_cont),"translationY",0f,128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
-                ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_top_cont),"translationY",0f,-128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
-                playerView.postDelayed({ playerView.hideController() },controllerDuration)
-            }else{
-                checkNotch()
-                playerView.showController()
-                ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_controller),"alpha",0f,1f).setDuration(controllerDuration).start()
-                ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_bottom_cont),"translationY",128f,0f).apply { interpolator=overshoot;duration=controllerDuration;start() }
-                ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_timeline_cont),"translationY",128f,0f).apply { interpolator=overshoot;duration=controllerDuration;start() }
-                ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_top_cont),"translationY",-128f,0f).apply { interpolator=overshoot;duration=controllerDuration;start() }
+            if(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) !isInPictureInPictureMode else true)
+            {
+                if(playerView.isControllerFullyVisible){
+                    ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_controller),"alpha",1f,0f).setDuration(controllerDuration).start()
+                    ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_bottom_cont),"translationY",0f,128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
+                    ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_timeline_cont),"translationY",0f,128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
+                    ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_top_cont),"translationY",0f,-128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
+                    playerView.postDelayed({ playerView.hideController() },controllerDuration)
+                }else{
+                    checkNotch()
+                    playerView.showController()
+                    ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_controller),"alpha",0f,1f).setDuration(controllerDuration).start()
+                    ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_bottom_cont),"translationY",128f,0f).apply { interpolator=overshoot;duration=controllerDuration;start() }
+                    ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_timeline_cont),"translationY",128f,0f).apply { interpolator=overshoot;duration=controllerDuration;start() }
+                    ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_top_cont),"translationY",-128f,0f).apply { interpolator=overshoot;duration=controllerDuration;start() }
+                }
             }
         }
 
@@ -507,7 +516,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         try{
             media = (intent.getSerializableExtra("media") as? Media)?:return
         }catch (e:Exception){
-            toastString(e.toString())
+            toast(e.toString())
             return
         }
         model.setMedia(media)
@@ -530,9 +539,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
         //Anime Title
         animeTitle.text = media.userPreferredName
-
-        //Set Episode, to invoke getEpisode() at Start
-        model.setEpisode(episodes[media.anime!!.selectedEpisode!!]!!,"invoke")
 
         episodeArr = episodes.keys.toList()
         currentEpisodeIndex = episodeArr.indexOf(media.anime!!.selectedEpisode!!)
@@ -580,7 +586,10 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         exoNext = playerView.findViewById(R.id.exo_next_ep)
         exoNext.setOnClickListener {
             if(isInitialized) {
-                nextEpisode{ i-> progress { change(currentEpisodeIndex + i) } }
+                nextEpisode{ i->
+                    updateAniProgress()
+                    change(currentEpisodeIndex + i)
+                }
             }
         }
         //Prev Episode
@@ -593,25 +602,21 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 toastString("This is the 1st Episode!")
         }
 
-        val episodeObserverRunnable = Runnable {
-            model.getEpisode().observe(this) {
-                hideSystemBars()
-
-                if (it != null && !epChanging) {
-                    episode = it
-                    media.selected = model.loadSelected(media)
-                    model.setMedia(media)
-                    currentEpisodeIndex = episodeArr.indexOf(it.number)
-                    episodeTitle.setSelection(currentEpisodeIndex)
-                    if (isInitialized) releasePlayer()
-                    playbackPosition = loadData("${media.id}_${it.number}", this) ?: 0
-                    initPlayer()
-                    preloading = false
-                    updateProgress()
-                }
+        model.getEpisode().observe(this) {
+            hideSystemBars()
+            if (it != null && !epChanging) {
+                episode = it
+                media.selected = model.loadSelected(media)
+                model.setMedia(media)
+                currentEpisodeIndex = episodeArr.indexOf(it.number)
+                episodeTitle.setSelection(currentEpisodeIndex)
+                if (isInitialized) releasePlayer()
+                playbackPosition = loadData("${media.id}_${it.number}", this) ?: 0
+                initPlayer()
+                preloading = false
+                updateProgress()
             }
         }
-        episodeObserverRunnable.run()
 
         //FullScreen
         isFullscreen = loadData("${media.id}_fullscreenInt",this)?:isFullscreen
@@ -660,6 +665,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         exoSpeed.setOnClickListener{
             speedDialog.setSingleChoiceItems(speedsName,curSpeed) { dialog, i ->
                 if(isInitialized) {
+                    saveData("${media.id}_speed",i,this)
                     speed = speeds[i]
                     curSpeed = i
                     playbackParameters = PlaybackParameters(speed)
@@ -670,18 +676,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             }.show()
         }
         speedDialog.setOnCancelListener { hideSystemBars() }
-
-        showProgressDialog = if(settings.askIndividual) loadData<Boolean>("${media.id}_progressDialog") != true else false
-        progressDialog = if(showProgressDialog && Anilist.userid!=null && if(media.isAdult) settings.updateForH else true) AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Update progress on anilist?").apply {
-            setMultiChoiceItems(arrayOf("Don't ask again for ${media.userPreferredName}"), booleanArrayOf(false)) { _, _, isChecked ->
-                if (isChecked) {
-                    saveData("${media.id}_progressDialog", isChecked)
-                    progressDialog = null
-                }
-                showProgressDialog = isChecked
-            }
-            setOnCancelListener { hideSystemBars() }
-        } else null
 
         if(settings.autoPlay) {
             var touchTimer = Timer()
@@ -703,6 +697,33 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 false
             }
         }
+
+        preloading = false
+        var showProgressDialog = if(settings.askIndividual) loadData<Boolean>("${media.id}_progressDialog") != true else false
+        if(showProgressDialog && Anilist.userid!=null && if(media.isAdult) settings.updateForH else true)
+            AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Auto Update progress on Anilist?").apply {
+                setMultiChoiceItems(arrayOf("Don't ask again for ${media.userPreferredName}"), booleanArrayOf(true)) { _, _, isChecked ->
+                    if (isChecked) {
+                        saveData("${media.id}_progressDialog", isChecked)
+                    }
+                    showProgressDialog = isChecked
+                }
+                setOnCancelListener { hideSystemBars() }
+                setCancelable(false)
+                setPositiveButton("Yes") { dialog, _ ->
+                    saveData("${media.id}_save_progress",true)
+                    dialog.dismiss()
+                    model.setEpisode(episodes[media.anime!!.selectedEpisode!!]!!,"invoke")
+                }
+                setNegativeButton("No") { dialog, _ ->
+                    saveData("${media.id}_save_progress",false)
+                    toast("You can long click List Editor button to Reset Auto Update")
+                    dialog.dismiss()
+                    model.setEpisode(episodes[media.anime!!.selectedEpisode!!]!!,"invoke")
+                }
+                show()
+            }
+        else model.setEpisode(episodes[media.anime!!.selectedEpisode!!]!!,"invoke")
     }
 
     private fun initPlayer(){
@@ -800,6 +821,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 this.playbackParameters = this@ExoplayerView.playbackParameters
                 setMediaItem(mediaItem)
                 prepare()
+                loadData<Long>("${media.id}_${media.anime!!.selectedEpisode}_max")?.apply {
+                    if(this<=playbackPosition) playbackPosition = max(0,this-5)
+                }
                 seekTo(playbackPosition)
             }
         playerView.player = exoPlayer
@@ -845,9 +869,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
     override fun onPause() {
         super.onPause()
-        if (Build.VERSION.SDK_INT >= 26) {
-            playerView.useController = !isInPictureInPictureMode
-        }
         orientationListener?.disable()
         if(isInitialized) {
             playerView.player?.pause()
@@ -903,6 +924,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             saveData("maxWidth", width)
         }
 
+        aspectRatio = Rational(width,height)
+//        exoPlayer.playbackParameters = playbackParameters
+
         videoInfo.text = "${episode.selectedStream}\n$width x $height"
 
         if(exoPlayer.duration<playbackPosition)
@@ -944,11 +968,11 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     override fun onPlayerError(error: PlaybackException) {
         when (error.errorCode) {
             PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS -> {
-                toastString("Source Exception : ${error.message}")
+                toast("Source Exception : ${error.message}")
                 isPlayerPlaying = true
                 if(isInitialized) sourceClick(episode.saveStreams)
             }
-            else -> toastString("Player Error ${error.errorCode} (${error.errorCodeName}) : ${error.message}")
+            else -> toast("Player Error ${error.errorCode} (${error.errorCodeName}) : ${error.message}")
         }
     }
 
@@ -963,39 +987,21 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         isBuffering = playbackState == Player.STATE_BUFFERING
         if(playbackState == Player.STATE_ENDED && settings.autoPlay){
             if(interacted) exoNext.performClick()
-            else toastString("Autoplay cancelled, no Interaction for more than 1 Hour.")
+            else if(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) !isInPictureInPictureMode else true) toast("Autoplay cancelled, no Interaction for more than 1 Hour.")
         }
         super.onPlaybackStateChanged(playbackState)
     }
 
-    private fun progress(runnable: Runnable){
-        if (exoPlayer.currentPosition / episodeLength > settings.watchPercentage && Anilist.userid != null) {
-            if (showProgressDialog && progressDialog!=null) {
-                progressDialog?.setCancelable(false)
-                    ?.setPositiveButton("Yes") { dialog, _ ->
-                        saveData("${media.id}_save_progress",true)
-                        updateAnilistProgress(media.id, media.anime!!.selectedEpisode!!)
-                        dialog.dismiss()
-                        runnable.run()
-                    }
-                    ?.setNegativeButton("No") { dialog, _ ->
-                        saveData("${media.id}_save_progress",false)
-                        dialog.dismiss()
-                        runnable.run()
-                    }
-                progressDialog?.show()
+    private fun updateAniProgress(){
+        if (exoPlayer.currentPosition / episodeLength > settings.watchPercentage && Anilist.userid != null)
+            if(loadData<Boolean>("${media.id}_save_progress")!=false && if(media.isAdult) settings.updateForH else true) {
+                media.anime!!.selectedEpisode?.apply {
+                    updateAnilistProgress(media,this)
+                }
             }
-            else {
-                if(loadData<Boolean>("${media.id}_save_progress")!=false && if(media.isAdult) settings.updateForH else true)
-                    updateAnilistProgress(media.id, media.anime!!.selectedEpisode!!)
-                runnable.run()
-            }
-        } else {
-            runnable.run()
-        }
     }
 
-    private fun nextEpisode( toast:Boolean=true,runnable: ((Int)-> Unit) ){
+    private fun nextEpisode(toast:Boolean=true,runnable: ((Int)-> Unit) ){
         var isFiller = true
         var i=1
         while (isFiller) {
@@ -1005,16 +1011,38 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 i++
             }
             else {
-                if (toast) toastString("No next Episode Found!")
+                if (toast)
+                    toast("No next Episode Found!")
                 isFiller = false
             }
         }
     }
 
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        finish()
+        startActivity(intent)
+    }
+
     override fun onBackPressed() {
-        if(isInitialized)
-            progress { super.onBackPressed() }
-        else super.onBackPressed()
+        if (settings.alwaysMinimize && pipEnabled) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                enterPipMode()
+            }
+            else super.onBackPressed()
+        }else{
+            super.onBackPressed()
+        }
+    }
+
+    override fun onDestroy() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        VideoCache.release()
+
+        if(isInitialized) {
+            updateAniProgress()
+        }
+        super.onDestroy()
     }
 
     // QUALITY SELECTOR
@@ -1112,19 +1140,35 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     }
 
     // Enter PiP Mode
-    @RequiresApi(Build.VERSION_CODES.O)
+    @Suppress("DEPRECATION")
+    @RequiresApi(Build.VERSION_CODES.N)
     private fun enterPipMode() {
-        val aspectRatio = Rational(16, 9)
-        val params = PictureInPictureParams
-            .Builder()
-            .setAspectRatio(aspectRatio)
-            .build()
-        enterPictureInPictureMode(params)
+        if(isInitialized) exoPlayer.pause()
+        if (!pipEnabled) return
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                enterPictureInPictureMode(
+                    PictureInPictureParams
+                        .Builder()
+                        .setAspectRatio(aspectRatio)
+                        .build()
+                    )
+            }
+            else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) { enterPictureInPictureMode() }
+        } catch (e: Exception) {
+            toastString(e.toString())
+        }
     }
 
     // Enter PiP when user leaves player through gestures
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.N)
     override fun onUserLeaveHint() {
-        enterPipMode()
+        if((wasPlaying || isPlayerPlaying) && pipEnabled && settings.alwaysMinimize ) enterPipMode()
     }
+
+    override fun onSurfaceSizeChanged(width: Int, height: Int) {
+        saveData("${media.id}_${episode.number}", exoPlayer.currentPosition, this)
+        super.onSurfaceSizeChanged(width, height)
+    }
+
 }

@@ -235,10 +235,11 @@
             tools:ignore="SpeakableTextPresentCheck" />
     </LinearLayout>
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
+    <ani.saikou.CustomBottomNavBar
         android:id="@+id/mediaTab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="0dp"
         android:layout_gravity="bottom"
         android:background="@color/nav_bg"
         android:translationZ="1dp"

@@ -151,6 +151,18 @@ class PlayerSettingsActivity : AppCompatActivity() {
             }
         }
 
+        binding.playerSettingsPiP.isChecked = settings.pip
+        binding.playerSettingsPiP.setOnCheckedChangeListener { _, isChecked ->
+            settings.pip = isChecked
+            saveData(player,settings)
+        }
+
+        binding.playerSettingsAlwaysMinimize.isChecked = settings.alwaysMinimize
+        binding.playerSettingsAlwaysMinimize.setOnCheckedChangeListener { _, isChecked ->
+            settings.alwaysMinimize = isChecked
+            saveData(player,settings)
+        }
+
         binding.playerSettingsCast.isChecked = settings.cast
         binding.playerSettingsCast.setOnCheckedChangeListener { _, isChecked ->
             settings.cast = isChecked

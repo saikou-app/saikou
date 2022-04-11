@@ -691,6 +691,64 @@
                 android:textSize="14sp" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/playerSettingsPiP"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:drawableStart="@drawable/ic_round_picture_in_picture_alt_24"
+                android:drawablePadding="16dp"
+                app:drawableTint="?attr/colorPrimary"
+                android:elegantTextHeight="true"
+                android:fontFamily="@font/poppins_bold"
+                android:minHeight="64dp"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:text="@string/picture_in_picture"
+                android:textAlignment="viewStart"
+                android:textColor="@color/bg_opp"
+                app:cornerRadius="0dp"
+                app:showText="false"
+                app:thumbTint="@color/button_switch_track">
+
+            </com.google.android.material.switchmaterial.SwitchMaterial>
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/playerSettingsAlwaysMinimize"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:checked="true"
+                android:drawableStart="@drawable/ic_round_fullscreen_24"
+                android:drawablePadding="16dp"
+                app:drawableTint="?attr/colorPrimary"
+                android:elegantTextHeight="true"
+                android:fontFamily="@font/poppins_bold"
+                android:minHeight="64dp"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:text="@string/always_minimize"
+                android:textAlignment="viewStart"
+                android:textColor="@color/bg_opp"
+                app:cornerRadius="0dp"
+                app:showText="false"
+                app:thumbTint="@color/button_switch_track">
+
+            </com.google.android.material.switchmaterial.SwitchMaterial>
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="-8dp"
+                android:layout_marginBottom="8dp"
+                android:alpha="0.58"
+                android:fontFamily="@font/poppins_family"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:text="@string/always_minimize_info"
+                android:textSize="14sp" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/playerSettingsCast"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

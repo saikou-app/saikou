@@ -50,8 +50,10 @@ import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.google.android.exoplayer2.ui.DefaultTimeBar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.android.material.internal.ViewUtils
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -652,16 +654,19 @@ fun download(activity: Activity, episode:Episode, animeTitle:String){
     }
 }
 
-fun updateAnilistProgress(id:Int,number:String){
+fun updateAnilistProgress(media:Media,number:String){
     if(Anilist.userid!=null) {
         CoroutineScope(Dispatchers.IO + SupervisorJob()).launch {
             val a = number.toFloatOrNull()?.roundToInt()
-            Anilist.mutation.editList(id, a, status = "CURRENT")
-            toastString("Setting progress to $a")
+            if (a!=media.userProgress) {
+                Anilist.mutation.editList(media.id, a, status = if(media.userStatus=="REPEATING") media.userStatus else "CURRENT")
+                toast("Setting progress to $a")
+            }
+            media.userProgress = a
             Refresh.all()
         }
     }else{
-        toastString("Please Login into anilist account!")
+        toast("Please Login into anilist account!")
     }
 }
 
@@ -782,6 +787,17 @@ class EmptyAdapter(private val count:Int):RecyclerView.Adapter<RecyclerView.View
     inner class EmptyViewHolder(view: View):RecyclerView.ViewHolder(view)
 }
 
+fun toast(string: String?,activity: Activity?=null){
+    if(string!=null) {
+        (activity?:currActivity())?.apply{
+            runOnUiThread {
+                Toast.makeText(this, string, Toast.LENGTH_SHORT).show()
+            }
+        }
+        logger(string)
+    }
+}
+
 fun toastString(s: String?,activity: Activity?=null){
     if(s!=null) {
         (activity?:currActivity())?.apply{
@@ -861,4 +877,22 @@ fun OkHttpClient.Builder.ignoreAllSSLErrors(): OkHttpClient.Builder {
     sslSocketFactory(insecureSocketFactory, naiveTrustManager)
     hostnameVerifier { _, _ -> true }
     return this
+}
+
+@Suppress("DEPRECATION")
+@SuppressLint("RestrictedApi")
+class CustomBottomNavBar @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null
+) : BottomNavigationView(context, attrs){
+    init {
+        ViewUtils.doOnApplyWindowInsets(
+            this
+        ) { view, insets, initialPadding -> // Apply the bottom, start, and end padding for a BottomNavigationView
+            // to dodge the system navigation bar
+            initialPadding.bottom = 0
+            updateLayoutParams<MarginLayoutParams> { bottomMargin=insets.systemWindowInsetBottom }
+            initialPadding.applyToView(view)
+            insets
+        }
+    }
 }

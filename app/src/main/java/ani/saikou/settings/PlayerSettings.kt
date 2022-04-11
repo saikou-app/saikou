@@ -25,4 +25,7 @@ data class PlayerSettings(
     var seekTime:Int = 10,
     var skipTime:Int = 85,
     var cast:Boolean = false,
+
+    var pip:Boolean = true,
+    var alwaysMinimize:Boolean = false,
 ):Serializable

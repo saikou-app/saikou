@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Saikou</string>
+    <string name="app_name">Saikope</string>
     <string name="slogan">The Best Anime, Manga &amp; Novel app for Android.</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
@@ -199,6 +199,9 @@
     <string name="skip_time_info">Setting to 0, hides the Skip Button.</string>
     <string name="show_cast_button">Show Cast Button</string>
     <string name="show_cast_button_info">Requires \"Web Video Caster\" app to cast.</string>
+    <string name="picture_in_picture">Picture in Picture</string>
+    <string name="always_minimize">Always Minimize</string>
+    <string name="always_minimize_info">Requires PiP to be enabled, Makes the player behave like Youtube Player but better.\nAlso hides the PiP button.</string>
 
     <string name="app">App</string>
     <string name="immersive_mode">Hide Status Bar</string>
