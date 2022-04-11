@@ -74,6 +74,7 @@ import javax.net.ssl.X509TrustManager
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
+import ani.saikou.anilist.BannerImage
 
 var statusBarHeight  = 0
 var navBarHeight = 0
@@ -729,9 +730,15 @@ fun MutableMap<String, Genre>.checkId(id:Int):Boolean{
     return true
 }
 
-fun MutableMap<String, Genre>.checkTime(genre:String):Boolean{
+fun MutableMap<String, Genre>.checkGenreTime(genre:String):Boolean{
     if(containsKey(genre))
         return (System.currentTimeMillis()-get(genre)!!.time) >= (1000*60*60*24*7)
+    return true
+}
+
+fun MutableMap<String, BannerImage>.checkBannerTime(type:String):Boolean{
+    if(containsKey(type))
+        return (System.currentTimeMillis()-get(type)!!.time) >= (1000*60*60*24*7)
     return true
 }
 
