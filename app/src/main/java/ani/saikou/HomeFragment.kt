@@ -60,7 +60,6 @@ class HomeFragment : Fragment() {
                 binding.homeUserAvatar.loadImage(Anilist.avatar)
                 if(!uiSettings.bannerAnimations) binding.homeUserBg.pause()
                 binding.homeUserBg.loadImage(Anilist.bg)
-                binding.homeUserAvatar.scaleType = ImageView.ScaleType.FIT_CENTER
                 binding.homeUserDataProgressBar.visibility = View.GONE
 
                 binding.homeAnimeList.setOnClickListener {
