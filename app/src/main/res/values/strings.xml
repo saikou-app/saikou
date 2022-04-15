@@ -47,7 +47,7 @@
     <string name="recommended">Recommended</string>
 
     <string name="get_recommendations">Watch/Read some Anime or Manga to get Recommendations</string>
-    <string name="empty">All caught up, when New?</string>
+    <string name="empty">All caught up!</string>
     <string name="title_activity_media">MediaActivity</string>
     <string name="action_settings">Settings</string>
 
@@ -185,12 +185,12 @@
     <string name="ask_update_progress">Ask for each Anime \"Individually\"</string>
     <string name="ask_update_progress_info">Turning off will always automatically update progress when episode is watched.</string>
     <string name="ask_update_progress_hentai">Update Progress for Hentai</string>
-    <string name="very_bold">Very Bold of You sar</string>
+    <string name="very_bold">Very bold of you</string>
     <string name="complete_percentage">Watch Update Percentage</string>
     <string name="complete_percentage_info">The percentage at which your Anilist progress should be updated after watching an episode. \nThis also sets the % for when to preload links for the next episode.</string>
 
     <string name="behaviour">Behaviour</string>
-    <string name="always_continue">Always Continue from where you Left</string>
+    <string name="always_continue">Always Continue from where you Left Off</string>
     <string name="pause_video_focus">Pause when not in Focus</string>
     <string name="gestures">Volume &amp; Brightness Gestures</string>
     <string name="double_tap">Double tap to Seek</string>
@@ -198,12 +198,12 @@
     <string name="seek_time">Seek Time</string>
     <string name="seek_time_info">Amount of time in seconds for fast forward &amp; rewind.</string>
     <string name="skip_time">Skip Time</string>
-    <string name="skip_time_info">Setting to 0, hides the Skip Button.</string>
+    <string name="skip_time_info">Setting to 0 hides the Skip Button.</string>
     <string name="show_cast_button">Show Cast Button</string>
     <string name="show_cast_button_info">Requires \"Web Video Caster\" app to cast.</string>
     <string name="picture_in_picture">Picture in Picture</string>
     <string name="always_minimize">Always Minimize</string>
-    <string name="always_minimize_info">Requires PiP to be enabled, Makes the player behave like Youtube Player but better.\nAlso hides the PiP button.</string>
+    <string name="always_minimize_info">Requires PiP to be enabled, makes the player behave like Youtube Player but better.\nAlso hides the PiP button.</string>
 
     <string name="app">App</string>
     <string name="immersive_mode">Hide Status Bar</string>
@@ -223,7 +223,7 @@
     <string name="banner_animations">Banner Animations</string>
     <string name="layout_animations">Layout Animations</string>
     <string name="animation_speed">Overall Speed</string>
-    <string name="empty_fav">Looks like you don\'t like anything,\nTry Hearting a show to keep it here.</string>
+    <string name="empty_fav">Looks like you haven\'t liked anything,\nTry Hearting a show to keep it here.</string>
     <string name="fav_anime">Favourite Anime</string>
     <string name="fav_manga">Favourite Manga</string>
     <string name="restart_app">Restart the app?</string>
