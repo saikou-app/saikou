@@ -106,7 +106,7 @@ class GogoCDN : Extractor() {
         private var keyAndIv:Pair<String,String>?=null
         fun getKeyAndIv(): Pair<String,String>? =
             if(keyAndIv!=null) keyAndIv else let {
-                val keys = OkHttpClient().newCall(Request.Builder().url("https://raw.githubusercontent.com/saikou-app/mal-id-filler-list/main/xstreamcdnkeys.txt").build()).execute().body?.string()?.split("\n")?:return null
+                val keys = OkHttpClient().newCall(Request.Builder().url("https://raw.githubusercontent.com/saikou-app/mal-id-filler-list/main/gogocdnkeys.txt").build()).execute().body?.string()?.split("\n")?:return null
                 keyAndIv = keys[0] to keys[1]
                 println("got $keyAndIv")
                 return keyAndIv
