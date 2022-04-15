@@ -125,7 +125,6 @@ class MangaReaderToTransformation : Transformation<File> {
         return _0x5b93da
     }
 
-
     override fun transform(
         context: Context,
         resource: Resource<File>,
@@ -172,7 +171,6 @@ class MangaReaderToTransformation : Transformation<File> {
                 Point(columns, rows) to Point(columns, rows)
             )
         }
-
 
         val image = Bitmap.createBitmap(realWidth, realHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(image)
@@ -235,5 +233,4 @@ class MangaReaderToTransformation : Transformation<File> {
     override fun hashCode(): Int {
         return id.hashCode()
     }
-
 }

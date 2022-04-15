@@ -26,27 +26,27 @@ class GenreActivity : AppCompatActivity() {
         setContentView(binding.root)
         initActivity(this)
 
-        binding.genreContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin += statusBarHeight;bottomMargin+= navBarHeight }
+        binding.genreContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin += statusBarHeight; bottomMargin += navBarHeight }
         val screenWidth = resources.displayMetrics.run { widthPixels / density }
         val type = intent.getStringExtra("type")
-        if(type!=null) {
+        if (type != null) {
             val adapter = GenreAdapter(type, true)
             model.doneListener = {
                 MainScope().launch {
                     binding.mediaInfoGenresProgressBar.visibility = View.GONE
                 }
             }
-            if(model.genres!=null){
+            if (model.genres != null) {
                 adapter.genres = model.genres!!
                 adapter.pos = ArrayList(model.genres!!.keys)
-                if(model.done)
+                if (model.done)
                     model.doneListener?.invoke()
             }
             binding.mediaInfoGenresRecyclerView.adapter = adapter
             binding.mediaInfoGenresRecyclerView.layoutManager = GridLayoutManager(this, (screenWidth / 156f).toInt())
 
             lifecycleScope.launch(Dispatchers.IO) {
-                model.loadGenres(Anilist.genres?: loadData("genres_list")?: arrayListOf()){
+                model.loadGenres(Anilist.genres ?: loadData("genres_list") ?: arrayListOf()) {
                     MainScope().launch {
                         adapter.addGenre(it)
                     }

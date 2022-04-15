@@ -13,8 +13,8 @@ object AnimeSources : WatchSources() {
         "TENSHI",
     )
 
-    val animeParsers:MutableMap<Int,AnimeParser> = mutableMapOf()
-    override operator fun get(i:Int) : AnimeParser?{
+    val animeParsers: MutableMap<Int, AnimeParser> = mutableMapOf()
+    override operator fun get(i: Int): AnimeParser? {
         val a = when (i) {
             0 -> animeParsers.getOrPut(i) { Gogo() }
             1 -> animeParsers.getOrPut(i) { Gogo(true) }
@@ -27,8 +27,8 @@ object AnimeSources : WatchSources() {
         }
         return a
     }
-    override fun flushLive(){
-        animeParsers.forEach{
+    override fun flushLive() {
+        animeParsers.forEach {
             it.value.text = ""
         }
     }

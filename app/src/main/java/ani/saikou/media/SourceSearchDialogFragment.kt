@@ -25,16 +25,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class SourceSearchDialogFragment : BottomSheetDialogFragment(){
+class SourceSearchDialogFragment : BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetSourceSearchBinding? = null
     private val binding get() = _binding!!
-   val model : MediaDetailsViewModel by activityViewModels()
+    val model: MediaDetailsViewModel by activityViewModels()
     private var searched = false
     var anime = true
-    var i : Int?=null
-    var id : Int?=null
-    var media : Media? = null
+    var i: Int? = null
+    var id: Int? = null
+    var media: Media? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = BottomSheetSourceSearchBinding.inflate(inflater, container, false)
@@ -57,14 +57,14 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment(){
 
                 i = media!!.selected!!.source
                 if (media!!.anime != null) {
-                    val source = (if(!media!!.isAdult) AnimeSources else HAnimeSources)[i!!]!!
+                    val source = (if (!media!!.isAdult) AnimeSources else HAnimeSources)[i!!]!!
                     binding.searchSourceTitle.text = source.name
                     binding.searchBarText.setText(media!!.getMangaName())
                     fun search() {
                         binding.searchBarText.clearFocus()
                         imm.hideSoftInputFromWindow(binding.searchBarText.windowToken, 0)
                         scope.launch {
-                            model.sources.postValue(withContext(Dispatchers.IO){ source.search(binding.searchBarText.text.toString()) })
+                            model.sources.postValue(withContext(Dispatchers.IO) { source.search(binding.searchBarText.text.toString()) })
                         }
                     }
                     binding.searchBarText.setOnEditorActionListener { _, actionId, _ ->
@@ -78,7 +78,6 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment(){
                     }
                     binding.searchBar.setEndIconOnClickListener { search() }
                     if (!searched) search()
-
                 } else if (media!!.manga != null) {
                     anime = false
                     val source = MangaSources[i!!]!!
@@ -88,7 +87,7 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment(){
                         binding.searchBarText.clearFocus()
                         imm.hideSoftInputFromWindow(binding.searchBarText.windowToken, 0)
                         scope.launch {
-                            model.sources.postValue(withContext(Dispatchers.IO){ source.search(binding.searchBarText.text.toString()) })
+                            model.sources.postValue(withContext(Dispatchers.IO) { source.search(binding.searchBarText.text.toString()) })
                         }
                     }
                     binding.searchBarText.setOnEditorActionListener { _, actionId, _ ->

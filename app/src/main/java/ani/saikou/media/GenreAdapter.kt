@@ -14,20 +14,20 @@ import ani.saikou.px
 
 class GenreAdapter(
     private val type: String,
-    private val big:Boolean = false
-): RecyclerView.Adapter<GenreAdapter.GenreViewHolder>() {
-    var genres =  mutableMapOf<String,String>()
+    private val big: Boolean = false
+) : RecyclerView.Adapter<GenreAdapter.GenreViewHolder>() {
+    var genres = mutableMapOf<String, String>()
     var pos = arrayListOf<String>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GenreViewHolder {
         val binding = ItemGenreBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        if (big) binding.genreCard.updateLayoutParams { height=72f.px }
+        if (big) binding.genreCard.updateLayoutParams { height = 72f.px }
         return GenreViewHolder(binding)
     }
 
     override fun onBindViewHolder(holder: GenreViewHolder, position: Int) {
         val binding = holder.binding
-        if(pos.size > position) {
+        if (pos.size > position) {
             val genre = genres[pos[position]]
             binding.genreTitle.text = pos[position]
             binding.genreImage.loadImage(genre)
@@ -38,19 +38,23 @@ class GenreAdapter(
     inner class GenreViewHolder(val binding: ItemGenreBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
-                ContextCompat.startActivity(itemView.context, Intent(itemView.context, SearchActivity::class.java).putExtra("type",type).putExtra("genre",pos[bindingAdapterPosition]).putExtra("sortBy","Trending").also {
-                    if(pos[bindingAdapterPosition].lowercase()=="hentai") {
-                        if(!Anilist.adult) Toast.makeText(itemView.context, "Turn on 18+ Content from your Anilist Settings", Toast.LENGTH_SHORT).show()
-                        it.putExtra("hentai", true)
-                    }
-                },null)
+                ContextCompat.startActivity(
+                    itemView.context,
+                    Intent(itemView.context, SearchActivity::class.java).putExtra("type", type).putExtra("genre", pos[bindingAdapterPosition]).putExtra("sortBy", "Trending").also {
+                        if (pos[bindingAdapterPosition].lowercase() == "hentai") {
+                            if (!Anilist.adult) Toast.makeText(itemView.context, "Turn on 18+ Content from your Anilist Settings", Toast.LENGTH_SHORT).show()
+                            it.putExtra("hentai", true)
+                        }
+                    },
+                    null
+                )
             }
         }
     }
 
-    fun addGenre(genre:Pair<String,String>){
+    fun addGenre(genre: Pair<String, String>) {
         genres[genre.first] = genre.second
         pos.add(genre.first)
-        notifyItemInserted(pos.size-1)
+        notifyItemInserted(pos.size - 1)
     }
 }

@@ -42,7 +42,7 @@ class StudioActivity : AppCompatActivity() {
         studio = intent.getSerializableExtra("studio") as Studio?
         binding.studioTitle.text = studio?.name
 
-        binding.studioClose.setOnClickListener{
+        binding.studioClose.setOnClickListener {
             onBackPressed()
         }
 
@@ -55,7 +55,7 @@ class StudioActivity : AppCompatActivity() {
 
                 val titlePosition = arrayListOf<Int>()
                 val concatAdapter = ConcatAdapter()
-                val map = studio!!.yearMedia?:return@observe
+                val map = studio!!.yearMedia ?: return@observe
                 val keys = map.keys.toTypedArray()
                 var pos = 0
 
@@ -71,12 +71,12 @@ class StudioActivity : AppCompatActivity() {
                 }
                 for (i in keys.indices) {
                     val medias = map[keys[i]]!!
-                    val empty =  if(medias.size>=4) medias.size%4 else 4-medias.size
+                    val empty = if (medias.size >= 4) medias.size % 4 else 4 - medias.size
                     titlePosition.add(pos)
-                    pos += (empty+medias.size+1)
+                    pos += (empty + medias.size + 1)
 
                     concatAdapter.addAdapter(TitleAdapter("${keys[i]} (${medias.size})"))
-                    concatAdapter.addAdapter(MediaAdaptor(0,medias,this,true))
+                    concatAdapter.addAdapter(MediaAdaptor(0, medias, this, true))
                     concatAdapter.addAdapter(EmptyAdapter(empty))
                 }
 
@@ -88,8 +88,8 @@ class StudioActivity : AppCompatActivity() {
         live.observe(this) {
             if (it) {
                 scope.launch {
-                    if(studio!=null)
-                        withContext(Dispatchers.IO){ model.loadStudio(studio!!) }
+                    if (studio != null)
+                        withContext(Dispatchers.IO) { model.loadStudio(studio!!) }
                     live.postValue(false)
                 }
             }
@@ -97,7 +97,7 @@ class StudioActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        if(Refresh.activity.containsKey(this.hashCode())){
+        if (Refresh.activity.containsKey(this.hashCode())) {
             Refresh.activity.remove(this.hashCode())
         }
         super.onDestroy()

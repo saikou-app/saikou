@@ -18,8 +18,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.Serializable
 
-
-class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
+class MediaListDialogSmallFragment : BottomSheetDialogFragment() {
 
     private lateinit var media: Media
 
@@ -27,7 +26,7 @@ class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
         fun newInstance(m: Media): MediaListDialogSmallFragment =
             MediaListDialogSmallFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable("media",m as Serializable)
+                    putSerializable("media", m as Serializable)
                 }
             }
     }
@@ -45,7 +44,6 @@ class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
         _binding = BottomSheetMediaListSmallBinding.inflate(inflater, container, false)
         return binding.root
     }
-
 
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,17 +63,16 @@ class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
             )
         )
 
-
         var total: Int? = null
         binding.mediaListProgress.setText(if (media.userProgress != null) media.userProgress.toString() else "")
         if (media.anime != null) if (media.anime!!.totalEpisodes != null) {
-            total = media.anime!!.totalEpisodes!!;binding.mediaListProgress.filters =
+            total = media.anime!!.totalEpisodes!!; binding.mediaListProgress.filters =
                 arrayOf(
                     InputFilterMinMax(0.0, total.toDouble(), binding.mediaListStatus),
                     LengthFilter(total.toString().length)
                 )
         } else if (media.manga != null) if (media.manga!!.totalChapters != null) {
-            total = media.manga!!.totalChapters!!;binding.mediaListProgress.filters =
+            total = media.manga!!.totalChapters!!; binding.mediaListProgress.filters =
                 arrayOf(
                     InputFilterMinMax(0.0, total.toDouble(), binding.mediaListStatus),
                     LengthFilter(total.toString().length)
@@ -115,13 +112,15 @@ class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
 
         binding.mediaListSave.setOnClickListener {
             scope.launch {
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     Anilist.mutation.editList(
                         media.id,
                         if (_binding?.mediaListProgress?.text.toString() != "") _binding?.mediaListProgress?.text.toString()
                             .toInt() else null,
-                        if (_binding?.mediaListScore?.text.toString() != "") (_binding?.mediaListScore?.text.toString()
-                            .toDouble() * 10).toInt() else null,
+                        if (_binding?.mediaListScore?.text.toString() != "") (
+                            _binding?.mediaListScore?.text.toString()
+                                .toDouble() * 10
+                            ).toInt() else null,
                         if (_binding?.mediaListStatus?.text.toString() != "") _binding?.mediaListStatus?.text.toString() else null
                     )
                 }

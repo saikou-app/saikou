@@ -18,8 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-
-class MediaListDialogFragment : BottomSheetDialogFragment(){
+class MediaListDialogFragment : BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetMediaListBinding? = null
     private val binding get() = _binding!!
@@ -32,8 +31,8 @@ class MediaListDialogFragment : BottomSheetDialogFragment(){
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.mediaListContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin += navBarHeight }
-        var media : Media?
-        val model : MediaDetailsViewModel by activityViewModels()
+        var media: Media?
+        val model: MediaDetailsViewModel by activityViewModels()
         val scope = viewLifecycleOwner.lifecycleScope
 
         model.getMedia().observe(this) {
@@ -52,17 +51,16 @@ class MediaListDialogFragment : BottomSheetDialogFragment(){
                     )
                 )
 
-
                 var total: Int? = null
                 binding.mediaListProgress.setText(if (media!!.userProgress != null) media!!.userProgress.toString() else "")
                 if (media!!.anime != null) if (media!!.anime!!.totalEpisodes != null) {
-                    total = media!!.anime!!.totalEpisodes!!;binding.mediaListProgress.filters =
+                    total = media!!.anime!!.totalEpisodes!!; binding.mediaListProgress.filters =
                         arrayOf(
                             InputFilterMinMax(0.0, total.toDouble(), binding.mediaListStatus),
                             LengthFilter(total.toString().length)
                         )
                 } else if (media!!.manga != null) if (media!!.manga!!.totalChapters != null) {
-                    total = media!!.manga!!.totalChapters!!;binding.mediaListProgress.filters =
+                    total = media!!.manga!!.totalChapters!!; binding.mediaListProgress.filters =
                         arrayOf(
                             InputFilterMinMax(0.0, total.toDouble(), binding.mediaListStatus),
                             LengthFilter(total.toString().length)
@@ -117,7 +115,6 @@ class MediaListDialogFragment : BottomSheetDialogFragment(){
                 start.dialog.setOnDismissListener { _binding?.mediaListStart?.setText(start.date.toString()) }
                 end.dialog.setOnDismissListener { _binding?.mediaListEnd?.setText(end.date.toString()) }
 
-
                 fun onComplete() {
                     binding.mediaListProgress.setText(total.toString())
                     if (start.date.year == null) {
@@ -168,14 +165,16 @@ class MediaListDialogFragment : BottomSheetDialogFragment(){
 
                 binding.mediaListSave.setOnClickListener {
                     scope.launch {
-                        withContext(Dispatchers.IO){
-                            if(media!=null)
+                        withContext(Dispatchers.IO) {
+                            if (media != null)
                                 Anilist.mutation.editList(
                                     media!!.id,
                                     if (_binding?.mediaListProgress?.text.toString() != "") _binding?.mediaListProgress?.text.toString()
                                         .toInt() else null,
-                                    if (_binding?.mediaListScore?.text.toString() != "") (_binding?.mediaListScore?.text.toString()
-                                        .toDouble() * 10).toInt() else null,
+                                    if (_binding?.mediaListScore?.text.toString() != "") (
+                                        _binding?.mediaListScore?.text.toString()
+                                            .toDouble() * 10
+                                        ).toInt() else null,
                                     if (_binding?.mediaListStatus?.text.toString() != "") _binding?.mediaListStatus?.text.toString() else null,
                                     if (start.date.year != null) start.date else null,
                                     if (end.date.year != null) end.date else null,
@@ -189,14 +188,14 @@ class MediaListDialogFragment : BottomSheetDialogFragment(){
 
                 binding.mediaListDelete.setOnClickListener {
                     val id = media!!.userListId
-                    if(id!=null) {
+                    if (id != null) {
                         scope.launch {
-                            withContext(Dispatchers.IO){ Anilist.mutation.deleteList(id) }
+                            withContext(Dispatchers.IO) { Anilist.mutation.deleteList(id) }
                             Refresh.all()
                             toastString("Deleted from List")
                             dismissAllowingStateLoss()
                         }
-                    }else{
+                    } else {
                         toastString("No List ID found, reloading...")
                         Refresh.all()
                     }

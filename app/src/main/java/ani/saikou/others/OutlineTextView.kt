@@ -17,26 +17,27 @@ class OutlineTextView : AppCompatTextView {
 
     constructor(context: Context) : super(context) {
         initResources(context, null)
-
     }
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs) {
         initResources(context, attrs)
-
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         initResources(context, attrs)
-
     }
 
     private fun initResources(context: Context?, attrs: AttributeSet?) {
         if (attrs != null) {
             val a = context?.obtainStyledAttributes(attrs, R.styleable.OutlineTextView)
-            strokeColor = a!!.getColor(R.styleable.OutlineTextView_outlineColor,
-                currentTextColor)
-            strokeWidth = a.getFloat(R.styleable.OutlineTextView_outlineWidth,
-                defaultStrokeWidth)
+            strokeColor = a!!.getColor(
+                R.styleable.OutlineTextView_outlineColor,
+                currentTextColor
+            )
+            strokeWidth = a.getFloat(
+                R.styleable.OutlineTextView_outlineWidth,
+                defaultStrokeWidth
+            )
 
             a.recycle()
         } else {
@@ -45,7 +46,6 @@ class OutlineTextView : AppCompatTextView {
         }
         setStrokeWidth(strokeWidth)
     }
-
 
     private fun setStrokeWidth(width: Float) {
         strokeWidth = width.toPx(context)
@@ -57,7 +57,6 @@ class OutlineTextView : AppCompatTextView {
         if (isDrawing) return
         super.invalidate()
     }
-
 
     override fun onDraw(canvas: Canvas) {
         if (strokeWidth > 0) {
@@ -78,5 +77,4 @@ class OutlineTextView : AppCompatTextView {
             super.onDraw(canvas)
         }
     }
-
 }

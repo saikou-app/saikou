@@ -11,7 +11,7 @@ import ani.saikou.databinding.ActivityUserInterfaceSettingsBinding
 import com.google.android.material.snackbar.Snackbar
 
 class UserInterfaceSettingsActivity : AppCompatActivity() {
-    lateinit var binding : ActivityUserInterfaceSettingsBinding
+    lateinit var binding: ActivityUserInterfaceSettingsBinding
     private val ui = "ui_settings"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,9 +33,9 @@ class UserInterfaceSettingsActivity : AppCompatActivity() {
         val views = resources.getStringArray(R.array.home_layouts)
         binding.uiSettingsHomeLayout.setOnClickListener {
             AlertDialog.Builder(this, R.style.DialogTheme).setTitle(getString(R.string.home_layout_show)).apply {
-                setMultiChoiceItems(views, settings.homeLayoutShow.toBooleanArray()){ _, i, value ->
+                setMultiChoiceItems(views, settings.homeLayoutShow.toBooleanArray()) { _, i, value ->
                     settings.homeLayoutShow[i] = value
-                    saveData(ui,settings)
+                    saveData(ui, settings)
                 }
             }.show()
         }
@@ -43,46 +43,46 @@ class UserInterfaceSettingsActivity : AppCompatActivity() {
         binding.uiSettingsSmallView.isChecked = settings.smallView
         binding.uiSettingsSmallView.setOnCheckedChangeListener { _, isChecked ->
             settings.smallView = isChecked
-            saveData(ui,settings)
+            saveData(ui, settings)
             restartApp()
         }
 
         binding.uiSettingsImmersive.isChecked = settings.immersiveMode
         binding.uiSettingsImmersive.setOnCheckedChangeListener { _, isChecked ->
             settings.immersiveMode = isChecked
-            saveData(ui,settings)
+            saveData(ui, settings)
             restartApp()
         }
 
         binding.uiSettingsBannerAnimation.isChecked = settings.bannerAnimations
         binding.uiSettingsBannerAnimation.setOnCheckedChangeListener { _, isChecked ->
             settings.bannerAnimations = isChecked
-            saveData(ui,settings)
+            saveData(ui, settings)
             restartApp()
         }
 
         binding.uiSettingsLayoutAnimation.isChecked = settings.layoutAnimations
         binding.uiSettingsLayoutAnimation.setOnCheckedChangeListener { _, isChecked ->
             settings.layoutAnimations = isChecked
-            saveData(ui,settings)
+            saveData(ui, settings)
             restartApp()
         }
 
-        val map = mapOf(2f to 0.5f, 1.75f to 0.625f, 1.5f to 0.75f, 1.25f to 0.875f,1f to 1f,0.75f to 1.25f,0.5f to 1.5f,0.25f to 1.75f,0f to 0f)
+        val map = mapOf(2f to 0.5f, 1.75f to 0.625f, 1.5f to 0.75f, 1.25f to 0.875f, 1f to 1f, 0.75f to 1.25f, 0.5f to 1.5f, 0.25f to 1.75f, 0f to 0f)
         val mapReverse = map.map { it.value to it.key }.toMap()
-        binding.uiSettingsAnimationSpeed.value = mapReverse[settings.animationSpeed]?:1f
+        binding.uiSettingsAnimationSpeed.value = mapReverse[settings.animationSpeed] ?: 1f
         binding.uiSettingsAnimationSpeed.addOnChangeListener { _, value, _ ->
             settings.animationSpeed = map[value] ?: 1f
-            saveData(ui,settings)
+            saveData(ui, settings)
             restartApp()
         }
-
-
     }
 
-    private fun restartApp(){
-        Snackbar.make(binding.root,
-            R.string.restart_app, Snackbar.LENGTH_SHORT).apply {
+    private fun restartApp() {
+        Snackbar.make(
+            binding.root,
+            R.string.restart_app, Snackbar.LENGTH_SHORT
+        ).apply {
             val mainIntent = Intent.makeRestartActivityTask(context.packageManager.getLaunchIntentForPackage(context.packageName)!!.component)
             setAction("Do it!") {
                 context.startActivity(mainIntent)

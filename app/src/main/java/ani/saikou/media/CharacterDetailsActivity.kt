@@ -27,7 +27,7 @@ class CharacterDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChang
     private val model: OtherDetailsViewModel by viewModels()
     private lateinit var character: Character
     private var loaded = false
-    val uiSettings = loadData<UserInterfaceSettings>("ui_settings")?:UserInterfaceSettings()
+    val uiSettings = loadData<UserInterfaceSettings>("ui_settings") ?: UserInterfaceSettings()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,11 +36,11 @@ class CharacterDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChang
 
         initActivity(this)
         screenWidth = resources.displayMetrics.run { widthPixels / density }
-        if(uiSettings.immersiveMode) this.window.statusBarColor = ContextCompat.getColor(this, R.color.status)
+        if (uiSettings.immersiveMode) this.window.statusBarColor = ContextCompat.getColor(this, R.color.status)
 
-        val banner = if(uiSettings.bannerAnimations) binding.characterBanner else binding.characterBannerNoKen
+        val banner = if (uiSettings.bannerAnimations) binding.characterBanner else binding.characterBannerNoKen
 
-        banner.updateLayoutParams{ height += statusBarHeight }
+        banner.updateLayoutParams { height += statusBarHeight }
         binding.characterClose.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin += statusBarHeight }
         binding.characterCollapsing.minimumHeight = statusBarHeight
         binding.characterCover.updateLayoutParams<ViewGroup.MarginLayoutParams> { topMargin += statusBarHeight }
@@ -48,14 +48,14 @@ class CharacterDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChang
         binding.characterTitle.isSelected = true
         binding.characterAppBar.addOnOffsetChangedListener(this)
 
-        binding.characterClose.setOnClickListener{
+        binding.characterClose.setOnClickListener {
             onBackPressed()
         }
-        character = intent.getSerializableExtra("character") as? Character?:return
+        character = intent.getSerializableExtra("character") as? Character ?: return
         binding.characterTitle.text = character.name
         banner.loadImage(character.banner)
         binding.characterCoverImage.loadImage(character.image)
-        binding.characterCoverImage.setOnLongClickListener{ (openLinkInBrowser(character.image)); true}
+        binding.characterCoverImage.setOnLongClickListener { (openLinkInBrowser(character.image)); true }
 
         model.getCharacter().observe(this) {
             if (it != null && !loaded) {
@@ -65,9 +65,9 @@ class CharacterDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChang
                 binding.characterRecyclerView.visibility = View.VISIBLE
 
                 val roles = character.roles
-                if(roles!=null){
+                if (roles != null) {
                     val mediaAdaptor = MediaAdaptor(0, roles, this, matchParent = true)
-                    val concatAdaptor = ConcatAdapter(CharacterDetailsAdapter(character, this),mediaAdaptor)
+                    val concatAdaptor = ConcatAdapter(CharacterDetailsAdapter(character, this), mediaAdaptor)
 
                     val gridSize = (screenWidth / 124f).toInt()
                     val gridLayoutManager = GridLayoutManager(this, gridSize)
@@ -85,43 +85,43 @@ class CharacterDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChang
             }
         }
 
-        val live = Refresh.activity.getOrPut(this.hashCode()){ MutableLiveData(true) }
-        live.observe(this){
-            scope.launch (Dispatchers.IO){
-               model.loadCharacter(character)
+        val live = Refresh.activity.getOrPut(this.hashCode()) { MutableLiveData(true) }
+        live.observe(this) {
+            scope.launch(Dispatchers.IO) {
+                model.loadCharacter(character)
             }
         }
     }
 
     override fun onResume() {
-        binding.characterProgress.visibility=if (!loaded) View.VISIBLE else View.GONE
+        binding.characterProgress.visibility = if (!loaded) View.VISIBLE else View.GONE
         super.onResume()
     }
 
     private var isCollapsed = false
     private val percent = 30
     private var mMaxScrollSize = 0
-    private var screenWidth:Float = 0f
+    private var screenWidth: Float = 0f
 
     override fun onOffsetChanged(appBar: AppBarLayout, i: Int) {
         if (mMaxScrollSize == 0) mMaxScrollSize = appBar.totalScrollRange
         val percentage = abs(i) * 100 / mMaxScrollSize
         val cap = clamp((percent - percentage) / percent.toFloat(), 0f, 1f)
 
-        binding.characterCover.scaleX = 1f*cap
-        binding.characterCover.scaleY = 1f*cap
-        binding.characterCover.cardElevation = 32f*cap
+        binding.characterCover.scaleX = 1f * cap
+        binding.characterCover.scaleY = 1f * cap
+        binding.characterCover.cardElevation = 32f * cap
 
-        binding.characterCover.visibility= if(binding.characterCover.scaleX==0f) View.GONE else View.VISIBLE
+        binding.characterCover.visibility = if (binding.characterCover.scaleX == 0f) View.GONE else View.VISIBLE
 
         if (percentage >= percent && !isCollapsed) {
             isCollapsed = true
-            if(uiSettings.immersiveMode) this.window.statusBarColor = ContextCompat.getColor(this, R.color.nav_bg)
+            if (uiSettings.immersiveMode) this.window.statusBarColor = ContextCompat.getColor(this, R.color.nav_bg)
             binding.characterAppBar.setBackgroundResource(R.color.nav_bg)
         }
         if (percentage <= percent && isCollapsed) {
             isCollapsed = false
-            if(uiSettings.immersiveMode) this.window.statusBarColor = ContextCompat.getColor(this, R.color.status)
+            if (uiSettings.immersiveMode) this.window.statusBarColor = ContextCompat.getColor(this, R.color.status)
             binding.characterAppBar.setBackgroundResource(R.color.bg)
         }
     }

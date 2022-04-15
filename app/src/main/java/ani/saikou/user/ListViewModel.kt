@@ -8,11 +8,11 @@ import ani.saikou.loadData
 import ani.saikou.media.Media
 
 class ListViewModel : ViewModel() {
-    var grid = MutableLiveData(loadData<Boolean>("listGrid")?:true)
+    var grid = MutableLiveData(loadData<Boolean>("listGrid") ?: true)
 
-    private val lists = MutableLiveData<MutableMap<String,ArrayList<Media>>>()
-    fun getLists() : LiveData<MutableMap<String,ArrayList<Media>>> = lists
-    fun loadLists(anime:Boolean,userId:Int) {
-        lists.postValue(Anilist.query.getMediaLists(anime,userId))
+    private val lists = MutableLiveData<MutableMap<String, ArrayList<Media>>>()
+    fun getLists(): LiveData<MutableMap<String, ArrayList<Media>>> = lists
+    fun loadLists(anime: Boolean, userId: Int) {
+        lists.postValue(Anilist.query.getMediaLists(anime, userId))
     }
 }

@@ -14,9 +14,9 @@ import ani.saikou.DoubleClickListener
 import ani.saikou.databinding.ItemProgressbarBinding
 import ani.saikou.toastString
 
-class ProgressAdapter(private val horizontal:Boolean=true,searched:Boolean): RecyclerView.Adapter<ProgressAdapter.ProgressViewHolder>() {
+class ProgressAdapter(private val horizontal: Boolean = true, searched: Boolean) : RecyclerView.Adapter<ProgressAdapter.ProgressViewHolder>() {
     val ready = MutableLiveData(searched)
-    var bar:ProgressBar?=null
+    var bar: ProgressBar? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProgressViewHolder {
         val binding = ItemProgressbarBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -27,28 +27,31 @@ class ProgressAdapter(private val horizontal:Boolean=true,searched:Boolean): Rec
     override fun onBindViewHolder(holder: ProgressViewHolder, position: Int) {
         val progressBar = holder.binding.root
         bar = progressBar
-        val doubleClickDetector = GestureDetector(progressBar.context, object : DoubleClickListener() {
-            override fun onDoubleClick(event: MotionEvent?) {
-                toastString("Can't Wait, huh? fine X(")
-                ObjectAnimator.ofFloat(progressBar,"translationX",progressBar.translationX,progressBar.translationX+100f).setDuration(300).start()
+        val doubleClickDetector = GestureDetector(
+            progressBar.context,
+            object : DoubleClickListener() {
+                override fun onDoubleClick(event: MotionEvent?) {
+                    toastString("Can't Wait, huh? fine X(")
+                    ObjectAnimator.ofFloat(progressBar, "translationX", progressBar.translationX, progressBar.translationX + 100f).setDuration(300).start()
+                }
+                override fun onScrollYClick(y: Float) {}
+                override fun onSingleClick(event: MotionEvent?) {}
             }
-            override fun onScrollYClick(y: Float) {}
-            override fun onSingleClick(event: MotionEvent?) {}
-        })
+        )
         progressBar.setOnTouchListener { v, event ->
             doubleClickDetector.onTouchEvent(event)
             v.performClick()
             true
         }
-        if(ready.value == false) {
+        if (ready.value == false) {
             ready.postValue(true)
         }
     }
 
     override fun getItemCount(): Int = 1
-    inner class ProgressViewHolder(val binding: ItemProgressbarBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class ProgressViewHolder(val binding: ItemProgressbarBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
-            itemView.updateLayoutParams { if (horizontal)  width=-1 else height=-1 }
+            itemView.updateLayoutParams { if (horizontal) width = -1 else height = -1 }
         }
     }
 }

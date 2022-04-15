@@ -19,7 +19,7 @@ import java.io.Serializable
 
 class CharacterAdapter(
     private val characterList: ArrayList<Character>
-): RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
+) : RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val binding = ItemCharacterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CharacterViewHolder(binding)
@@ -28,9 +28,9 @@ class CharacterAdapter(
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: CharacterViewHolder, position: Int) {
         val binding = holder.binding
-        setAnimation(binding.root.context,holder.binding.root,uiSettings)
+        setAnimation(binding.root.context, holder.binding.root, uiSettings)
         val character = characterList[position]
-        binding.itemCompactRelation.text = character.role+"  "
+        binding.itemCompactRelation.text = character.role + "  "
         binding.itemCompactImage.loadImage(character.image)
         binding.itemCompactTitle.text = character.name
     }
@@ -42,8 +42,9 @@ class CharacterAdapter(
                 val char = characterList[bindingAdapterPosition]
                 ContextCompat.startActivity(
                     itemView.context,
-                    Intent(itemView.context, CharacterDetailsActivity::class.java).putExtra("character",char as Serializable),
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(itemView.context as Activity,
+                    Intent(itemView.context, CharacterDetailsActivity::class.java).putExtra("character", char as Serializable),
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(
+                        itemView.context as Activity,
                         Pair.create(binding.itemCompactImage, ViewCompat.getTransitionName(binding.itemCompactImage)!!),
                     ).toBundle()
                 )

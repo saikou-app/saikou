@@ -14,18 +14,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 
-
 /**
  * Implementation of a [RecyclerView] used for Continuous Reader.
  */
-
 
 open class ZoomRecyclerView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
-)
-: RecyclerView(context, attrs, defStyle) {
+) :
+    RecyclerView(context, attrs, defStyle) {
 
     private val zoomDurationTime = 200
     private val minZoom = 0.5f

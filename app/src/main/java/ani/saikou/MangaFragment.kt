@@ -34,7 +34,7 @@ class MangaFragment : Fragment() {
     private var _binding: FragmentMangaBinding? = null
     private val binding get() = _binding!!
 
-    private var uiSettings: UserInterfaceSettings = loadData("ui_settings")?: UserInterfaceSettings()
+    private var uiSettings: UserInterfaceSettings = loadData("ui_settings") ?: UserInterfaceSettings()
 
     val model: AnilistMangaViewModel by activityViewModels()
 
@@ -43,7 +43,7 @@ class MangaFragment : Fragment() {
         return binding.root
     }
 
-    override fun onDestroyView() { super.onDestroyView();_binding = null }
+    override fun onDestroyView() { super.onDestroyView(); _binding = null }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -70,88 +70,87 @@ class MangaFragment : Fragment() {
             Refresh.activity[this.hashCode()]!!.postValue(true)
         }
 
-        binding.mangaPageRecyclerView.updatePaddingRelative(bottom = navBarHeight+160f.px)
+        binding.mangaPageRecyclerView.updatePaddingRelative(bottom = navBarHeight + 160f.px)
 
         val mangaPageAdapter = MangaPageAdapter()
         var loading = true
-        if(model.notSet) {
+        if (model.notSet) {
             model.notSet = false
             model.searchResults = SearchResults("MANGA", isAdult = false, onList = false, results = arrayListOf(), hasNextPage = true, sort = "Popular")
         }
-        val popularAdaptor = MediaAdaptor(1, model.searchResults.results ,requireActivity())
+        val popularAdaptor = MediaAdaptor(1, model.searchResults.results, requireActivity())
         val progressAdaptor = ProgressAdapter(searched = model.searched)
-        binding.mangaPageRecyclerView.adapter = ConcatAdapter(mangaPageAdapter,popularAdaptor,progressAdaptor)
-        val layout =  LinearLayoutManager(requireContext())
+        binding.mangaPageRecyclerView.adapter = ConcatAdapter(mangaPageAdapter, popularAdaptor, progressAdaptor)
+        val layout = LinearLayoutManager(requireContext())
         binding.mangaPageRecyclerView.layoutManager = layout
 
-        var visible=false
-        fun animate(){
-            val start = if(visible) 0f else 1f
-            val end = if(!visible) 0f else 1f
-            ObjectAnimator.ofFloat(binding.mangaPageScrollTop,"scaleX",start,end).apply {
-                duration=300
+        var visible = false
+        fun animate() {
+            val start = if (visible) 0f else 1f
+            val end = if (!visible) 0f else 1f
+            ObjectAnimator.ofFloat(binding.mangaPageScrollTop, "scaleX", start, end).apply {
+                duration = 300
                 interpolator = OvershootInterpolator(2f)
                 start()
             }
-            ObjectAnimator.ofFloat(binding.mangaPageScrollTop,"scaleY",start,end).apply {
-                duration=300
+            ObjectAnimator.ofFloat(binding.mangaPageScrollTop, "scaleY", start, end).apply {
+                duration = 300
                 interpolator = OvershootInterpolator(2f)
                 start()
             }
         }
 
-        binding.mangaPageScrollTop.setOnClickListener{
+        binding.mangaPageScrollTop.setOnClickListener {
             binding.mangaPageRecyclerView.scrollToPosition(4)
             binding.mangaPageRecyclerView.smoothScrollToPosition(0)
         }
 
         binding.mangaPageRecyclerView.addOnScrollListener(object :
-            RecyclerView.OnScrollListener() {
-            override fun onScrolled(v: RecyclerView, dx: Int, dy: Int) {
-                if (!v.canScrollVertically(1)) {
-                    if (model.searchResults.hasNextPage && model.searchResults.results.isNotEmpty() && !loading) {
-                        scope.launch(Dispatchers.IO) {
-                            loading=true
-                            model.loadNextPage(model.searchResults)
+                RecyclerView.OnScrollListener() {
+                override fun onScrolled(v: RecyclerView, dx: Int, dy: Int) {
+                    if (!v.canScrollVertically(1)) {
+                        if (model.searchResults.hasNextPage && model.searchResults.results.isNotEmpty() && !loading) {
+                            scope.launch(Dispatchers.IO) {
+                                loading = true
+                                model.loadNextPage(model.searchResults)
+                            }
                         }
                     }
-                }
-                if(layout.findFirstVisibleItemPosition()>1 && !visible){
-                    binding.mangaPageScrollTop.visibility = View.VISIBLE
-                    visible = true
-                    animate()
-                }
-
-                if(!v.canScrollVertically(-1)){
-                    visible = false
-                    animate()
-                    scope.launch{
-                        delay(300)
-                        binding.mangaPageScrollTop.visibility = View.GONE
+                    if (layout.findFirstVisibleItemPosition() > 1 && !visible) {
+                        binding.mangaPageScrollTop.visibility = View.VISIBLE
+                        visible = true
+                        animate()
                     }
-                }
 
-                super.onScrolled(v, dx, dy)
-            }
-        })
-        mangaPageAdapter.ready.observe(viewLifecycleOwner){ i->
-            if(i==true) {
+                    if (!v.canScrollVertically(-1)) {
+                        visible = false
+                        animate()
+                        scope.launch {
+                            delay(300)
+                            binding.mangaPageScrollTop.visibility = View.GONE
+                        }
+                    }
+
+                    super.onScrolled(v, dx, dy)
+                }
+            })
+        mangaPageAdapter.ready.observe(viewLifecycleOwner) { i ->
+            if (i == true) {
                 model.getTrendingNovel().observe(viewLifecycleOwner) {
                     if (it != null) {
                         mangaPageAdapter.updateNovel(MediaAdaptor(0, it, requireActivity()))
                     }
                 }
-                if(mangaPageAdapter.trendingViewPager!=null) {
+                if (mangaPageAdapter.trendingViewPager != null) {
                     mangaPageAdapter.updateHeight()
                     model.getTrending().observe(viewLifecycleOwner) {
-                        if (it != null){
-                            mangaPageAdapter.updateTrending(MediaAdaptor(if(uiSettings.smallView) 3 else 2, it, requireActivity(), viewPager = mangaPageAdapter.trendingViewPager))
+                        if (it != null) {
+                            mangaPageAdapter.updateTrending(MediaAdaptor(if (uiSettings.smallView) 3 else 2, it, requireActivity(), viewPager = mangaPageAdapter.trendingViewPager))
                             mangaPageAdapter.updateAvatar()
                         }
                     }
                 }
                 binding.mangaPageScrollTop.translationY = -(navBarHeight + bottomBar.height + bottomBar.marginBottom).toFloat()
-
             }
         }
 
@@ -172,7 +171,7 @@ class MangaFragment : Fragment() {
             }
         }
 
-        suspend fun load() = withContext(Dispatchers.Main){
+        suspend fun load() = withContext(Dispatchers.Main) {
             mangaPageAdapter.updateAvatar()
         }
 
@@ -200,5 +199,4 @@ class MangaFragment : Fragment() {
         if (!model.loaded) Refresh.activity[this.hashCode()]!!.postValue(true)
         super.onResume()
     }
-
 }
