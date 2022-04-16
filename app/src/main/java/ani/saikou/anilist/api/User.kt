@@ -1,28 +1,5 @@
 package ani.saikou.anilist.api
 
-// Shims for classes that are never accessed
-// UserOptions
-class UserTitleLanguage
-class NotificationOption
-class UserStaffNameLanguage
-class ListActivityOption
-class MediaListOptions
-class Favourites
-class ModRole
-class UserPreviousName
-// UserStatistics
-class UserFormatStatistic
-class UserStatusStatistic
-class UserScoreStatistic
-class UserLengthStatistic
-class UserReleaseYearStatistic
-class UserStartYearStatistic
-class UserGenreStatistic
-class UserTagStatistic
-class UserCountryStatistic
-class UserVoiceActorStatistic
-class UserStaffStatistic
-class UserStudioStatistic
 
 data class User(
     // The id of the user
@@ -56,10 +33,10 @@ data class User(
     var options: UserOptions?,
 
     // The user's media list options
-    var mediaListOptions: MediaListOptions?,
+    // var mediaListOptions: MediaListOptions?,
 
     // The users favourites
-    var favourites: Favourites?,
+    // var favourites: Favourites?,
 
     // The users anime & manga list statistics
     var statistics: UserStatisticTypes?,
@@ -77,7 +54,7 @@ data class User(
     var donatorBadge: String?,
 
     // The user's moderator roles if they are a site moderator
-    var moderatorRoles: List<ModRole>?,
+    // var moderatorRoles: List<ModRole>?,
 
     // When the user's account was created. (Does not exist for accounts created before 2020)
     var createdAt: Int?,
@@ -86,13 +63,13 @@ data class User(
     var updatedAt: Int?,
 
     // The user's previously used names.
-    var previousNames: List<UserPreviousName>?,
+    // var previousNames: List<UserPreviousName>?,
 
 )
 
 data class UserOptions(
     // The language the user wants to see media titles in
-    var titleLanguage: UserTitleLanguage?,
+    // var titleLanguage: UserTitleLanguage?,
 
     // Whether the user has enabled viewing of 18+ content
     var displayAdultContent: Boolean?,
@@ -104,7 +81,7 @@ data class UserOptions(
     var profileColor: String?,
 
     // Notification options
-    var notificationOptions: List<NotificationOption>?,
+    // var notificationOptions: List<NotificationOption>?,
 
     // The user's timezone offset (Auth user only)
     var timezone: String?,
@@ -113,13 +90,13 @@ data class UserOptions(
     var activityMergeTime: Int?,
 
     // The language the user wants to see staff and character names in
-    var staffNameLanguage: UserStaffNameLanguage?,
+    // var staffNameLanguage: UserStaffNameLanguage?,
 
     // Whether the user only allow messages from users they follow
     var restrictMessagesToFollowing: Boolean?,
 
     // The list activity types the user has disabled from being created from list updates
-    var disabledListActivity: List<ListActivityOption>?,
+    // var disabledListActivity: List<ListActivityOption>?,
 )
 
 data class UserAvatar( // The avatar of user at its largest size
@@ -142,16 +119,16 @@ data class UserStatistics( //
     var episodesWatched: Int,
     var chaptersRead: Int,
     var volumesRead: Int,
-    var formats: List<UserFormatStatistic>?,
-    var statuses: List<UserStatusStatistic>?,
-    var scores: List<UserScoreStatistic>?,
-    var lengths: List<UserLengthStatistic>?,
-    var releaseYears: List<UserReleaseYearStatistic>?,
-    var startYears: List<UserStartYearStatistic>?,
-    var genres: List<UserGenreStatistic>?,
-    var tags: List<UserTagStatistic>?,
-    var countries: List<UserCountryStatistic>?,
-    var voiceActors: List<UserVoiceActorStatistic>?,
-    var staff: List<UserStaffStatistic>?,
-    var studios: List<UserStudioStatistic>?,
+//    var formats: List<UserFormatStatistic>?,
+//    var statuses: List<UserStatusStatistic>?,
+//    var scores: List<UserScoreStatistic>?,
+//    var lengths: List<UserLengthStatistic>?,
+//    var releaseYears: List<UserReleaseYearStatistic>?,
+//    var startYears: List<UserStartYearStatistic>?,
+//    var genres: List<UserGenreStatistic>?,
+//    var tags: List<UserTagStatistic>?,
+//    var countries: List<UserCountryStatistic>?,
+//    var voiceActors: List<UserVoiceActorStatistic>?,
+//    var staff: List<UserStaffStatistic>?,
+//    var studios: List<UserStudioStatistic>?,
 )

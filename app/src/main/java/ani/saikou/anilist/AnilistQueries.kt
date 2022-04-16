@@ -2,6 +2,7 @@ package ani.saikou.anilist
 
 import android.app.Activity
 import ani.saikou.*
+import ani.saikou.anilist.api.MediaType
 import ani.saikou.anilist.api.User
 import ani.saikou.anime.Anime
 import ani.saikou.manga.Manga
@@ -22,6 +23,7 @@ import java.net.UnknownHostException
 import kotlin.random.Random
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import ani.saikou.anilist.api.Media as AniMedia
 
 val httpClient =  OkHttpClient()
 val mapper = jacksonObjectMapper()
@@ -95,24 +97,27 @@ class AnilistQueries{
     fun getMedia(id:Int,mal:Boolean=false):Media?{
         val response = executeQuery("""{Media(${if(!mal) "id:" else "idMal:"}$id){id idMal status chapters episodes nextAiringEpisode{episode}type meanScore isAdult isFavourite bannerImage coverImage{large}title{english romaji userPreferred}mediaListEntry{progress score(format:POINT_100)status}}}""", force = true)
         val i = (response?.get("data")?:return null).jsonObject["Media"]?:return null
+
+        val media: AniMedia = mapper.readValue(i.toString())
+
         if (i!=JsonNull){
             return Media(
-                id = i.jsonObject["id"].toString().toInt(),
-                idMAL = i.jsonObject["idMal"].toString().toIntOrNull(),
-                name = i.jsonObject["title"]!!.jsonObject["english"].toString().trim('"').replace("\\\"","\""),
-                nameRomaji = i.jsonObject["title"]!!.jsonObject["romaji"].toString().trim('"').replace("\\\"","\""),
-                userPreferredName = i.jsonObject["title"]!!.jsonObject["userPreferred"].toString().trim('"').replace("\\\"","\""),
-                cover = i.jsonObject["coverImage"]!!.jsonObject["large"].toString().trim('"'),
-                banner = if(i.jsonObject["bannerImage"]!=JsonNull) i.jsonObject["bannerImage"].toString().trim('"') else null,
-                status = i.jsonObject["status"].toString().trim('"').replace("_"," "),
-                isFav = i.jsonObject["isFavourite"].toString() == "true",
-                isAdult = i.jsonObject["isAdult"].toString() == "true",
-                userProgress = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["progress"].toString().toInt() else null,
-                userScore = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["score"].toString().toInt() else 0,
-                userStatus = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["status"].toString().trim('"') else null,
-                meanScore = if (i.jsonObject["meanScore"].toString().trim('"') != "null") i.jsonObject["meanScore"].toString().toInt() else null,
-                anime = if (i.jsonObject["type"].toString().trim('"') == "ANIME") Anime(totalEpisodes = if (i.jsonObject["episodes"] != JsonNull) i.jsonObject["episodes"].toString().toInt() else null, nextAiringEpisode = if (i.jsonObject["nextAiringEpisode"] != JsonNull) i.jsonObject["nextAiringEpisode"]!!.jsonObject["episode"].toString().toInt() - 1 else null) else null,
-                manga = if (i.jsonObject["type"].toString().trim('"') == "MANGA") Manga(totalChapters = if (i.jsonObject["chapters"] != JsonNull) i.jsonObject["chapters"].toString().toInt() else null) else null,
+                id = media.id,
+                idMAL = media.idMal,
+                name = media.title!!.english!!,
+                nameRomaji = media.title!!.romaji!!,
+                userPreferredName = media.title!!.userPreferred!!,
+                cover = media.coverImage!!.large,
+                banner = media.bannerImage,
+                status = media.status.toString().replace("_"," "),
+                isFav = media.isFavourite,
+                isAdult = media.isAdult ?: false,
+                userProgress = if (media.mediaListEntry != null) media.mediaListEntry!!.progress else null,
+                userScore = if (media.mediaListEntry != null) media.mediaListEntry!!.score!!.toInt() else 0,
+                userStatus = if (media.mediaListEntry != null) media.mediaListEntry!!.status!!.toString() else null,
+                meanScore = if (media.meanScore != null) media.meanScore!! else null,
+                anime = if (media.type!! == MediaType.ANIME) Anime(totalEpisodes = media.episodes, nextAiringEpisode = if (media.nextAiringEpisode != null) media.nextAiringEpisode!!.episode - 1 else null) else null,
+                manga = if (media.type!! == MediaType.MANGA) Manga(totalChapters = media.chapters) else null,
             )
         }
         return null
