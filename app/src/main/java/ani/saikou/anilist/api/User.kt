@@ -1,6 +1,8 @@
 package ani.saikou.anilist.api
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class User(
     // The id of the user
     var id: Int,
@@ -67,6 +69,7 @@ data class User(
 
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class UserOptions(
     // The language the user wants to see media titles in
     // var titleLanguage: UserTitleLanguage?,
@@ -111,6 +114,7 @@ data class UserStatisticTypes(
     var manga: UserStatistics?
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class UserStatistics( //
     var count: Int,
     var meanScore: Float,
@@ -119,16 +123,16 @@ data class UserStatistics( //
     var episodesWatched: Int,
     var chaptersRead: Int,
     var volumesRead: Int,
-//    var formats: List<UserFormatStatistic>?,
-//    var statuses: List<UserStatusStatistic>?,
-//    var scores: List<UserScoreStatistic>?,
-//    var lengths: List<UserLengthStatistic>?,
-//    var releaseYears: List<UserReleaseYearStatistic>?,
-//    var startYears: List<UserStartYearStatistic>?,
-//    var genres: List<UserGenreStatistic>?,
-//    var tags: List<UserTagStatistic>?,
-//    var countries: List<UserCountryStatistic>?,
-//    var voiceActors: List<UserVoiceActorStatistic>?,
-//    var staff: List<UserStaffStatistic>?,
-//    var studios: List<UserStudioStatistic>?,
+    //    var formats: List<UserFormatStatistic>?,
+    //    var statuses: List<UserStatusStatistic>?,
+    //    var scores: List<UserScoreStatistic>?,
+    //    var lengths: List<UserLengthStatistic>?,
+    //    var releaseYears: List<UserReleaseYearStatistic>?,
+    //    var startYears: List<UserStartYearStatistic>?,
+    //    var genres: List<UserGenreStatistic>?,
+    //    var tags: List<UserTagStatistic>?,
+    //    var countries: List<UserCountryStatistic>?,
+    //    var voiceActors: List<UserVoiceActorStatistic>?,
+    //    var staff: List<UserStaffStatistic>?,
+    //    var studios: List<UserStudioStatistic>?,
 )
