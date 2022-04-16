@@ -2,6 +2,7 @@ package ani.saikou.anilist
 
 import android.app.Activity
 import ani.saikou.*
+import ani.saikou.anilist.api.User
 import ani.saikou.anime.Anime
 import ani.saikou.manga.Manga
 import ani.saikou.media.Character
@@ -19,8 +20,11 @@ import okhttp3.RequestBody
 import java.io.Serializable
 import java.net.UnknownHostException
 import kotlin.random.Random
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
 
 val httpClient =  OkHttpClient()
+val mapper = jacksonObjectMapper()
 
 fun executeQuery(query:String, variables:String="",force:Boolean=false,useToken:Boolean=true,show:Boolean=false): JsonObject? {
     try {
@@ -72,13 +76,15 @@ class AnilistQueries{
         return try{
             val response = executeQuery("""{Viewer {name options{ displayAdultContent } avatar{medium} bannerImage id statistics{anime{episodesWatched}manga{chaptersRead}}}}""")!!["data"]!!.jsonObject["Viewer"]!!
 
-            Anilist.userid = response.jsonObject["id"].toString().toInt()
-            Anilist.username = response.jsonObject["name"].toString().trim('"')
-            Anilist.bg = response.jsonObject["bannerImage"].toString().trim('"').let { if(it!="null") it else null }
-            Anilist.avatar = response.jsonObject["avatar"]!!.jsonObject["medium"].toString().trim('"')
-            Anilist.episodesWatched = response.jsonObject["statistics"]!!.jsonObject["anime"]!!.jsonObject["episodesWatched"].toString().toInt()
-            Anilist.chapterRead = response.jsonObject["statistics"]!!.jsonObject["manga"]!!.jsonObject["chaptersRead"].toString().toInt()
-            Anilist.adult = response.jsonObject["options"]?.jsonObject?.get("displayAdultContent")?.toString() == "true"
+            val user: User = mapper.readValue(response.toString());
+
+            Anilist.userid = user.id
+            Anilist.username = user.name
+            Anilist.bg = user.bannerImage
+            Anilist.avatar = user.avatar!!.medium
+            Anilist.episodesWatched = user.statistics!!.anime!!.episodesWatched
+            Anilist.chapterRead = user.statistics!!.manga!!.chaptersRead
+            Anilist.adult = user.options!!.displayAdultContent ?: false
             true
         } catch (e: Exception){
             logger(e)
