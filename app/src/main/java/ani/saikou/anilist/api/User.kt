@@ -35,10 +35,10 @@ data class User(
     var options: UserOptions?,
 
     // The user's media list options
-    // var mediaListOptions: MediaListOptions?,
+    var mediaListOptions: MediaListOptions?,
 
     // The users favourites
-    // var favourites: Favourites?,
+    var favourites: Favourites?,
 
     // The users anime & manga list statistics
     var statistics: UserStatisticTypes?,
@@ -135,4 +135,53 @@ data class UserStatistics( //
     //    var voiceActors: List<UserVoiceActorStatistic>?,
     //    var staff: List<UserStaffStatistic>?,
     //    var studios: List<UserStudioStatistic>?,
+)
+
+data class Favourites(
+    // Favourite anime
+    var anime: MediaConnection?,
+
+    // Favourite manga
+    var manga: MediaConnection?,
+
+    // Favourite characters
+    var characters: CharacterConnection?,
+
+    // Favourite staff
+    var staff: StaffConnection?,
+
+    // Favourite studios
+    var studios: StudioConnection?,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class MediaListOptions(
+    // The score format the user is using for media lists
+    // var scoreFormat: ScoreFormat?,
+
+    // The default order list rows should be displayed in
+    var rowOrder: String?,
+
+    // The user's anime list options
+    var animeList: MediaListTypeOptions?,
+
+    // The user's manga list options
+    var mangaList: MediaListTypeOptions?,
+)
+
+data class MediaListTypeOptions(
+    // The order each list should be displayed in
+    var sectionOrder: List<String>?,
+
+    // If the completed sections of the list should be separated by format
+    var splitCompletedSectionByFormat: Boolean?,
+
+    // The names of the user's custom lists
+    var customLists: List<String>?,
+
+    // The names of the user's advanced scoring sections
+    var advancedScoring: List<String>?,
+
+    // If advanced scoring is enabled
+    var advancedScoringEnabled: Boolean?,
 )

@@ -118,5 +118,4 @@ data class CharacterImage(
 
     // The character's image of media at medium size
     var medium: String?,
-
-    )
+)

@@ -431,3 +431,28 @@ data class MediaExternalLink(
 enum class ExternalLinkType() {
     INFO, STREAMING, SOCIAL
 }
+
+data class MediaListCollection(
+    // Grouped media list entries
+    var lists: List<MediaListGroup>?,
+
+    // The owner of the list
+    var user: User?,
+
+    // If there is another chunk
+    var hasNextChunk: Boolean?,
+
+)
+
+data class MediaListGroup(
+    // Media list entries
+    var entries: List<MediaList>?,
+
+    var name: String?,
+
+    var isCustomList: Boolean?,
+
+    var isSplitCompletedList: Boolean?,
+
+    var status: MediaListStatus?,
+)

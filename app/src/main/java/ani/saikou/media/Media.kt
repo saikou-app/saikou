@@ -1,6 +1,8 @@
 package ani.saikou.media
 
 import ani.saikou.FuzzyDate
+import ani.saikou.anilist.api.MediaEdge
+import ani.saikou.anilist.api.Media as ApiMedia
 import ani.saikou.anilist.api.MediaType
 import ani.saikou.anime.Anime
 import ani.saikou.manga.Manga
@@ -61,12 +63,12 @@ data class Media(
 
     var cameFromContinue:Boolean=false
 ) : Serializable{
-    constructor(apiMedia: ani.saikou.anilist.api.Media): this(
+    constructor(apiMedia: ApiMedia): this(
         id = apiMedia.id,
         idMAL = apiMedia.idMal,
         popularity = apiMedia.popularity,
-        name = apiMedia.title!!.english!!,
-        nameRomaji = apiMedia.title!!.romaji!!,
+        name = apiMedia.title!!.english.toString(),
+        nameRomaji = apiMedia.title!!.romaji.toString(),
         userPreferredName = apiMedia.title!!.userPreferred!!,
         cover = apiMedia.coverImage!!.large,
         banner = apiMedia.bannerImage,
@@ -81,12 +83,12 @@ data class Media(
         manga = if (apiMedia.type!! == MediaType.MANGA) Manga(totalChapters = apiMedia.chapters) else null,
     )
 
-    constructor(mediaEdge: ani.saikou.anilist.api.MediaEdge): this(
+    constructor(mediaEdge: MediaEdge): this(
         id = mediaEdge.node!!.id,
         idMAL = mediaEdge.node!!.idMal,
         popularity = mediaEdge.node!!.popularity,
-        name = mediaEdge.node!!.title!!.english!!,
-        nameRomaji = mediaEdge.node!!.title!!.romaji!!,
+        name = mediaEdge.node!!.title!!.english.toString(),
+        nameRomaji = mediaEdge.node!!.title!!.romaji.toString(),
         userPreferredName = mediaEdge.node!!.title!!.userPreferred!!,
         cover = mediaEdge.node!!.coverImage!!.large,
         banner = mediaEdge.node!!.bannerImage,

@@ -1,5 +1,8 @@
 package ani.saikou.anilist.api
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Recommendation(
     // The id of the recommendation
     var id: Int,
@@ -20,6 +23,7 @@ data class Recommendation(
     var user: User?,
 )
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class RecommendationConnection(
     //var edges: List<RecommendationEdge>?,
 
