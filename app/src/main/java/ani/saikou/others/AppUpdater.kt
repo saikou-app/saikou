@@ -59,7 +59,7 @@ object AppUpdater {
                         }
                         else openLinkInBrowser( "https://discord.com/channels/902174389351620629/946852010198728704")
                     }
-                    setNegativeButton("Cope") { dialogInterface: DialogInterface, _: Int ->
+                    setNegativeButton("Nope") { dialogInterface: DialogInterface, _: Int ->
                         dialogInterface.dismiss()
                     }
                 }.show()
