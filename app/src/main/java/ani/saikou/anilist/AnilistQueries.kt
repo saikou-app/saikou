@@ -3,8 +3,12 @@ package ani.saikou.anilist
 import android.app.Activity
 import ani.saikou.*
 import ani.saikou.anilist.api.MediaListCollection
+import ani.saikou.anilist.api.MediaTag
 import ani.saikou.anilist.api.Page
 import ani.saikou.anilist.api.User
+import ani.saikou.anilist.api.Media as ApiMedia
+import ani.saikou.anilist.api.Character as ApiCharacter
+import ani.saikou.anilist.api.Studio as ApiStudio
 import ani.saikou.anime.Anime
 import ani.saikou.manga.Manga
 import ani.saikou.media.Character
@@ -24,7 +28,6 @@ import java.net.UnknownHostException
 import kotlin.random.Random
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
-import ani.saikou.anilist.api.Media as ApiMedia
 
 val httpClient =  OkHttpClient()
 val mapper = jacksonObjectMapper()
@@ -165,7 +168,7 @@ class AnilistQueries{
                             }
                         }
 
-                        media.description = fetchedMedia.description!!
+                        media.description = fetchedMedia.description.toString()
 
                         if (fetchedMedia.characters != null) {
                             media.characters = arrayListOf()
@@ -249,7 +252,7 @@ class AnilistQueries{
                                 val firstStudio = fetchedMedia.studios!!.nodes!![0]
                                 media.anime.mainStudio = Studio(
                                     firstStudio.id.toString(),
-                                    firstStudio.name
+                                    firstStudio.name!!
                                 )
                             }
                             media.anime.nextAiringEpisodeTime = fetchedMedia.nextAiringEpisode?.airingAt?.toLong()
@@ -478,8 +481,9 @@ class AnilistQueries{
                     tags = arrayListOf()
                     this.jsonObject["MediaTagCollection"]?.apply {
                         if(this!=JsonNull) jsonArray.forEach{ node ->
-                            if(node.jsonObject["isAdult"].toString()=="true")
-                                tags!!.add(node.jsonObject["name"]!!.toString().trim('"'))
+                            val mediaTag: MediaTag = mapper.readValue(node.toString())
+                            if(mediaTag.isAdult == true)
+                                tags!!.add(mediaTag.name)
                         }
                     }
                     saveData("tags_list",tags!!)
@@ -511,12 +515,12 @@ class AnilistQueries{
                 val response = executeQuery(genreQuery, force = true)!!["data"]!!.jsonObject["Page"]!!
                 if (response.jsonObject["media"] != JsonNull) {
                     response.jsonObject["media"]!!.jsonArray.forEach {
-                        val id = it.jsonObject["id"].toString().toInt()
-                        if (genres.checkId(id) && it.jsonObject["bannerImage"] != JsonNull) {
+                        val media: ApiMedia = mapper.readValue(it.toString())
+                        if (genres.checkId(media.id) && media.bannerImage != null) {
                             genres[genre] = Genre(
                                 genre,
-                                id,
-                                it.jsonObject["bannerImage"].toString().trim('"'),
+                                media.id,
+                                media.bannerImage!!,
                                 System.currentTimeMillis()
                             )
                             saveData("genre_thumb",genres)
@@ -601,55 +605,43 @@ query (${"$"}page: Int = 1, ${"$"}id: Int, ${"$"}type: MediaType, ${"$"}isAdult:
             ${if (tags?.isNotEmpty() == true) ""","tags":"${tags[0]}"""" else ""}
             }""".replace("\n", " ").replace("""  """, "")
         val response = executeQuery(query, variables, true)
-        if(response!=null){
+        if(response!=null) {
             val a = if(response["data"]!=JsonNull) response["data"] else null
             val pag = a?.jsonObject?.get("Page") ?:return null
+
             val responseArray = arrayListOf<Media>()
-            if(pag != JsonNull) pag.jsonObject["media"]?.jsonArray?.forEach { i ->
-                val userStatus = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["status"].toString().trim('"') else null
-                val genresArr = arrayListOf<String>()
-                if (i.jsonObject["genres"]!! != JsonNull) {
-                    i.jsonObject["genres"]!!.jsonArray.forEach { genre ->
-                        genresArr.add(genre.toString().trim('"'))
+            if(pag != JsonNull) {
+                val fetchedPage: Page = mapper.readValue(pag.toString())
+
+                fetchedPage.media?.forEach { i ->
+                    val userStatus = i.mediaListEntry?.status.toString()
+                    val genresArr = arrayListOf<String>()
+                    if (i.genres != null) {
+                        i.genres!!.forEach { genre ->
+                            genresArr.add(genre)
+                        }
                     }
+                    val media = Media(i)
+                    media.relation = if(onList==true) userStatus else null
+                    media.genres = genresArr
+                    responseArray.add(media)
                 }
-                responseArray.add(
-                    Media(
-                        id = i.jsonObject["id"].toString().toInt(),
-                        idMAL = i.jsonObject["idMal"].toString().toIntOrNull(),
-                        name = i.jsonObject["title"]!!.jsonObject["english"].toString().trim('"').replace("\\\"","\""),
-                        nameRomaji = i.jsonObject["title"]!!.jsonObject["romaji"].toString().trim('"').replace("\\\"","\""),
-                        userPreferredName = i.jsonObject["title"]!!.jsonObject["userPreferred"].toString().trim('"').replace("\\\"","\""),
-                        cover = i.jsonObject["coverImage"]!!.jsonObject[if(hd) "extraLarge" else "large"].toString().trim('"'),
-                        banner = if(i.jsonObject["bannerImage"]!=JsonNull) i.jsonObject["bannerImage"].toString().trim('"') else null,
-                        status = i.jsonObject["status"].toString().trim('"').replace("_"," "),
-                        isAdult = i.jsonObject["isAdult"].toString() == "true",
-                        isFav = i.jsonObject["isFavourite"].toString() == "true",
-                        userProgress = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["progress"].toString().toInt() else null,
-                        userScore = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["score"].toString().toInt() else 0,
-                        userStatus = userStatus,
-                        relation = if(onList==true) userStatus else null,
-                        genres = genresArr,
-                        meanScore = if (i.jsonObject["meanScore"].toString().trim('"') != "null") i.jsonObject["meanScore"].toString().toInt() else null,
-                        anime = if (i.jsonObject["type"].toString().trim('"') == "ANIME") Anime(totalEpisodes = if (i.jsonObject["episodes"] != JsonNull) i.jsonObject["episodes"].toString().toInt() else null, nextAiringEpisode = if (i.jsonObject["nextAiringEpisode"] != JsonNull) i.jsonObject["nextAiringEpisode"]!!.jsonObject["episode"].toString().toInt() - 1 else null) else null,
-                        manga = if (i.jsonObject["type"].toString().trim('"') == "MANGA") Manga(totalChapters = if (i.jsonObject["chapters"] != JsonNull) i.jsonObject["chapters"].toString().toInt() else null) else null,
-                    )
+
+                return SearchResults(
+                    type = type,
+                    perPage = perPage,
+                    search = search,
+                    sort = sort,
+                    isAdult = isAdult,
+                    onList = onList,
+                    genres = genres,
+                    tags = tags,
+                    format = format,
+                    results = responseArray,
+                    page = fetchedPage.pageInfo!!.currentPage.toString().toInt(),
+                    hasNextPage = fetchedPage.pageInfo!!.hasNextPage == true,
                 )
             }
-            return SearchResults(
-                type = type,
-                perPage = perPage,
-                search = search,
-                sort = sort,
-                isAdult = isAdult,
-                onList = onList,
-                genres = genres,
-                tags = tags,
-                format = format,
-                results = responseArray,
-                page = pag.jsonObject["pageInfo"]!!.jsonObject["currentPage"].toString().toInt(),
-                hasNextPage = pag.jsonObject["pageInfo"]!!.jsonObject["hasNextPage"].toString()=="true",
-            )
         } else{
             toastString("Empty Response, Does your internet perhaps suck?")
         }
@@ -697,34 +689,19 @@ Page(page:1,perPage:50) {
 }
         }""".replace("\n", " ").replace("""  """, "")
         val response = executeQuery(query, force = true)?:return null
-        val a = ((response["data"]?:return null).jsonObject["Page"]?:return null).jsonObject["airingSchedules"]?:return null
+        val pag = response["data"]?.jsonObject?.get("Page") ?: return null
+        val page: Page = mapper.readValue(pag.toString())
+        if (page.airingSchedules == null) return null
+
         val responseArray = arrayListOf<Media>()
         val idArr = arrayListOf<Int>()
         fun addMedia(listOnly:Boolean){
-            a.jsonArray.forEach {
-                val i = it.jsonObject["media"]!!
-                val id = i.jsonObject["id"].toString().toInt()
-                if(!idArr.contains(id)) if (!listOnly && (i.jsonObject["countryOfOrigin"].toString().trim('"')=="JP" && (if(!Anilist.adult) i.jsonObject["isAdult"].toString()=="false" else true)) || (listOnly && i.jsonObject["mediaListEntry"]!=JsonNull)) {
+            page.airingSchedules!!.forEach {
+                val i = it.media!!
+                val id = i.id
+                if(!idArr.contains(id)) if (!listOnly && (i.countryOfOrigin =="JP" && (if(!Anilist.adult) i.isAdult == false else true)) || (listOnly && i.mediaListEntry!=null)) {
                     idArr.add(id)
-                    responseArray.add(
-                        Media(
-                            id = i.jsonObject["id"].toString().toInt(),
-                            idMAL = i.jsonObject["idMal"].toString().toIntOrNull(),
-                            name = i.jsonObject["title"]!!.jsonObject["english"].toString().trim('"').replace("\\\"","\""),
-                            nameRomaji = i.jsonObject["title"]!!.jsonObject["romaji"].toString().trim('"').replace("\\\"","\""),
-                            userPreferredName = i.jsonObject["title"]!!.jsonObject["userPreferred"].toString().trim('"').replace("\\\"","\""),
-                            cover = i.jsonObject["coverImage"]!!.jsonObject["large"].toString().trim('"'),
-                            banner = if(i.jsonObject["bannerImage"]!=JsonNull) i.jsonObject["bannerImage"].toString().trim('"') else null,
-                            status = i.jsonObject["status"].toString().trim('"').replace("_"," "),
-                            isAdult = i.jsonObject["isAdult"].toString() == "true",
-                            isFav = i.jsonObject["isFavourite"].toString() == "true",
-                            userProgress = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["progress"].toString().toInt() else null,
-                            userScore = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["score"].toString().toInt() else 0,
-                            userStatus = if (i.jsonObject["mediaListEntry"] != JsonNull) i.jsonObject["mediaListEntry"]!!.jsonObject["status"].toString().trim('"') else null,
-                            meanScore = if (i.jsonObject["meanScore"].toString().trim('"') != "null") i.jsonObject["meanScore"].toString().toInt() else null,
-                            anime = Anime(totalEpisodes = if (i.jsonObject["episodes"] != JsonNull) i.jsonObject["episodes"].toString().toInt() else null, nextAiringEpisode = if (i.jsonObject["nextAiringEpisode"] != JsonNull) i.jsonObject["nextAiringEpisode"]!!.jsonObject["episode"].toString().toInt() - 1 else null)
-                        )
-                    )
+                    responseArray.add(Media(i))
                 }
             }
         }
@@ -787,37 +764,18 @@ Page(page:1,perPage:50) {
 }""".replace("\n", " ").replace("""  """, "")
         val response = executeQuery(query, force = true)?:return character
         val char = response["data"]?.jsonObject?.get("Character")?:return character
-        character.age = char.jsonObject["age"].toString().trim('"')
-        character.gender = char.jsonObject["gender"].toString().trim('"')
-        character.description = char.jsonObject["description"].toString().trim('"').replace("\\n","\n").replace("\\\"","\"")
+        val fetchedCharacter: ApiCharacter = mapper.readValue(char.toString())
+        character.age = fetchedCharacter.age
+        character.gender = fetchedCharacter.gender
+        character.description = fetchedCharacter.description
         character.dateOfBirth = FuzzyDate(
-            if(char.jsonObject["dateOfBirth"]?.jsonObject?.get("year") !=JsonNull) char.jsonObject["dateOfBirth"]!!.jsonObject["year"].toString().toInt() else null,
-            if(char.jsonObject["dateOfBirth"]?.jsonObject?.get("month") !=JsonNull) char.jsonObject["dateOfBirth"]!!.jsonObject["month"].toString().toInt() else null,
-            if(char.jsonObject["dateOfBirth"]?.jsonObject?.get("day") !=JsonNull) char.jsonObject["dateOfBirth"]!!.jsonObject["day"].toString().toInt() else null
+            fetchedCharacter.dateOfBirth!!.year,
+            fetchedCharacter.dateOfBirth!!.month,
+            fetchedCharacter.dateOfBirth!!.day
         )
         character.roles = arrayListOf()
-        char.jsonObject["media"]?.jsonObject?.get("edges")?.jsonArray?.forEach { i->
-            character.roles!!.add(
-                Media(
-                    id = i.jsonObject["node"]!!.jsonObject["id"].toString().toInt(),
-                    idMAL = i.jsonObject["node"]!!.jsonObject["idMal"].toString().toIntOrNull(),
-                    name = i.jsonObject["node"]!!.jsonObject["title"]!!.jsonObject["english"].toString().trim('"').replace("\\\"","\""),
-                    nameRomaji = i.jsonObject["node"]!!.jsonObject["title"]!!.jsonObject["romaji"].toString().trim('"').replace("\\\"","\""),
-                    userPreferredName = i.jsonObject["node"]!!.jsonObject["title"]!!.jsonObject["userPreferred"].toString().trim('"').replace("\\\"","\""),
-                    cover = i.jsonObject["node"]!!.jsonObject["coverImage"]!!.jsonObject["large"].toString().trim('"'),
-                    banner = if(i.jsonObject["node"]!!.jsonObject["bannerImage"]!=JsonNull) i.jsonObject["node"]!!.jsonObject["bannerImage"].toString().trim('"') else null,
-                    status = i.jsonObject["node"]!!.jsonObject["status"].toString().trim('"').replace("_"," "),
-                    isAdult = i.jsonObject["node"]!!.jsonObject["isAdult"].toString() == "true",
-                    isFav = i.jsonObject["node"]!!.jsonObject["isFavourite"].toString()=="true",
-                    userProgress = if (i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!=JsonNull) i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!!.jsonObject["progress"].toString().toInt() else null,
-                    userScore = if (i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!=JsonNull) i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!!.jsonObject["score"].toString().toInt() else 0,
-                    userStatus = if (i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!=JsonNull) i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!!.jsonObject["status"].toString().trim('"') else null,
-                    meanScore = if (i.jsonObject["node"]!!.jsonObject["meanScore"].toString().trim('"')!="null") i.jsonObject["node"]!!.jsonObject["meanScore"].toString().toInt() else null,
-                    relation = i.jsonObject["characterRole"].toString().trim('"'),
-                    anime = if (i.jsonObject["node"]!!.jsonObject["type"].toString().trim('"')=="ANIME") Anime(totalEpisodes = if (i.jsonObject["node"]!!.jsonObject["episodes"] != JsonNull) i.jsonObject["node"]!!.jsonObject["episodes"].toString().toInt() else null, nextAiringEpisode = if(i.jsonObject["node"]!!.jsonObject["nextAiringEpisode"] != JsonNull) i.jsonObject["node"]!!.jsonObject["nextAiringEpisode"]!!.jsonObject["episode"].toString().toInt()-1 else null) else null,
-                    manga = if (i.jsonObject["node"]!!.jsonObject["type"].toString().trim('"')=="MANGA") Manga(totalChapters = if (i.jsonObject["node"]!!.jsonObject["chapters"] != JsonNull) i.jsonObject["node"]!!.jsonObject["chapters"].toString().toInt() else null) else null,
-                )
-            )
+        fetchedCharacter.media?.edges?.forEach { i->
+            character.roles!!.add(Media(i))
         }
         return character
     }
@@ -867,37 +825,23 @@ Page(page:1,perPage:50) {
         while(hasNextPage){
             page++
             val response = executeQuery(query(page), force = true)?:return studio
-            val data = response["data"]?.jsonObject?.get("Studio")?.jsonObject?.get("media")?:return studio
-            hasNextPage = data.jsonObject["pageInfo"]?.jsonObject?.get("hasNextPage")?.toString() == "true"
-            data.jsonObject["edges"]?.jsonArray?.forEach { i->
-                val id = i.jsonObject["node"]!!.jsonObject["id"].toString().toInt()
-                val status = i.jsonObject["node"]!!.jsonObject["status"].toString().trim('"').replace("_"," ")
-                val year = i.jsonObject["node"]!!.jsonObject["startDate"]!!.jsonObject["year"].toString()
-                val title = if(status!="CANCELLED") (if(year!="null") year else "TBA") else status
+            val data = response["data"]?.jsonObject?.get("Studio") ?:return studio
+            val fetchedStudio: ApiStudio = mapper.readValue(data.toString())
+            if (fetchedStudio.media == null) return studio
+            val mediaConnection = fetchedStudio.media
+
+            hasNextPage = mediaConnection?.pageInfo?.hasNextPage == true
+            mediaConnection?.edges?.forEach { i->
+                val node = i.node!!
+                val status = node.status.toString().replace("_"," ")
+                val year = node.startDate!!.year?.toString() ?: "TBA"
+                val title = if(status!="CANCELLED") year else status
                 if(!studio.yearMedia!!.containsKey(title))
                     studio.yearMedia!![title] = arrayListOf()
-                studio.yearMedia!![title]!!.add(
-                    Media(
-                        id = id,
-                        idMAL = i.jsonObject["node"]!!.jsonObject["idMal"].toString().toIntOrNull(),
-                        name = i.jsonObject["node"]!!.jsonObject["title"]!!.jsonObject["english"].toString().trim('"').replace("\\\"","\""),
-                        nameRomaji = i.jsonObject["node"]!!.jsonObject["title"]!!.jsonObject["romaji"].toString().trim('"').replace("\\\"","\""),
-                        userPreferredName = i.jsonObject["node"]!!.jsonObject["title"]!!.jsonObject["userPreferred"].toString().trim('"').replace("\\\"","\""),
-                        cover = i.jsonObject["node"]!!.jsonObject["coverImage"]!!.jsonObject["large"].toString().trim('"'),
-                        banner = if(i.jsonObject["node"]!!.jsonObject["bannerImage"]!=JsonNull) i.jsonObject["node"]!!.jsonObject["bannerImage"].toString().trim('"') else null,
-                        status = i.jsonObject["node"]!!.jsonObject["status"].toString().trim('"').replace("_"," "),
-                        isAdult = i.jsonObject["node"]!!.jsonObject["isAdult"].toString() == "true",
-                        isFav = i.jsonObject["node"]!!.jsonObject["isFavourite"].toString()=="true",
-                        userProgress = if (i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!=JsonNull) i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!!.jsonObject["progress"].toString().toInt() else null,
-                        userScore = if (i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!=JsonNull) i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!!.jsonObject["score"].toString().toInt() else 0,
-                        userStatus = if (i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!=JsonNull) i.jsonObject["node"]!!.jsonObject["mediaListEntry"]!!.jsonObject["status"].toString().trim('"') else null,
-                        meanScore = if (i.jsonObject["node"]!!.jsonObject["meanScore"].toString().trim('"')!="null") i.jsonObject["node"]!!.jsonObject["meanScore"].toString().toInt() else null,
-                        anime = if (i.jsonObject["node"]!!.jsonObject["type"].toString().trim('"')=="ANIME") Anime(totalEpisodes = if (i.jsonObject["node"]!!.jsonObject["episodes"] != JsonNull) i.jsonObject["node"]!!.jsonObject["episodes"].toString().toInt() else null, nextAiringEpisode = if(i.jsonObject["node"]!!.jsonObject["nextAiringEpisode"] != JsonNull) i.jsonObject["node"]!!.jsonObject["nextAiringEpisode"]!!.jsonObject["episode"].toString().toInt()-1 else null) else null,
-                        manga = if (i.jsonObject["node"]!!.jsonObject["type"].toString().trim('"')=="MANGA") Manga(totalChapters = if (i.jsonObject["node"]!!.jsonObject["chapters"] != JsonNull) i.jsonObject["node"]!!.jsonObject["chapters"].toString().toInt() else null) else null,
-                    )
-                )
+                studio.yearMedia!![title]!!.add(Media(node))
             }
         }
+
         if(studio.yearMedia!!.contains("CANCELLED")){
             val a =  studio.yearMedia!!["CANCELLED"]!!
             studio.yearMedia!!.remove("CANCELLED")

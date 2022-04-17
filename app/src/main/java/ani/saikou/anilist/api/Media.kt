@@ -341,14 +341,14 @@ data class MediaTag(
     var userId: Int?,
 )
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 data class MediaConnection(
     var edges: List<MediaEdge>?,
 
-    //var nodes: List<Media>?,
+    var nodes: List<Media>?,
 
     // The pagination information
-    //var pageInfo: PageInfo?,
+    var pageInfo: PageInfo?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)

@@ -5,7 +5,8 @@ data class Studio(
     var id: Int,
 
     // The name of the studio
-    var name: String,
+    // Originally non-nullable, needs to be nullable due to it not being always queried
+    var name: String?,
 
     // If the studio is an animation studio or a different kind of company
     var isAnimationStudio: Boolean,
