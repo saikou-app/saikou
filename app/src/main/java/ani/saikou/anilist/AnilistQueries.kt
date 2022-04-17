@@ -301,7 +301,7 @@ class AnilistQueries{
             if (lists != null && lists.isNotEmpty()) {
                 lists.forEach { li->
                     li.entries!!.reversed().forEach {
-                        map[it.media!!.id] = Media(it.media!!)
+                        map[it.media!!.id] = Media(it)
                     }
                 }
             }
