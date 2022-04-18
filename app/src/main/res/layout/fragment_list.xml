@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     tools:context=".user.ListFragment">
 
-    <ani.saikou.FadingEdgeRecyclerView
+    <ani.saikou.android.FadingEdgeRecyclerView
         android:id="@+id/listRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -14,11 +14,11 @@
         android:visibility="gone"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <ani.saikou.manga.zoomrecycler.ZoomFrame
+    <ani.saikou.android.manga.zoomrecycler.ZoomFrame
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ani.saikou.manga.zoomrecycler.ZoomRecyclerView
+        <ani.saikou.android.manga.zoomrecycler.ZoomRecyclerView
             android:id="@+id/mangaReaderRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:paddingBottom="128dp"
             tools:ignore="SpeakableTextPresentCheck" />
 
-    </ani.saikou.manga.zoomrecycler.ZoomFrame>
+    </ani.saikou.android.manga.zoomrecycler.ZoomFrame>
 
     <FrameLayout
         android:id="@+id/mangaReaderCont"
@@ -196,7 +196,7 @@
                         android:gravity="center_vertical"
                         android:orientation="vertical">
 
-                        <ani.saikou.SpinnerNoSwipe
+                        <ani.saikou.android.SpinnerNoSwipe
                             android:id="@+id/mangaReaderChapterSelect"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
@@ -270,7 +270,7 @@
         </FrameLayout>
     </FrameLayout>
 
-    <ani.saikou.others.OutlineTextView
+    <ani.saikou.android.others.OutlineTextView
         android:id="@+id/mangaReaderPageNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

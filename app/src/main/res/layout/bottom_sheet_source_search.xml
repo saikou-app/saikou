@@ -76,7 +76,7 @@
             android:visibility="visible"
             tools:visibility="gone" />
 
-        <ani.saikou.FadingEdgeRecyclerView
+        <ani.saikou.android.FadingEdgeRecyclerView
             android:id="@+id/searchRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

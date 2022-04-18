@@ -16,7 +16,7 @@
         android:text="@string/relations"
         android:textSize="16sp" />
 
-    <ani.saikou.FadingEdgeRecyclerView
+    <ani.saikou.android.FadingEdgeRecyclerView
         android:id="@+id/itemRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
