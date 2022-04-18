@@ -25,10 +25,10 @@ object Kitsu {
 
     fun getKitsuEpisodesDetails(media: Media): MutableMap<String, Episode>? {
         val print = false
-        logger("Kitsu : title=${media.getMangaName()}", print)
+        logger("Kitsu : title=${media.mangaName}", print)
         try {
             val query =
-                """{"query":"query{searchAnimeByTitle(first:5,title:\"${media.getMangaName()}\"){nodes{id season startDate titles{localized}episodes(first:2000){nodes{number titles{canonical}description thumbnail{original{url}}}}}}}"}"""
+                """{"query":"query{searchAnimeByTitle(first:5,title:\"${media.mangaName}\"){nodes{id season startDate titles{localized}episodes(first:2000){nodes{number titles{canonical}description thumbnail{original{url}}}}}}}"}"""
             val result = getKitsuData(query)
             logger("Kitsu : result=$result", print)
             var arr: MutableMap<String, Episode>?

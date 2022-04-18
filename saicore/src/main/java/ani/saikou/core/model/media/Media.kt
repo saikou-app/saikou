@@ -40,19 +40,19 @@ data class Media(
     var source: String? = null,
     var countryOfOrigin: String? = null,
     val meanScore: Int? = null,
-    var genres: ArrayList<String> = arrayListOf(),
-    var tags: ArrayList<String> = arrayListOf(),
+    var genres: MutableList<String> = mutableListOf(),
+    var tags: MutableList<String> = mutableListOf(),
     var description: String? = null,
-    var synonyms: ArrayList<String> = arrayListOf(),
+    var synonyms: MutableList<String> = mutableListOf(),
     var trailer: String? = null,
     var startDate: FuzzyDate? = null,
     var endDate: FuzzyDate? = null,
 
-    var characters: ArrayList<Character>? = null,
+    var characters: MutableList<Character>? = null,
     var prequel: Media? = null,
     var sequel: Media? = null,
-    var relations: ArrayList<Media>? = null,
-    var recommendations: ArrayList<Media>? = null,
+    var relations: MutableList<Media>? = null,
+    var recommendations: MutableList<Media>? = null,
 
     var nameMAL: String? = null,
     var shareLink: String? = null,
@@ -60,6 +60,9 @@ data class Media(
 
     var cameFromContinue: Boolean = false
 ) : Serializable {
-    fun getMainName() = if (name != "null") name else nameRomaji
-    fun getMangaName() = if (countryOfOrigin != "JP") getMainName() else nameRomaji
+    val mainName: String
+        get() = if (name != "null") name else nameRomaji
+
+    val mangaName: String
+        get() = if (countryOfOrigin != "JP") mainName else nameRomaji
 }

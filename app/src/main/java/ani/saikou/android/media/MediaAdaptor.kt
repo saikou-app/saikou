@@ -31,7 +31,7 @@ import java.io.Serializable
 
 class MediaAdaptor(
     var type: Int,
-    private val mediaList: ArrayList<Media>?,
+    private val mediaList: MutableList<Media>?,
     private val activity: FragmentActivity,
     private val matchParent: Boolean = false,
     private val viewPager: ViewPager2? = null,

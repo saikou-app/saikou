@@ -2,7 +2,7 @@ package ani.saikou.android.anilist
 
 import android.app.Activity
 import ani.saikou.android.*
-import ani.saikou.core.model.anilist.BannerImage
+import ani.saikou.core.model.anilist.Banner
 import ani.saikou.core.model.anilist.Genre
 import ani.saikou.core.model.anime.Anime
 import ani.saikou.core.model.manga.Manga
@@ -663,7 +663,7 @@ class AnilistQueries {
     }
 
     private fun bannerImage(type: String): String? {
-        var image = loadData<BannerImage>("banner_$type")
+        var image = loadData<Banner>("banner_$type")
         if (image == null || image.checkTime()) {
             val response =
                 executeQuery("""{ MediaListCollection(userId: ${Anilist.userid}, type: $type, chunk:1,perChunk:25, sort: [SCORE_DESC,UPDATED_TIME_DESC]) { lists { entries{ media { bannerImage } } } } } """)
@@ -684,7 +684,7 @@ class AnilistQueries {
 
                 if (allImages.isNotEmpty()) {
                     val rand = Random.nextInt(0, allImages.size)
-                    image = BannerImage(
+                    image = Banner(
                         allImages[rand],
                         System.currentTimeMillis()
                     )
@@ -876,7 +876,7 @@ class AnilistQueries {
         } else false
     }
 
-    fun getGenres(genres: ArrayList<String>, listener: ((Pair<String, String>) -> Unit)) {
+    fun getGenres(genres: List<String>, listener: ((Pair<String, String>) -> Unit)) {
         genres.forEach {
             getGenreThumbnail(it).apply {
                 if (this != null) {

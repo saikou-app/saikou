@@ -2,7 +2,7 @@ package ani.saikou.core.model.anilist
 
 import java.io.Serializable
 
-data class BannerImage(
+data class Banner(
     val url: String?,
     var time: Long,
 ) : Serializable {

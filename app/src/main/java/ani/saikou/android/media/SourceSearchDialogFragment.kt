@@ -65,7 +65,7 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment() {
                 if (media!!.anime != null) {
                     val source = (if (!media!!.isAdult) AnimeSources else HAnimeSources)[i!!]!!
                     binding.searchSourceTitle.text = source.name
-                    binding.searchBarText.setText(media!!.getMangaName())
+                    binding.searchBarText.setText(media!!.mangaName)
                     fun search() {
                         binding.searchBarText.clearFocus()
                         imm.hideSoftInputFromWindow(binding.searchBarText.windowToken, 0)
@@ -93,7 +93,7 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment() {
                     anime = false
                     val source = MangaSources[i!!]!!
                     binding.searchSourceTitle.text = source.name
-                    binding.searchBarText.setText(media!!.getMangaName())
+                    binding.searchBarText.setText(media!!.mangaName)
                     fun search() {
                         binding.searchBarText.clearFocus()
                         imm.hideSoftInputFromWindow(binding.searchBarText.windowToken, 0)

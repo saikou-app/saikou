@@ -1,14 +1,14 @@
 package ani.saikou.android.manga.source.parsers
 
-import ani.saikou.core.model.manga.MangaChapter
-import ani.saikou.core.model.media.Media
-import ani.saikou.core.model.media.Source
-import ani.saikou.core.utils.extension.findBetween
 import ani.saikou.android.loadData
 import ani.saikou.android.logger
 import ani.saikou.android.manga.source.MangaParser
 import ani.saikou.android.saveData
 import ani.saikou.android.toastString
+import ani.saikou.core.model.manga.MangaChapter
+import ani.saikou.core.model.media.Media
+import ani.saikou.core.model.media.Source
+import ani.saikou.core.utils.extension.findBetween
 import org.jsoup.Jsoup
 
 class MangaBuddy(override val name: String = "mangabuddy.com") : MangaParser() {
@@ -62,8 +62,8 @@ class MangaBuddy(override val name: String = "mangabuddy.com") : MangaParser() {
     override fun getChapters(media: Media): MutableMap<String, MangaChapter> {
         var source: Source? = loadData("mangabuddy_${media.id}")
         if (source == null) {
-            setTextListener("Searching : ${media.getMangaName()}")
-            val search = search(media.getMangaName())
+            setTextListener("Searching : ${media.mangaName}")
+            val search = search(media.mangaName)
             if (search.isNotEmpty()) {
                 logger("MangaBuddy : ${search[0]}")
                 source = search[0]

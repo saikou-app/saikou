@@ -1,6 +1,6 @@
 package ani.saikou.core.utils.extension
 
-import ani.saikou.core.model.anilist.BannerImage
+import ani.saikou.core.model.anilist.Banner
 import ani.saikou.core.model.anilist.Genre
 import ani.saikou.core.model.media.Source
 import kotlin.math.min
@@ -42,7 +42,7 @@ fun MutableMap<String, Genre>.checkGenreTime(genre: String): Boolean {
     return true
 }
 
-fun MutableMap<String, BannerImage>.checkBannerTime(type: String): Boolean {
+fun MutableMap<String, Banner>.checkBannerTime(type: String): Boolean {
     if (containsKey(type)) {
         return (System.currentTimeMillis() - get(type)!!.time) >= (1000 * 60 * 60 * 6)
     }

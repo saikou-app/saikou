@@ -19,7 +19,7 @@ import ani.saikou.core.model.settings.UserInterfaceSettings
 import java.io.Serializable
 
 class CharacterAdapter(
-    private val characterList: ArrayList<Character>
+    private val characterList: List<Character>
 ) : RecyclerView.Adapter<CharacterAdapter.CharacterViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
         val binding =

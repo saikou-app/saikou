@@ -214,7 +214,7 @@ class GenresViewModel : ViewModel() {
     var genres: MutableMap<String, String>? = null
     var done = false
     var doneListener: (() -> Unit)? = null
-    fun loadGenres(genre: ArrayList<String>, listener: (Pair<String, String>) -> Unit) {
+    fun loadGenres(genre: List<String>, listener: (Pair<String, String>) -> Unit) {
         if (genres == null) {
             genres = mutableMapOf()
             Anilist.query.getGenres(genre) {
