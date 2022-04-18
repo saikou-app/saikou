@@ -44,6 +44,7 @@ import ani.saikou.anilist.Anilist
 import ani.saikou.anime.source.AnimeSources
 import ani.saikou.anime.source.HAnimeSources
 import ani.saikou.databinding.ActivityExoplayerBinding
+import ani.saikou.extension.ignoreAllSSLErrors
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
 import ani.saikou.settings.PlayerSettings

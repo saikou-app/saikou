@@ -42,12 +42,9 @@ import androidx.multidex.MultiDexApplication
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import ani.saikou.anilist.Anilist
-import ani.saikou.anilist.BannerImage
-import ani.saikou.anilist.Genre
 import ani.saikou.anime.Episode
 import ani.saikou.databinding.ItemCountDownBinding
 import ani.saikou.media.Media
-import ani.saikou.media.Source
 import ani.saikou.settings.UserInterfaceSettings
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
@@ -64,18 +61,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import nl.joery.animatedbottombar.AnimatedBottomBar
-import okhttp3.OkHttpClient
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import java.io.*
 import java.lang.reflect.Field
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
-import java.text.DateFormatSymbols
 import java.util.*
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 import kotlin.math.*
 
 var statusBarHeight = 0
@@ -259,35 +249,7 @@ fun startMainActivity(activity: Activity) {
     )
 }
 
-data class FuzzyDate(
-    val year: Int? = null,
-    val month: Int? = null,
-    val day: Int? = null,
-) : Serializable {
-    override fun toString(): String {
-        val a = if (month != null) DateFormatSymbols().months[month - 1] else ""
-        return (if (day != null) "$day " else "") + a + (if (year != null) ", $year" else "")
-    }
-
-    fun getToday(): FuzzyDate {
-        val cal = Calendar.getInstance()
-        return FuzzyDate(
-            cal.get(Calendar.YEAR),
-            cal.get(Calendar.MONTH) + 1,
-            cal.get(Calendar.DAY_OF_MONTH)
-        )
-    }
-
-    fun toVariableString(): String {
-        return ("{"
-                + (if (year != null) "year:$year" else "")
-                + (if (month != null) ",month:$month" else "")
-                + (if (day != null) ",day:$day" else "")
-                + "}")
-    }
-}
-
-class DatePickerFragment(activity: Activity, var date: FuzzyDate = FuzzyDate().getToday()) :
+class DatePickerFragment(activity: Activity, var date: FuzzyDate = FuzzyDate.today) :
     DialogFragment(), DatePickerDialog.OnDateSetListener {
     var dialog: DatePickerDialog
 
@@ -450,70 +412,6 @@ class FadingEdgeRecyclerView : RecyclerView {
     override fun getBottomPaddingOffset(): Int {
         return if (clipToPadding) 0 else paddingBottom
     }
-}
-
-fun levenshtein(lhs: CharSequence, rhs: CharSequence): Int {
-    if (lhs == rhs) {
-        return 0
-    }
-    if (lhs.isEmpty()) {
-        return rhs.length
-    }
-    if (rhs.isEmpty()) {
-        return lhs.length
-    }
-
-    val lhsLength = lhs.length + 1
-    val rhsLength = rhs.length + 1
-
-    var cost = Array(lhsLength) { it }
-    var newCost = Array(lhsLength) { 0 }
-
-    for (i in 1 until rhsLength) {
-        newCost[0] = i
-
-        for (j in 1 until lhsLength) {
-            val match = if (lhs[j - 1] == rhs[i - 1]) 0 else 1
-
-            val costReplace = cost[j - 1] + match
-            val costInsert = cost[j] + 1
-            val costDelete = newCost[j - 1] + 1
-
-            newCost[j] = min(min(costInsert, costDelete), costReplace)
-        }
-
-        val swap = cost
-        cost = newCost
-        newCost = swap
-    }
-
-    return cost[lhsLength - 1]
-}
-
-fun ArrayList<Source>.sortByTitle(string: String) {
-    val temp: MutableMap<Int, Int> = mutableMapOf()
-    for (i in 0 until this.size) {
-        temp[i] = levenshtein(string.lowercase(), this[i].name.lowercase())
-    }
-    val c = temp.toList().sortedBy { (_, value) -> value }.toMap()
-    val a = ArrayList(c.keys.toList().subList(0, min(this.size, 25)))
-    val b = c.values.toList().subList(0, min(this.size, 25))
-    for (i in b.indices.reversed()) {
-        if (b[i] > 18 && i < a.size) a.removeAt(i)
-    }
-    val temp2 = arrayListOf<Source>()
-    temp2.addAll(this)
-    this.clear()
-    for (i in a.indices) {
-        this.add(temp2[a[i]])
-    }
-}
-
-fun String.findBetween(a: String, b: String): String? {
-    val start = this.indexOf(a)
-    val end = if (start != -1) this.indexOf(b, start) else return null
-    return if (end != -1) this.subSequence(start, end).removePrefix(a).removeSuffix(b)
-        .toString() else null
 }
 
 fun ImageView.loadImage(url: String?, size: Int = 0, headers: MutableMap<String, String>? = null) {
@@ -827,27 +725,6 @@ fun countDown(media: Media, view: ViewGroup) {
     }
 }
 
-fun MutableMap<String, Genre>.checkId(id: Int): Boolean {
-    this.forEach {
-        if (it.value.id == id) {
-            return false
-        }
-    }
-    return true
-}
-
-fun MutableMap<String, Genre>.checkGenreTime(genre: String): Boolean {
-    if (containsKey(genre))
-        return (System.currentTimeMillis() - get(genre)!!.time) >= (1000 * 60 * 60 * 24 * 7)
-    return true
-}
-
-fun MutableMap<String, BannerImage>.checkBannerTime(type: String): Boolean {
-    if (containsKey(type))
-        return (System.currentTimeMillis() - get(type)!!.time) >= (1000 * 60 * 60 * 6)
-    return true
-}
-
 fun setSlideIn(uiSettings: UserInterfaceSettings) = AnimationSet(false).apply {
     if (uiSettings.layoutAnimations) {
         var animation: Animation = AlphaAnimation(0.0f, 1.0f)
@@ -983,24 +860,6 @@ class SpinnerNoSwipe : androidx.appcompat.widget.AppCompatSpinner {
         mGestureDetector!!.onTouchEvent(event)
         return true
     }
-}
-
-fun OkHttpClient.Builder.ignoreAllSSLErrors(): OkHttpClient.Builder {
-    val naiveTrustManager = @SuppressLint("CustomX509TrustManager")
-    object : X509TrustManager {
-        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-        override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) = Unit
-        override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) = Unit
-    }
-
-    val insecureSocketFactory = SSLContext.getInstance("TLSv1.2").apply {
-        val trustAllCerts = arrayOf<TrustManager>(naiveTrustManager)
-        init(null, trustAllCerts, SecureRandom())
-    }.socketFactory
-
-    sslSocketFactory(insecureSocketFactory, naiveTrustManager)
-    hostnameVerifier { _, _ -> true }
-    return this
 }
 
 @SuppressLint("RestrictedApi")
