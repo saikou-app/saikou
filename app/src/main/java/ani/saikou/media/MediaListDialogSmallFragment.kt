@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 import java.io.Serializable
 
 
-class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
+class MediaListDialogSmallFragment : BottomSheetDialogFragment() {
 
     private lateinit var media: Media
 
@@ -27,10 +27,11 @@ class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
         fun newInstance(m: Media): MediaListDialogSmallFragment =
             MediaListDialogSmallFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable("media",m as Serializable)
+                    putSerializable("media", m as Serializable)
                 }
             }
     }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -41,7 +42,11 @@ class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
     private var _binding: BottomSheetMediaListSmallBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = BottomSheetMediaListSmallBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -115,7 +120,7 @@ class MediaListDialogSmallFragment : BottomSheetDialogFragment(){
 
         binding.mediaListSave.setOnClickListener {
             scope.launch {
-                withContext(Dispatchers.IO){
+                withContext(Dispatchers.IO) {
                     Anilist.mutation.editList(
                         media.id,
                         if (_binding?.mediaListProgress?.text.toString() != "") _binding?.mediaListProgress?.text.toString()

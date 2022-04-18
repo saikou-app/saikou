@@ -12,7 +12,7 @@ import android.widget.FrameLayout
  * because the recyclerview is scaled and its touch events are translated, which breaks the
  * detectors.
  */
-class ZoomFrame(context: Context, attrs:AttributeSet) : FrameLayout(context,attrs) {
+class ZoomFrame(context: Context, attrs: AttributeSet) : FrameLayout(context, attrs) {
 
     /**
      * Scale detector, either with pinch or quick scale.

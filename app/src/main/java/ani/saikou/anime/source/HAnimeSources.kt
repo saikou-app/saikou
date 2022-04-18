@@ -16,8 +16,8 @@ object HAnimeSources : WatchSources() {
         "TENSHI",
     )
 
-    private val hParsers:MutableMap<Int,AnimeParser> = mutableMapOf()
-    override operator fun get(i:Int) : AnimeParser?{
+    private val hParsers: MutableMap<Int, AnimeParser> = mutableMapOf()
+    override operator fun get(i: Int): AnimeParser? {
         val a = when (i) {
             0 -> hParsers.getOrPut(i) { HentaiFF() }
             1 -> hParsers.getOrPut(i) { Haho() }
@@ -34,10 +34,10 @@ object HAnimeSources : WatchSources() {
     }
 
     override fun flushLive() {
-        hParsers.forEach{
+        hParsers.forEach {
             it.value.text = ""
         }
-        animeParsers.forEach{
+        animeParsers.forEach {
             it.value.text = ""
         }
     }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".settings.PlayerSettingsActivity"
     tools:ignore="SpeakableTextPresentCheck">
 
@@ -92,7 +92,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_info_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -102,6 +101,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -241,7 +241,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_accessible_forward_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="false"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -251,6 +250,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track" />
 
@@ -273,7 +273,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_skip_next_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -283,6 +282,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -308,7 +308,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_play_disabled_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -318,6 +317,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -354,7 +354,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_anilist"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -364,6 +363,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -389,7 +389,6 @@
                 android:checked="false"
                 android:drawableStart="@drawable/ic_round_auto_awesome_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -399,6 +398,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -422,14 +422,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
+                android:stepSize="1"
                 android:value="20.0"
                 android:valueFrom="0.0"
                 android:valueTo="100.0"
-                android:stepSize="1"
-                app:tickColor = "#0000"
                 app:labelBehavior="floating"
                 app:labelStyle="@style/fontTooltip"
                 app:thumbColor="?attr/colorSecondary"
+                app:tickColor="#0000"
                 app:trackColorActive="?attr/colorSecondary"
                 tools:ignore="SpeakableTextPresentCheck" />
 
@@ -463,7 +463,6 @@
                 android:checked="false"
                 android:drawableStart="@drawable/ic_round_play_circle_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -473,6 +472,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -485,7 +485,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_pause_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -495,6 +494,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -507,7 +507,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_swipe_vertical_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -517,6 +516,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -530,7 +530,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_touch_app_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -540,6 +539,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -697,7 +697,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_picture_in_picture_alt_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -707,6 +706,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -758,7 +758,6 @@
                 android:checked="false"
                 android:drawableStart="@drawable/ic_round_cast_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -768,6 +767,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 

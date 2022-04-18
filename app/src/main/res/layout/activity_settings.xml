@@ -229,10 +229,10 @@
             </LinearLayout>
 
             <View
-                android:layout_marginTop="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="-16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="-16dp"
                 android:background="?android:attr/listDivider" />
 
@@ -261,9 +261,9 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginBottom="16dp"
                 android:layout_marginStart="-16dp"
                 android:layout_marginEnd="-16dp"
+                android:layout_marginBottom="16dp"
                 android:background="?android:attr/listDivider" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
@@ -440,8 +440,8 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="-16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="-16dp"
                 android:background="?android:attr/listDivider" />
 
@@ -472,9 +472,9 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginBottom="8dp"
                 android:layout_marginStart="-16dp"
                 android:layout_marginEnd="-16dp"
+                android:layout_marginBottom="8dp"
                 android:background="?android:attr/listDivider" />
 
             <TextView
@@ -579,8 +579,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_marginStart="-16dp"
-                android:layout_marginEnd="-16dp"
                 android:layout_marginTop="16dp"
+                android:layout_marginEnd="-16dp"
                 android:background="?android:attr/listDivider" />
 
             <Button
@@ -607,9 +607,9 @@
 
             <View
                 android:layout_width="match_parent"
+                android:layout_height="1dp"
                 android:layout_marginStart="-16dp"
                 android:layout_marginEnd="-16dp"
-                android:layout_height="1dp"
                 android:layout_marginBottom="8dp"
                 android:background="?android:attr/listDivider" />
 

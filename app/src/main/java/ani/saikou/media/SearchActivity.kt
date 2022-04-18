@@ -38,7 +38,7 @@ class SearchActivity : AppCompatActivity() {
     var sortBy: String? = null
     var tag: String? = null
     var adult = false
-    var listOnly :Boolean?= null
+    var listOnly: Boolean? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,17 +57,19 @@ class SearchActivity : AppCompatActivity() {
         sortBy = intent.getStringExtra("sortBy")
         style = loadData<Int>("searchStyle") ?: 0
         adult = if (Anilist.adult) intent.getBooleanExtra("hentai", false) else false
-        listOnly = intent.getBooleanExtra("listOnly",false)
-        if(!listOnly!!) listOnly = null
+        listOnly = intent.getBooleanExtra("listOnly", false)
+        if (!listOnly!!) listOnly = null
 
         val notSet = model.notSet
-        if(model.notSet) {
+        if (model.notSet) {
             model.notSet = false
-            model.searchResults = SearchResults(type,
+            model.searchResults = SearchResults(
+                type,
                 isAdult = false,
                 onList = null,
                 results = arrayListOf(),
-                hasNextPage = false)
+                hasNextPage = false
+            )
         }
 
         progressAdapter = ProgressAdapter(searched = model.searched)
@@ -135,14 +137,13 @@ class SearchActivity : AppCompatActivity() {
         }
 
         progressAdapter.ready.observe(this) {
-            if(it == true) {
+            if (it == true) {
                 if (genre != null || sortBy != null || adult) {
                     if (!model.searched) {
                         model.searched = true
                         headerAdaptor.search.run()
                     }
-                }
-                else if (notSet)
+                } else if (notSet)
                     headerAdaptor.requestFocus.run()
             }
         }
@@ -199,7 +200,7 @@ class SearchActivity : AppCompatActivity() {
         mediaAdaptor.notifyDataSetChanged()
     }
 
-    var state:Parcelable?=null
+    var state: Parcelable? = null
     override fun onPause() {
         super.onPause()
         state = binding.searchRecyclerView.layoutManager?.onSaveInstanceState()

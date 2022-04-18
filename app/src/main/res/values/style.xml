@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="NavBarText">
         <item name="android:textAllCaps">true</item>
         <item name="android:fontFamily">@font/poppins_bold</item>
@@ -29,23 +30,26 @@
         <item name="background">@id/bg</item>
         <item name="cornerFamily">rounded</item>
     </style>
+
     <style name="roundedImageView" parent="">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>
+
     <style name="MySnackbar" parent="Widget.MaterialComponents.Snackbar">
         <item name="android:layout_marginLeft">16dp</item>
         <item name="android:layout_marginRight">16dp</item>
         <item name="android:background">@drawable/round_corner</item>
     </style>
+
     <string name="MySnackBarText" parent="Widget.MaterialComponents.Snackbar.TextView">
         <item name="android:textColor">@color/bg_opp</item>
     </string>
-    
+
     <style name="fontTooltip" parent="Widget.Material3.Tooltip">
         <item name="android:padding">8dp</item>
         <item name="android:textAppearance">@style/Suffix</item>
     </style>
 
-    <style name="BottomNavBar" parent="Widget.Material3.BottomNavigationView.ActiveIndicator"/>
+    <style name="BottomNavBar" parent="Widget.Material3.BottomNavigationView.ActiveIndicator" />
 </resources>

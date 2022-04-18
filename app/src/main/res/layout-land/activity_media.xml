@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:orientation="horizontal"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <com.google.android.material.navigationrail.NavigationRailView
         android:id="@+id/mediaTab"
@@ -12,14 +12,14 @@
         android:layout_height="match_parent"
         android:background="@color/nav_bg"
         android:translationZ="0dp"
-        app:itemPaddingTop="32dp"
-        app:menuGravity="center"
         app:itemActiveIndicatorStyle="@style/BottomNavBar"
         app:itemIconTint="@color/tab_layout_icon"
+        app:itemPaddingTop="32dp"
         app:itemRippleColor="?attr/colorSecondary"
         app:itemTextAppearanceActive="@style/NavBarText"
         app:itemTextAppearanceInactive="@style/NavBarText"
-        app:itemTextColor="@color/tab_layout_text" />
+        app:itemTextColor="@color/tab_layout_text"
+        app:menuGravity="center" />
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -89,7 +89,8 @@
                         android:layout_marginEnd="16dp"
                         android:orientation="vertical"
                         android:paddingStart="16dp"
-                        android:paddingEnd="16dp">
+                        android:paddingEnd="16dp"
+                        tools:ignore="UselessParent">
 
                         <TextView
                             android:id="@+id/mediaTitleCollapse"

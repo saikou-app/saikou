@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".settings.UserInterfaceSettingsActivity"
     tools:ignore="SpeakableTextPresentCheck">
 
@@ -106,7 +106,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_fullscreen_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -116,6 +115,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -124,15 +124,16 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
                 android:background="?android:attr/listDivider" />
+
             <Button
                 android:id="@+id/uiSettingsHomeLayout"
-                android:background="@drawable/ui_bg"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
+                android:background="@drawable/ui_bg"
                 android:fontFamily="@font/poppins_bold"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"
@@ -147,12 +148,13 @@
                 app:iconPadding="16dp"
                 app:iconSize="24dp"
                 app:iconTint="?attr/colorPrimary" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginBottom="16dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
                 android:background="?android:attr/listDivider" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
@@ -195,7 +197,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_photo_size_select_actual_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -205,6 +206,7 @@
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 

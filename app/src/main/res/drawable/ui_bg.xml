@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingMode="stack"
     android:paddingStart="0dp"
-    android:paddingEnd="32dp"
     android:paddingLeft="0dp"
-    android:tint="?attr/colorSecondary"
-    android:paddingRight="0dp">
+    android:paddingEnd="32dp"
+    android:paddingRight="0dp"
+    android:paddingMode="stack"
+    android:tint="?attr/colorSecondary">
 
     <item
-        android:gravity="end|fill_vertical"
         android:width="48dp"
-        android:end="22dp"
         android:drawable="@drawable/control_background_40dp"
+        android:end="22dp"
+        android:gravity="end|fill_vertical"
         tools:ignore="UnusedAttribute" />
 
     <item
-        android:gravity="end|center_vertical"
-        tools:targetApi="m"
-        tools:ignore="UnusedAttribute"
         android:width="24dp"
         android:height="24dp"
-        android:end="32dp">
+        android:end="32dp"
+        android:gravity="end|center_vertical"
+        tools:ignore="UnusedAttribute"
+        tools:targetApi="m">
         <rotate
+            android:drawable="@drawable/ic_round_arrow_back_ios_new_24"
             android:fromDegrees="180.0"
-            android:toDegrees="180.0"
             android:pivotX="50%"
             android:pivotY="50%"
-            android:drawable="@drawable/ic_round_arrow_back_ios_new_24" />
+            android:toDegrees="180.0" />
     </item>
 </layer-list>

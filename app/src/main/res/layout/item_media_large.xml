@@ -123,8 +123,8 @@
                 android:maxLines="3"
                 android:textSize="14dp"
                 android:transitionName="mediaTitle"
-                tools:text="@string/slogan"
-                tools:ignore="SpUsage" />
+                tools:ignore="SpUsage"
+                tools:text="@string/slogan" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -144,9 +144,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:alpha="0.66"
+                    android:text="@string/eps"
                     android:textSize="14dp"
-                    tools:ignore="SpUsage"
-                    android:text="@string/eps" />
+                    tools:ignore="SpUsage" />
 
             </LinearLayout>
 

@@ -13,6 +13,7 @@
         android:scaleType="centerCrop"
         tools:ignore="ContentDescription,ImageContrastCheck"
         tools:srcCompat="@tools:sample/backgrounds/scenic[1]" />
+
     <ImageView
         android:id="@+id/itemCompactBannerNoKen"
         android:layout_width="match_parent"

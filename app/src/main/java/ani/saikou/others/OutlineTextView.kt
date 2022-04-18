@@ -25,7 +25,11 @@ class OutlineTextView : AppCompatTextView {
 
     }
 
-    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
+        context,
+        attrs,
+        defStyleAttr
+    ) {
         initResources(context, attrs)
 
     }
@@ -33,10 +37,14 @@ class OutlineTextView : AppCompatTextView {
     private fun initResources(context: Context?, attrs: AttributeSet?) {
         if (attrs != null) {
             val a = context?.obtainStyledAttributes(attrs, R.styleable.OutlineTextView)
-            strokeColor = a!!.getColor(R.styleable.OutlineTextView_outlineColor,
-                currentTextColor)
-            strokeWidth = a.getFloat(R.styleable.OutlineTextView_outlineWidth,
-                defaultStrokeWidth)
+            strokeColor = a!!.getColor(
+                R.styleable.OutlineTextView_outlineColor,
+                currentTextColor
+            )
+            strokeWidth = a.getFloat(
+                R.styleable.OutlineTextView_outlineWidth,
+                defaultStrokeWidth
+            )
 
             a.recycle()
         } else {
@@ -51,7 +59,8 @@ class OutlineTextView : AppCompatTextView {
         strokeWidth = width.toPx(context)
     }
 
-    private fun Float.toPx(context: Context) = (this * context.resources.displayMetrics.scaledDensity + 0.5F)
+    private fun Float.toPx(context: Context) =
+        (this * context.resources.displayMetrics.scaledDensity + 0.5F)
 
     override fun invalidate() {
         if (isDrawing) return

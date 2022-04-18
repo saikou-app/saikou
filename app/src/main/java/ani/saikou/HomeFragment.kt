@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LayoutAnimationController
-import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
@@ -38,7 +37,11 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -47,18 +50,19 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
     val model: AnilistHomeViewModel by activityViewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val scope = lifecycleScope
-        var uiSettings = loadData<UserInterfaceSettings>("ui_settings")?:UserInterfaceSettings()
-        fun load(){
-            if(activity!=null && _binding!=null) lifecycleScope.launch(Dispatchers.Main) {
+        var uiSettings = loadData<UserInterfaceSettings>("ui_settings") ?: UserInterfaceSettings()
+        fun load() {
+            if (activity != null && _binding != null) lifecycleScope.launch(Dispatchers.Main) {
                 binding.homeUserName.text = Anilist.username
                 binding.homeUserEpisodesWatched.text = Anilist.episodesWatched.toString()
                 binding.homeUserChaptersRead.text = Anilist.chapterRead.toString()
                 binding.homeUserAvatar.loadImage(Anilist.avatar)
-                if(!uiSettings.bannerAnimations) binding.homeUserBg.pause()
+                if (!uiSettings.bannerAnimations) binding.homeUserBg.pause()
                 binding.homeUserBg.loadImage(Anilist.bg)
                 binding.homeUserDataProgressBar.visibility = View.GONE
 
@@ -81,12 +85,14 @@ class HomeFragment : Fragment() {
 
                 binding.homeUserAvatarContainer.startAnimation(setSlideUp(uiSettings))
                 binding.homeUserDataContainer.visibility = View.VISIBLE
-                binding.homeUserDataContainer.layoutAnimation = LayoutAnimationController(setSlideUp(uiSettings), 0.25f)
+                binding.homeUserDataContainer.layoutAnimation =
+                    LayoutAnimationController(setSlideUp(uiSettings), 0.25f)
                 binding.homeAnimeList.visibility = View.VISIBLE
                 binding.homeMangaList.visibility = View.VISIBLE
-                binding.homeListContainer.layoutAnimation = LayoutAnimationController(setSlideIn(uiSettings),0.25f)
+                binding.homeListContainer.layoutAnimation =
+                    LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
             }
-            else{
+            else {
                 toastString("Please Reload.")
             }
         }
@@ -101,18 +107,19 @@ class HomeFragment : Fragment() {
         binding.homeUserBg.updateLayoutParams { height += statusBarHeight }
 
         var reached = false
-        val duration = (uiSettings.animationSpeed*200).toLong()
+        val duration = (uiSettings.animationSpeed * 200).toLong()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             binding.homeScroll.setOnScrollChangeListener { _, _, _, _, _ ->
                 if (!binding.homeScroll.canScrollVertically(1)) {
                     reached = true
                     bottomBar.animate().translationZ(0f).setDuration(duration).start()
-                    ObjectAnimator.ofFloat(bottomBar, "elevation", 4f, 0f).setDuration(duration).start()
-                }
-                else{
-                    if (reached){
+                    ObjectAnimator.ofFloat(bottomBar, "elevation", 4f, 0f).setDuration(duration)
+                        .start()
+                } else {
+                    if (reached) {
                         bottomBar.animate().translationZ(12f).setDuration(duration).start()
-                        ObjectAnimator.ofFloat(bottomBar, "elevation", 0f, 4f).setDuration(duration).start()
+                        ObjectAnimator.ofFloat(bottomBar, "elevation", 0f, 4f).setDuration(duration)
+                            .start()
                     }
                 }
             }
@@ -121,13 +128,19 @@ class HomeFragment : Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val displayCutout = activity?.window?.decorView?.rootWindowInsets?.displayCutout
             if (displayCutout != null) {
-                if (displayCutout.boundingRects.size>0) {
-                    height = max(statusBarHeight,min(displayCutout.boundingRects[0].width(),displayCutout.boundingRects[0].height()))
+                if (displayCutout.boundingRects.size > 0) {
+                    height = max(
+                        statusBarHeight,
+                        min(
+                            displayCutout.boundingRects[0].width(),
+                            displayCutout.boundingRects[0].height()
+                        )
+                    )
                 }
             }
         }
-        binding.homeRefresh.setSlingshotDistance(height+128)
-        binding.homeRefresh.setProgressViewEndTarget(false, height+128)
+        binding.homeRefresh.setSlingshotDistance(height + 128)
+        binding.homeRefresh.setProgressViewEndTarget(false, height + 128)
         binding.homeRefresh.setOnRefreshListener {
             Refresh.activity[1]!!.postValue(true)
         }
@@ -135,7 +148,7 @@ class HomeFragment : Fragment() {
         //UserData
         binding.homeUserDataProgressBar.visibility = View.VISIBLE
         binding.homeUserDataContainer.visibility = View.GONE
-        if(model.loaded){
+        if (model.loaded) {
             load()
         }
         //List Images
@@ -147,7 +160,14 @@ class HomeFragment : Fragment() {
         }
 
         //Function For Recycler Views
-        fun initRecyclerView(mode: LiveData<ArrayList<Media>>,container: View, recyclerView: RecyclerView, progress: View, empty: View, title:View) {
+        fun initRecyclerView(
+            mode: LiveData<ArrayList<Media>>,
+            container: View,
+            recyclerView: RecyclerView,
+            progress: View,
+            empty: View,
+            title: View
+        ) {
             container.visibility = View.VISIBLE
             progress.visibility = View.VISIBLE
             recyclerView.visibility = View.GONE
@@ -159,14 +179,15 @@ class HomeFragment : Fragment() {
                 empty.visibility = View.GONE
                 if (it != null) {
                     if (it.isNotEmpty()) {
-                        recyclerView.adapter = MediaAdaptor(0,it, requireActivity())
+                        recyclerView.adapter = MediaAdaptor(0, it, requireActivity())
                         recyclerView.layoutManager = LinearLayoutManager(
                             requireContext(),
                             LinearLayoutManager.HORIZONTAL,
                             false
                         )
                         recyclerView.visibility = View.VISIBLE
-                        recyclerView.layoutAnimation = LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
+                        recyclerView.layoutAnimation =
+                            LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
 
                     } else {
                         empty.visibility = View.VISIBLE
@@ -233,8 +254,8 @@ class HomeFragment : Fragment() {
 
         binding.homeUserAvatarContainer.startAnimation(setSlideUp(uiSettings))
 
-        model.empty.observe(viewLifecycleOwner){
-            binding.homeSaikouContainer.visibility = if(it==true) View.VISIBLE else View.GONE
+        model.empty.observe(viewLifecycleOwner) {
+            binding.homeSaikouContainer.visibility = if (it == true) View.VISIBLE else View.GONE
             (binding.homeSaikouIcon.drawable as Animatable).start()
             binding.homeSaikouContainer.startAnimation(setSlideUp(uiSettings))
             binding.homeSaikouIcon.setSafeOnClickListener {
@@ -262,7 +283,8 @@ class HomeFragment : Fragment() {
         live.observe(viewLifecycleOwner) {
             if (it) {
                 scope.launch {
-                    uiSettings = loadData<UserInterfaceSettings>("ui_settings")?:UserInterfaceSettings()
+                    uiSettings =
+                        loadData<UserInterfaceSettings>("ui_settings") ?: UserInterfaceSettings()
                     withContext(Dispatchers.IO) {
                         //Get userData First
                         if (Anilist.userid == null)
@@ -271,12 +293,11 @@ class HomeFragment : Fragment() {
                         model.loaded = true
                         model.setListImages()
                         var empty = true
-                        (array.indices).forEach { i->
-                            if(uiSettings.homeLayoutShow[i]) {
+                        (array.indices).forEach { i ->
+                            if (uiSettings.homeLayoutShow[i]) {
                                 array[i].run()
                                 empty = false
-                            }
-                            else withContext(Dispatchers.Main){
+                            } else withContext(Dispatchers.Main) {
                                 containers[i].visibility = View.GONE
                             }
                         }
@@ -290,7 +311,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onResume() {
-        if(!model.loaded) Refresh.activity[1]!!.postValue(true)
+        if (!model.loaded) Refresh.activity[1]!!.postValue(true)
         super.onResume()
     }
 }

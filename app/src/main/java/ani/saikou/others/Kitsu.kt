@@ -10,7 +10,7 @@ import org.jsoup.Connection.Method
 import org.jsoup.Jsoup
 
 object Kitsu {
-    private fun getKitsuData(query:String): String {
+    private fun getKitsuData(query: String): String {
         return Jsoup.connect("https://kitsu.io/api/graphql")
             .header("Content-Type", "application/json")
             .header("Accept", "application/json")
@@ -23,44 +23,56 @@ object Kitsu {
             .method(Method.POST).execute().body()
     }
 
-    fun getKitsuEpisodesDetails(media:Media): MutableMap<String,Episode>? {
+    fun getKitsuEpisodesDetails(media: Media): MutableMap<String, Episode>? {
         val print = false
-        logger("Kitsu : title=${media.getMangaName()}",print)
-        try{
-            val query = """{"query":"query{searchAnimeByTitle(first:5,title:\"${media.getMangaName()}\"){nodes{id season startDate titles{localized}episodes(first:2000){nodes{number titles{canonical}description thumbnail{original{url}}}}}}}"}"""
+        logger("Kitsu : title=${media.getMangaName()}", print)
+        try {
+            val query =
+                """{"query":"query{searchAnimeByTitle(first:5,title:\"${media.getMangaName()}\"){nodes{id season startDate titles{localized}episodes(first:2000){nodes{number titles{canonical}description thumbnail{original{url}}}}}}}"}"""
             val result = getKitsuData(query)
-            logger("Kitsu : result=$result",print)
-            var arr :  MutableMap<String,Episode>?
+            logger("Kitsu : result=$result", print)
+            var arr: MutableMap<String, Episode>?
             val json = Json.decodeFromString<JsonObject>(result)
-            if(json.containsKey("data")){
-                val node : JsonElement? = json.jsonObject["data"]!!.jsonObject["searchAnimeByTitle"]!!.jsonObject["nodes"]
-                if (node!=null){
-                    if (!node.jsonArray.isEmpty()){
-                        logger("Kitsu : Not Empty",print)
-                        node.jsonArray.forEach { j->
-                            logger(j.jsonObject["season"].toString().trim('"'),print)
-                            if(j.jsonObject["season"].toString().trim('"')==media.anime!!.season && j.jsonObject["startDate"].toString().trim('"').split('-')[0]==media.anime.seasonYear.toString()){
-                                val episodes : JsonElement? = j.jsonObject["episodes"]!!.jsonObject["nodes"]
-                                logger("Kitsu : episodes=$episodes",print)
+            if (json.containsKey("data")) {
+                val node: JsonElement? =
+                    json.jsonObject["data"]!!.jsonObject["searchAnimeByTitle"]!!.jsonObject["nodes"]
+                if (node != null) {
+                    if (!node.jsonArray.isEmpty()) {
+                        logger("Kitsu : Not Empty", print)
+                        node.jsonArray.forEach { j ->
+                            logger(j.jsonObject["season"].toString().trim('"'), print)
+                            if (j.jsonObject["season"].toString()
+                                    .trim('"') == media.anime!!.season && j.jsonObject["startDate"].toString()
+                                    .trim('"').split('-')[0] == media.anime.seasonYear.toString()
+                            ) {
+                                val episodes: JsonElement? =
+                                    j.jsonObject["episodes"]!!.jsonObject["nodes"]
+                                logger("Kitsu : episodes=$episodes", print)
                                 arr = mutableMapOf()
                                 episodes?.jsonArray?.forEach {
-                                    logger("Kitsu : forEach=$it",print)
-                                    if (it!=JsonNull){
-                                        val i = it.jsonObject["number"]?.toString()?.replace("\"", "")!!
-                                        var name : String? = null
-                                        if (it.jsonObject["titles"]!!.jsonObject["canonical"]!=JsonNull) {
-                                            name = it.jsonObject["titles"]!!.jsonObject["canonical"]?.toString()?.replace("\"", "")
+                                    logger("Kitsu : forEach=$it", print)
+                                    if (it != JsonNull) {
+                                        val i =
+                                            it.jsonObject["number"]?.toString()?.replace("\"", "")!!
+                                        var name: String? = null
+                                        if (it.jsonObject["titles"]!!.jsonObject["canonical"] != JsonNull) {
+                                            name =
+                                                it.jsonObject["titles"]!!.jsonObject["canonical"]?.toString()
+                                                    ?.replace("\"", "")
                                             if (name == "null") {
                                                 name = null
                                             }
                                         }
                                         arr!![i] = Episode(
-                                            number = it.jsonObject["number"]?.toString()?.replace("\"", "")!!,
+                                            number = it.jsonObject["number"]?.toString()
+                                                ?.replace("\"", "")!!,
                                             title = name,
-                                            desc = if (it.jsonObject["description"]!!.jsonObject["en"]!=JsonNull) it.jsonObject["description"]!!.jsonObject["en"]?.toString()?.replace("\"", "")?.replace("\\n", "\n") else null,
-                                            thumb = if (it.jsonObject["thumbnail"]!=JsonNull) it.jsonObject["thumbnail"]!!.jsonObject["original"]!!.jsonObject["url"]?.toString()?.replace("\"", "") else null,
+                                            desc = if (it.jsonObject["description"]!!.jsonObject["en"] != JsonNull) it.jsonObject["description"]!!.jsonObject["en"]?.toString()
+                                                ?.replace("\"", "")?.replace("\\n", "\n") else null,
+                                            thumb = if (it.jsonObject["thumbnail"] != JsonNull) it.jsonObject["thumbnail"]!!.jsonObject["original"]!!.jsonObject["url"]?.toString()
+                                                ?.replace("\"", "") else null,
                                         )
-                                        logger("Kitsu : arr[$i] = ${arr!![i]}",print)
+                                        logger("Kitsu : arr[$i] = ${arr!![i]}", print)
                                     }
                                 }
                                 return arr
@@ -69,8 +81,7 @@ object Kitsu {
                     }
                 }
             }
-        }
-        catch (e:Exception){
+        } catch (e: Exception) {
             toastString(e.toString())
         }
         return null

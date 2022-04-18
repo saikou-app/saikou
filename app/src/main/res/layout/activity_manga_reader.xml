@@ -16,7 +16,7 @@
 
     <ani.saikou.manga.zoomrecycler.ZoomFrame
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
         <ani.saikou.manga.zoomrecycler.ZoomRecyclerView
             android:id="@+id/mangaReaderRecycler"
@@ -25,7 +25,7 @@
             android:clipToPadding="false"
             android:paddingTop="128dp"
             android:paddingBottom="128dp"
-            tools:ignore="SpeakableTextPresentCheck"/>
+            tools:ignore="SpeakableTextPresentCheck" />
 
     </ani.saikou.manga.zoomrecycler.ZoomFrame>
 
@@ -277,9 +277,9 @@
         android:layout_gravity="bottom|center"
         android:fontFamily="@font/poppins_bold"
         android:padding="4dp"
-        app:outlineWidth="1"
-        app:outlineColor="#A9000000"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
+        app:outlineColor="#A9000000"
+        app:outlineWidth="1"
         tools:text="1/10" />
 </FrameLayout>

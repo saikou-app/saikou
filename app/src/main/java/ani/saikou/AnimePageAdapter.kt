@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LayoutAnimationController
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
@@ -23,16 +22,18 @@ import ani.saikou.media.SearchActivity
 import ani.saikou.settings.SettingsDialogFragment
 import ani.saikou.settings.UserInterfaceSettings
 
-class AnimePageAdapter: RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHolder>() {
+class AnimePageAdapter : RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHolder>() {
     val ready = MutableLiveData(false)
-    lateinit var binding:ItemAnimePageBinding
+    lateinit var binding: ItemAnimePageBinding
     private var trendHandler: Handler? = null
     private lateinit var trendRun: Runnable
-    var trendingViewPager:ViewPager2?=null
-    private var uiSettings: UserInterfaceSettings = loadData("ui_settings")?: UserInterfaceSettings()
+    var trendingViewPager: ViewPager2? = null
+    private var uiSettings: UserInterfaceSettings =
+        loadData("ui_settings") ?: UserInterfaceSettings()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnimePageViewHolder {
-        val binding = ItemAnimePageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            ItemAnimePageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return AnimePageViewHolder(binding)
     }
 
@@ -42,7 +43,9 @@ class AnimePageAdapter: RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHolde
 
         binding.animeTitleContainer.updatePadding(top = statusBarHeight)
 
-        if(uiSettings.smallView) binding.animeTrendingContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin = (-108f).px }
+        if (uiSettings.smallView) binding.animeTrendingContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+            bottomMargin = (-108f).px
+        }
 
         updateAvatar()
 
@@ -60,7 +63,10 @@ class AnimePageAdapter: RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHolde
         }
 
         binding.animeUserAvatar.setSafeOnClickListener {
-            SettingsDialogFragment().show((it.context as AppCompatActivity).supportFragmentManager, "dialog")
+            SettingsDialogFragment().show(
+                (it.context as AppCompatActivity).supportFragmentManager,
+                "dialog"
+            )
         }
 
         binding.animeGenreImage.loadImage("https://bit.ly/31bsIHq")
@@ -81,13 +87,13 @@ class AnimePageAdapter: RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHolde
                 null
             )
         }
-        if(ready.value==false)
+        if (ready.value == false)
             ready.postValue(true)
     }
 
     override fun getItemCount(): Int = 1
 
-    fun updateHeight(){
+    fun updateHeight() {
         trendingViewPager!!.updateLayoutParams { height += statusBarHeight }
     }
 
@@ -100,7 +106,8 @@ class AnimePageAdapter: RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHolde
 
         trendHandler = Handler(Looper.getMainLooper())
         trendRun = Runnable {
-            binding.animeTrendingViewPager.currentItem = binding.animeTrendingViewPager.currentItem + 1
+            binding.animeTrendingViewPager.currentItem =
+                binding.animeTrendingViewPager.currentItem + 1
         }
         binding.animeTrendingViewPager.registerOnPageChangeCallback(
             object : ViewPager2.OnPageChangeCallback() {
@@ -112,29 +119,37 @@ class AnimePageAdapter: RecyclerView.Adapter<AnimePageAdapter.AnimePageViewHolde
             }
         )
 
-        binding.animeTrendingViewPager.layoutAnimation = LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
+        binding.animeTrendingViewPager.layoutAnimation =
+            LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
         binding.animeTitleContainer.startAnimation(setSlideUp(uiSettings))
-        binding.animeListContainer.layoutAnimation = LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
+        binding.animeListContainer.layoutAnimation =
+            LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
     }
 
-    fun updateRecent(adaptor: MediaAdaptor){
+    fun updateRecent(adaptor: MediaAdaptor) {
         binding.animeUpdatedProgressBar.visibility = View.GONE
         binding.animeUpdatedRecyclerView.adapter = adaptor
-        binding.animeUpdatedRecyclerView.layoutManager = LinearLayoutManager(binding.animeUpdatedRecyclerView.context, LinearLayoutManager.HORIZONTAL, false)
+        binding.animeUpdatedRecyclerView.layoutManager = LinearLayoutManager(
+            binding.animeUpdatedRecyclerView.context,
+            LinearLayoutManager.HORIZONTAL,
+            false
+        )
         binding.animeUpdatedRecyclerView.visibility = View.VISIBLE
 
         binding.animeRecently.visibility = View.VISIBLE
         binding.animeRecently.startAnimation(setSlideUp(uiSettings))
-        binding.animeUpdatedRecyclerView.layoutAnimation = LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
+        binding.animeUpdatedRecyclerView.layoutAnimation =
+            LayoutAnimationController(setSlideIn(uiSettings), 0.25f)
         binding.animePopular.visibility = View.VISIBLE
         binding.animePopular.startAnimation(setSlideUp(uiSettings))
     }
 
-    fun updateAvatar(){
+    fun updateAvatar() {
         if (Anilist.avatar != null && ready.value == true) {
             binding.animeUserAvatar.loadImage(Anilist.avatar)
         }
     }
 
-    inner class AnimePageViewHolder(val binding: ItemAnimePageBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class AnimePageViewHolder(val binding: ItemAnimePageBinding) :
+        RecyclerView.ViewHolder(binding.root)
 }

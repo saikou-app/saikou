@@ -190,10 +190,9 @@
         android:layout_marginTop="14dp"
         app:cardBackgroundColor="@color/nav_tab"
         app:cardCornerRadius="2dp"
-        app:cardElevation="0dp" >
+        app:cardElevation="0dp">
 
     </androidx.cardview.widget.CardView>
-
 
 
 </FrameLayout>

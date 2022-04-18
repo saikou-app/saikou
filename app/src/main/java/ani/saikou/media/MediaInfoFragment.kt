@@ -39,9 +39,13 @@ class MediaInfoFragment : Fragment() {
     private var timer: CountDownTimer? = null
     private var loaded = false
     private var type = "ANIME"
-    private val genreModel : GenresViewModel by activityViewModels()
+    private val genreModel: GenresViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentMediaInfoBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -52,7 +56,7 @@ class MediaInfoFragment : Fragment() {
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val model : MediaDetailsViewModel by activityViewModels()
+        val model: MediaDetailsViewModel by activityViewModels()
         binding.mediaInfoProgressBar.visibility = if (!loaded) View.VISIBLE else View.GONE
         binding.mediaInfoContainer.visibility = if (loaded) View.VISIBLE else View.GONE
         binding.mediaInfoContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin += 128f.px + navBarHeight }
@@ -67,15 +71,17 @@ class MediaInfoFragment : Fragment() {
                     copyToClipboard(media.getMainName())
                     true
                 }
-                if (media.name != "null") binding.mediaInfoNameRomajiContainer.visibility = View.VISIBLE
+                if (media.name != "null") binding.mediaInfoNameRomajiContainer.visibility =
+                    View.VISIBLE
                 binding.mediaInfoNameRomaji.text = "\t\t\t" + media.nameRomaji
                 binding.mediaInfoNameRomaji.setOnLongClickListener {
                     copyToClipboard(media.nameRomaji)
                     true
                 }
-                binding.mediaInfoMeanScore.text = if (media.meanScore != null) (media.meanScore / 10.0).toString() else "??"
+                binding.mediaInfoMeanScore.text =
+                    if (media.meanScore != null) (media.meanScore / 10.0).toString() else "??"
                 binding.mediaInfoStatus.text = media.status
-                binding.mediaInfoFormat.text = media.format?.replace("_"," ")
+                binding.mediaInfoFormat.text = media.format?.replace("_", " ")
                 binding.mediaInfoSource.text = media.source
                 binding.mediaInfoStart.text =
                     if (media.startDate.toString() != "") media.startDate.toString() else "??"
@@ -106,8 +112,7 @@ class MediaInfoFragment : Fragment() {
                     binding.mediaInfoTotal.text =
                         if (media.anime.nextAiringEpisode != null) (media.anime.nextAiringEpisode.toString() + " | " + (media.anime.totalEpisodes
                             ?: "~").toString()) else (media.anime.totalEpisodes ?: "~").toString()
-                }
-                else if (media.manga != null) {
+                } else if (media.manga != null) {
                     type = "MANGA"
                     binding.mediaInfoTotalTitle.setText(R.string.total_chaps)
                     binding.mediaInfoTotal.text = (media.manga.totalChapters ?: "~").toString()
@@ -215,10 +220,20 @@ class MediaInfoFragment : Fragment() {
                         val first = a.indexOf('"').let { if (it != -1) it else return a } + 1
                         val end = a.indexOf('"', first).let { if (it != -1) it else return a }
                         val name = a.subSequence(first, end).toString()
-                        return "${a.subSequence(0, first)}[$name](https://www.youtube.com/results?search_query=${URLEncoder.encode(name, "utf-8")})${a.subSequence(end, a.length)}"
+                        return "${
+                            a.subSequence(
+                                0,
+                                first
+                            )
+                        }[$name](https://www.youtube.com/results?search_query=${
+                            URLEncoder.encode(
+                                name,
+                                "utf-8"
+                            )
+                        })${a.subSequence(end, a.length)}"
                     }
 
-                    fun makeText(textView: TextView,arr:ArrayList<String>){
+                    fun makeText(textView: TextView, arr: ArrayList<String>) {
                         var op = ""
                         arr.forEach {
                             op += "\n"
@@ -238,17 +253,25 @@ class MediaInfoFragment : Fragment() {
                     }
 
                     if (media.anime.op.isNotEmpty()) {
-                        val bind = ItemTitleTextBinding.inflate(LayoutInflater.from(context), parent, false)
+                        val bind = ItemTitleTextBinding.inflate(
+                            LayoutInflater.from(context),
+                            parent,
+                            false
+                        )
                         bind.itemTitle.setText(R.string.opening)
-                        makeText(bind.itemText,media.anime.op)
+                        makeText(bind.itemText, media.anime.op)
                         parent.addView(bind.root)
                     }
 
 
                     if (media.anime.ed.isNotEmpty()) {
-                        val bind = ItemTitleTextBinding.inflate(LayoutInflater.from(context), parent, false)
+                        val bind = ItemTitleTextBinding.inflate(
+                            LayoutInflater.from(context),
+                            parent,
+                            false
+                        )
                         bind.itemTitle.setText(R.string.ending)
-                        makeText(bind.itemText,media.anime.ed)
+                        makeText(bind.itemText, media.anime.ed)
                         parent.addView(bind.root)
                     }
                 }
@@ -265,16 +288,17 @@ class MediaInfoFragment : Fragment() {
                             bind.mediaInfoGenresProgressBar.visibility = View.GONE
                         }
                     }
-                    if(genreModel.genres!=null){
+                    if (genreModel.genres != null) {
                         adapter.genres = genreModel.genres!!
                         adapter.pos = ArrayList(genreModel.genres!!.keys)
-                        if(genreModel.done) genreModel.doneListener?.invoke()
+                        if (genreModel.done) genreModel.doneListener?.invoke()
                     }
                     bind.mediaInfoGenresRecyclerView.adapter = adapter
-                    bind.mediaInfoGenresRecyclerView.layoutManager = GridLayoutManager( requireActivity(), (screenWidth / 156f).toInt())
+                    bind.mediaInfoGenresRecyclerView.layoutManager =
+                        GridLayoutManager(requireActivity(), (screenWidth / 156f).toInt())
 
                     lifecycleScope.launch(Dispatchers.IO) {
-                        genreModel.loadGenres(media.genres){
+                        genreModel.loadGenres(media.genres) {
                             MainScope().launch {
                                 adapter.addGenre(it)
                             }
@@ -403,20 +427,20 @@ class MediaInfoFragment : Fragment() {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            val cornerTop = ObjectAnimator.ofFloat(binding.root,"radius",0f,32f).setDuration(200)
-            val cornerNotTop = ObjectAnimator.ofFloat(binding.root,"radius",32f,0f).setDuration(200)
+            val cornerTop = ObjectAnimator.ofFloat(binding.root, "radius", 0f, 32f).setDuration(200)
+            val cornerNotTop =
+                ObjectAnimator.ofFloat(binding.root, "radius", 32f, 0f).setDuration(200)
             var cornered = true
             cornerTop.start()
             binding.mediaInfoScroll.setOnScrollChangeListener { v, _, _, _, _ ->
-                if(!v.canScrollVertically(-1)){
-                    if(!cornered) {
+                if (!v.canScrollVertically(-1)) {
+                    if (!cornered) {
                         cornered = true
                         cornerTop.start()
                     }
-                }
-                else {
-                    if(cornered){
-                        cornered=false
+                } else {
+                    if (cornered) {
+                        cornered = false
                         cornerNotTop.start()
                     }
                 }

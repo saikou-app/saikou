@@ -10,15 +10,19 @@ object VideoCache {
     private var simpleCache: SimpleCache? = null
     fun getInstance(context: Context): SimpleCache {
         val databaseProvider = StandaloneDatabaseProvider(context)
-        if (simpleCache==null)
+        if (simpleCache == null)
             simpleCache = SimpleCache(
-                File(context.cacheDir, "exoplayer").also { it.deleteOnExit() }, // Ensures always fresh file
+                File(
+                    context.cacheDir,
+                    "exoplayer"
+                ).also { it.deleteOnExit() }, // Ensures always fresh file
                 LeastRecentlyUsedCacheEvictor(300L * 1024L * 1024L),
                 databaseProvider
             )
         return simpleCache as SimpleCache
     }
-    fun release(){
+
+    fun release() {
         simpleCache?.release()
         simpleCache = null
     }

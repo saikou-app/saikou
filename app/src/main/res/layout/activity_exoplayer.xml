@@ -12,6 +12,5 @@
         android:gravity="center"
         app:animation_enabled="false"
         app:resize_mode="fit"
-        app:show_buffering="when_playing">
-    </com.google.android.exoplayer2.ui.StyledPlayerView>
+        app:show_buffering="when_playing" />
 </LinearLayout>

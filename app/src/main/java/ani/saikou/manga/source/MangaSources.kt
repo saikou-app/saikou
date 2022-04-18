@@ -3,7 +3,7 @@ package ani.saikou.manga.source
 import ani.saikou.manga.source.parsers.*
 
 object MangaSources : MangaReadSources() {
-    private val mangaParsers:MutableMap<Int,MangaParser> = mutableMapOf()
+    private val mangaParsers: MutableMap<Int, MangaParser> = mutableMapOf()
 
     override val names = arrayListOf(
         "MANGAKAKALOT",
@@ -14,8 +14,8 @@ object MangaSources : MangaReadSources() {
         "MANGAREADER",
     )
 
-    override operator fun get(i:Int):MangaParser?{
-        val a = when(i){
+    override operator fun get(i: Int): MangaParser? {
+        val a = when (i) {
             0 -> mangaParsers.getOrPut(i) { MangaKakaLot() }
             1 -> mangaParsers.getOrPut(i) { MangaBuddy() }
             2 -> mangaParsers.getOrPut(i) { MangaSee() }
@@ -27,8 +27,9 @@ object MangaSources : MangaReadSources() {
         }
         return a
     }
-    override fun flushLive(){
-        mangaParsers.forEach{
+
+    override fun flushLive() {
+        mangaParsers.forEach {
             it.value.text = ""
         }
     }

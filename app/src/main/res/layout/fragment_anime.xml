@@ -7,11 +7,12 @@
     tools:context=".AnimeFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
         android:id="@+id/animeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:clipChildren="false"
-        android:clipToPadding="false"
-        android:layout_height="match_parent">
+        android:clipToPadding="false">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/animePageRecyclerView"
             android:layout_width="match_parent"

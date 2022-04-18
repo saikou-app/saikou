@@ -7,11 +7,12 @@
     tools:context=".MangaFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:layout_width="match_parent"
         android:id="@+id/mangaRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:clipChildren="false"
-        android:clipToPadding="false"
-        android:layout_height="match_parent">
+        android:clipToPadding="false">
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mangaPageRecyclerView"
             android:layout_width="match_parent"

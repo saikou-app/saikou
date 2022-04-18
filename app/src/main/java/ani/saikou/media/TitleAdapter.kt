@@ -5,8 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.databinding.ItemTitleBinding
 
-class TitleAdapter(private val text:String): RecyclerView.Adapter<TitleAdapter.TitleViewHolder>() {
-    inner class TitleViewHolder(val binding: ItemTitleBinding) : RecyclerView.ViewHolder(binding.root)
+class TitleAdapter(private val text: String) :
+    RecyclerView.Adapter<TitleAdapter.TitleViewHolder>() {
+    inner class TitleViewHolder(val binding: ItemTitleBinding) :
+        RecyclerView.ViewHolder(binding.root)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TitleViewHolder {
         val binding = ItemTitleBinding.inflate(LayoutInflater.from(parent.context), parent, false)

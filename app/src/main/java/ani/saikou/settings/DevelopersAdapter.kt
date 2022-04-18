@@ -9,10 +9,13 @@ import ani.saikou.loadImage
 import ani.saikou.openLinkInBrowser
 import ani.saikou.setAnimation
 
-class DevelopersAdapter(private val developers: Array<Developer>) : RecyclerView.Adapter<DevelopersAdapter.DeveloperViewHolder>() {
-    private val uiSettings = loadData<UserInterfaceSettings>("ui_settings") ?: UserInterfaceSettings()
+class DevelopersAdapter(private val developers: Array<Developer>) :
+    RecyclerView.Adapter<DevelopersAdapter.DeveloperViewHolder>() {
+    private val uiSettings =
+        loadData<UserInterfaceSettings>("ui_settings") ?: UserInterfaceSettings()
 
-    inner class DeveloperViewHolder(val binding: ItemDeveloperBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class DeveloperViewHolder(val binding: ItemDeveloperBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
                 openLinkInBrowser(developers[bindingAdapterPosition].url)
@@ -21,12 +24,18 @@ class DevelopersAdapter(private val developers: Array<Developer>) : RecyclerView
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeveloperViewHolder {
-        return DeveloperViewHolder(ItemDeveloperBinding.inflate(LayoutInflater.from(parent.context), parent, false))
+        return DeveloperViewHolder(
+            ItemDeveloperBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
     override fun onBindViewHolder(holder: DeveloperViewHolder, position: Int) {
-        val  b = holder.binding
-        setAnimation(b.root.context,b.root, uiSettings)
+        val b = holder.binding
+        setAnimation(b.root.context, b.root, uiSettings)
         val dev = developers[position]
         b.devName.text = dev.name
         b.devProfile.loadImage(dev.pfp)

@@ -34,7 +34,7 @@ import nl.joery.animatedbottombar.AnimatedBottomBar
 import java.io.Serializable
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var binding : ActivityMainBinding
+    private lateinit var binding: ActivityMainBinding
     private val scope = lifecycleScope
     private var load = false
 
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.root.doOnAttach {
             initActivity(this)
-            uiSettings = loadData("ui_settings")?:uiSettings
+            uiSettings = loadData("ui_settings") ?: uiSettings
             selectedOption = uiSettings.defaultStartUpTab
             binding.navbarContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> {
                 bottomMargin = navBarHeight
@@ -82,12 +82,11 @@ class MainActivity : AppCompatActivity() {
         if (!isOnline(this)) {
             toastString("No Internet Connection")
             startActivity(Intent(this, NoInternet::class.java))
-        }
-        else{
-            val  model : AnilistHomeViewModel by viewModels()
+        } else {
+            val model: AnilistHomeViewModel by viewModels()
             model.genres.observe(this) {
-                if (it!=null) {
-                    if(it) {
+                if (it != null) {
+                    if (it) {
                         val navbar = binding.navbar
                         bottomBar = navbar
                         navbar.visibility = View.VISIBLE
@@ -132,8 +131,7 @@ class MainActivity : AppCompatActivity() {
                                 }
                             }
                         }
-                    }
-                    else {
+                    } else {
                         binding.mainProgressBar.visibility = View.GONE
 //                        toastString("Error Loading Tags & Genres.")
                     }
@@ -159,23 +157,26 @@ class MainActivity : AppCompatActivity() {
             return
         }
         this.doubleBackToExitPressedOnce = true
-        val snackBar = Snackbar.make(binding.root, "Please click BACK again to exit", Snackbar.LENGTH_LONG)
-        snackBar.view.translationY = -navBarHeight.dp - if(binding.navbar.scaleX==1f) binding.navbar.height - 2f else 0f
+        val snackBar =
+            Snackbar.make(binding.root, "Please click BACK again to exit", Snackbar.LENGTH_LONG)
+        snackBar.view.translationY =
+            -navBarHeight.dp - if (binding.navbar.scaleX == 1f) binding.navbar.height - 2f else 0f
         snackBar.show()
 
         Handler(Looper.getMainLooper()).postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
     }
 
     //ViewPager
-    private class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) : FragmentStateAdapter(fragmentManager, lifecycle) {
+    private class ViewPagerAdapter(fragmentManager: FragmentManager, lifecycle: Lifecycle) :
+        FragmentStateAdapter(fragmentManager, lifecycle) {
 
         override fun getItemCount(): Int = 3
 
         override fun createFragment(position: Int): Fragment {
-            when (position){
-                0-> return AnimeFragment()
-                1-> return if (Anilist.token!=null) HomeFragment() else LoginFragment()
-                2-> return MangaFragment()
+            when (position) {
+                0 -> return AnimeFragment()
+                1 -> return if (Anilist.token != null) HomeFragment() else LoginFragment()
+                2 -> return MangaFragment()
             }
             return LoginFragment()
         }

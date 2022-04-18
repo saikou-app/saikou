@@ -44,7 +44,7 @@ open class AnimeWatchFragment : Fragment() {
 
     private var start = 0
     private var end: Int? = null
-    private var style:Int? = null
+    private var style: Int? = null
     private var reverse = false
 
     private lateinit var headerAdapter: AnimeWatchAdapter
@@ -56,8 +56,8 @@ open class AnimeWatchFragment : Fragment() {
     var continueEp: Boolean = false
     var loaded = false
 
-    lateinit var playerSettings : PlayerSettings
-    lateinit var uiSettings : UserInterfaceSettings
+    lateinit var playerSettings: PlayerSettings
+    lateinit var uiSettings: UserInterfaceSettings
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -74,10 +74,12 @@ open class AnimeWatchFragment : Fragment() {
         screenWidth = resources.displayMetrics.widthPixels.dp
 
         var maxGridSize = (screenWidth / 100f).roundToInt()
-        maxGridSize = max(4,maxGridSize-(maxGridSize%2))
+        maxGridSize = max(4, maxGridSize - (maxGridSize % 2))
 
-        playerSettings = loadData("player_settings", toast = false)?:PlayerSettings().apply { saveData("player_settings",this) }
-        uiSettings = loadData("ui_settings", toast = false)?:UserInterfaceSettings().apply { saveData("ui_settings",this) }
+        playerSettings = loadData("player_settings", toast = false)
+            ?: PlayerSettings().apply { saveData("player_settings", this) }
+        uiSettings = loadData("ui_settings", toast = false)
+            ?: UserInterfaceSettings().apply { saveData("ui_settings", this) }
 
         val gridLayoutManager = GridLayoutManager(requireContext(), maxGridSize)
 
@@ -110,13 +112,16 @@ open class AnimeWatchFragment : Fragment() {
                 progress = View.GONE
                 binding.mediaInfoProgressBar.visibility = progress
 
-                if(!loaded) {
-                    model.watchAnimeWatchSources = if (media.isAdult) HAnimeSources else AnimeSources
+                if (!loaded) {
+                    model.watchAnimeWatchSources =
+                        if (media.isAdult) HAnimeSources else AnimeSources
 
                     headerAdapter = AnimeWatchAdapter(it, this, watchSources)
-                    episodeAdapter = EpisodeAdapter(style?:uiSettings.animeDefaultView, media, this)
+                    episodeAdapter =
+                        EpisodeAdapter(style ?: uiSettings.animeDefaultView, media, this)
 
-                    binding.animeSourceRecycler.adapter = ConcatAdapter(headerAdapter, episodeAdapter)
+                    binding.animeSourceRecycler.adapter =
+                        ConcatAdapter(headerAdapter, episodeAdapter)
 
                     lifecycleScope.launch(Dispatchers.IO) {
                         awaitAll(
@@ -126,8 +131,7 @@ open class AnimeWatchFragment : Fragment() {
                         model.loadEpisodes(media, media.selected!!.source)
                     }
                     loaded = true
-                }
-                else{
+                } else {
                     reload()
                 }
             }
@@ -186,17 +190,17 @@ open class AnimeWatchFragment : Fragment() {
         }
 
         model.getKitsuEpisodes().observe(viewLifecycleOwner) { i ->
-            if(i!=null)
+            if (i != null)
                 media.anime?.kitsuEpisodes = i
         }
 
         model.getFillerEpisodes().observe(viewLifecycleOwner) { i ->
-            if(i!=null)
+            if (i != null)
                 media.anime?.fillerEpisodes = i
         }
     }
 
-    fun onSourceChange(i: Int): AnimeParser  {
+    fun onSourceChange(i: Int): AnimeParser {
         media.anime?.episodes = null
         reload()
         val selected = model.loadSelected(media)
@@ -207,7 +211,7 @@ open class AnimeWatchFragment : Fragment() {
         return watchSources[i]!!
     }
 
-    fun loadEpisodes(i:Int){
+    fun loadEpisodes(i: Int) {
         lifecycleScope.launch(Dispatchers.IO) { model.loadEpisodes(media, i) }
     }
 
@@ -247,10 +251,10 @@ open class AnimeWatchFragment : Fragment() {
                     .slice(start..(end ?: (media.anime!!.episodes!!.size - 1)))
             )
             if (reverse)
-                arr = (arr.reversed() as? ArrayList<Episode>)?:arr
+                arr = (arr.reversed() as? ArrayList<Episode>) ?: arr
         }
         episodeAdapter.arr = arr
-        episodeAdapter.updateType(style?:uiSettings.animeDefaultView)
+        episodeAdapter.updateType(style ?: uiSettings.animeDefaultView)
         episodeAdapter.notifyItemRangeInserted(0, arr.size)
     }
 
@@ -259,7 +263,7 @@ open class AnimeWatchFragment : Fragment() {
         super.onDestroy()
     }
 
-    var state: Parcelable?=null
+    var state: Parcelable? = null
     override fun onResume() {
         super.onResume()
         binding.mediaInfoProgressBar.visibility = progress

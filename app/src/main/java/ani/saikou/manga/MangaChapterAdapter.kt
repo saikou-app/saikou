@@ -11,16 +11,28 @@ import ani.saikou.setAnimation
 import ani.saikou.updateAnilistProgress
 
 class MangaChapterAdapter(
-    private var type:Int,
+    private var type: Int,
     private val media: Media,
     private val fragment: MangaReadFragment,
     var arr: ArrayList<MangaChapter> = arrayListOf(),
-):  RecyclerView.Adapter<RecyclerView.ViewHolder>(){
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType){
-            1->ChapterCompactViewHolder(ItemEpisodeCompactBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            0->ChapterListViewHolder(ItemChapterListBinding.inflate(LayoutInflater.from(parent.context), parent, false))
-            else->throw IllegalArgumentException()
+        return when (viewType) {
+            1 -> ChapterCompactViewHolder(
+                ItemEpisodeCompactBinding.inflate(
+                    LayoutInflater.from(
+                        parent.context
+                    ), parent, false
+                )
+            )
+            0 -> ChapterListViewHolder(
+                ItemChapterListBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent,
+                    false
+                )
+            )
+            else -> throw IllegalArgumentException()
         }
     }
 
@@ -30,20 +42,22 @@ class MangaChapterAdapter(
 
     override fun getItemCount(): Int = arr.size
 
-    inner class ChapterCompactViewHolder(val binding: ItemEpisodeCompactBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ChapterCompactViewHolder(val binding: ItemEpisodeCompactBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
-                if( 0<=bindingAdapterPosition && bindingAdapterPosition<arr.size)
+                if (0 <= bindingAdapterPosition && bindingAdapterPosition < arr.size)
                     fragment.onMangaChapterClick(arr[bindingAdapterPosition].number)
             }
         }
     }
 
-    inner class ChapterListViewHolder(val binding: ItemChapterListBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ChapterListViewHolder(val binding: ItemChapterListBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
-                if( 0<=bindingAdapterPosition && bindingAdapterPosition<arr.size)
-                fragment.onMangaChapterClick(arr[bindingAdapterPosition].number)
+                if (0 <= bindingAdapterPosition && bindingAdapterPosition < arr.size)
+                    fragment.onMangaChapterClick(arr[bindingAdapterPosition].number)
             }
         }
     }
@@ -52,15 +66,15 @@ class MangaChapterAdapter(
         when (holder) {
             is ChapterCompactViewHolder -> {
                 val binding = holder.binding
-                setAnimation(fragment.requireContext(),holder.binding.root,fragment.uiSettings)
+                setAnimation(fragment.requireContext(), holder.binding.root, fragment.uiSettings)
                 val ep = arr[position]
                 binding.itemEpisodeNumber.text = ep.number
-                if (media.userProgress!=null) {
-                    if (ep.number.toFloatOrNull()?:9999f<=media.userProgress!!.toFloat())
-                        binding.itemEpisodeViewedCover.visibility=View.VISIBLE
-                    else{
-                        binding.itemEpisodeViewedCover.visibility=View.GONE
-                        binding.itemEpisodeCont.setOnLongClickListener{
+                if (media.userProgress != null) {
+                    if (ep.number.toFloatOrNull() ?: 9999f <= media.userProgress!!.toFloat())
+                        binding.itemEpisodeViewedCover.visibility = View.VISIBLE
+                    else {
+                        binding.itemEpisodeViewedCover.visibility = View.GONE
+                        binding.itemEpisodeCont.setOnLongClickListener {
                             updateAnilistProgress(media, ep.number)
                             true
                         }
@@ -70,39 +84,39 @@ class MangaChapterAdapter(
             is ChapterListViewHolder -> {
                 val binding = holder.binding
                 val ep = arr[position]
-                setAnimation(fragment.requireContext(),holder.binding.root,fragment.uiSettings)
+                setAnimation(fragment.requireContext(), holder.binding.root, fragment.uiSettings)
                 binding.itemChapterNumber.text = ep.number
-                if(!ep.title.isNullOrEmpty()) {
+                if (!ep.title.isNullOrEmpty()) {
                     binding.itemChapterTitle.text = ep.title
                     binding.itemChapterTitle.setOnClickListener {
                         binding.itemChapterTitle.maxLines.apply {
-                            binding.itemChapterTitle.maxLines = if(this==1) 3 else 1
+                            binding.itemChapterTitle.maxLines = if (this == 1) 3 else 1
                         }
                     }
                     binding.itemChapterTitle.visibility = View.VISIBLE
-                }
-                else binding.itemChapterTitle.visibility = View.GONE
+                } else binding.itemChapterTitle.visibility = View.GONE
 
-                if (media.userProgress!=null) {
-                    if (ep.number.toFloatOrNull()?:9999f<=media.userProgress!!.toFloat()) {
-                        binding.itemEpisodeViewedCover.visibility=View.VISIBLE
+                if (media.userProgress != null) {
+                    if (ep.number.toFloatOrNull() ?: 9999f <= media.userProgress!!.toFloat()) {
+                        binding.itemEpisodeViewedCover.visibility = View.VISIBLE
                         binding.itemEpisodeViewed.visibility = View.VISIBLE
-                    } else{
-                        binding.itemEpisodeViewedCover.visibility=View.GONE
+                    } else {
+                        binding.itemEpisodeViewedCover.visibility = View.GONE
                         binding.itemEpisodeViewed.visibility = View.GONE
-                        binding.root.setOnLongClickListener{
+                        binding.root.setOnLongClickListener {
                             updateAnilistProgress(media, ep.number)
                             true
                         }
                     }
-                }else{
-                    binding.itemEpisodeViewedCover.visibility=View.GONE
+                } else {
+                    binding.itemEpisodeViewedCover.visibility = View.GONE
                     binding.itemEpisodeViewed.visibility = View.GONE
                 }
             }
         }
     }
-    fun updateType(t:Int){
+
+    fun updateType(t: Int) {
         type = t
     }
 }

@@ -3,10 +3,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="56dp"
-    android:fontFamily="@font/poppins_bold"
     android:ellipsize="marquee"
+    android:fontFamily="@font/poppins_bold"
     android:marqueeRepeatLimit="marquee_forever"
     android:padding="16dp"
+    android:singleLine="true"
     android:textColor="?android:attr/textColorSecondary"
-    tools:text="Item"
-    android:singleLine="true" />
+    tools:text="Item" />

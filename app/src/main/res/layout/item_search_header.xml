@@ -36,8 +36,8 @@
             android:fontFamily="@font/poppins_bold"
             android:imeOptions="actionSearch"
             android:inputType="textPersonName"
-            android:selectAllOnFocus="true"
             android:padding="8dp"
+            android:selectAllOnFocus="true"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
             tools:ignore="LabelFor,TextContrastCheck" />

@@ -257,10 +257,10 @@
 
                     <ImageButton
                         android:id="@+id/exo_next_ep"
-                        android:background="?android:attr/selectableItemBackground"
                         android:layout_width="72dp"
                         android:layout_height="72dp"
                         android:layout_weight="1"
+                        android:background="?android:attr/selectableItemBackground"
                         android:scaleX="1.5"
                         android:scaleY="1.5"
                         android:src="@drawable/ic_round_skip_next_24"

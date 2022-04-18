@@ -14,9 +14,9 @@ import ani.saikou.media.MediaAdaptor
 class ListFragment : Fragment() {
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
-    private var pos : Int?=null
-    private var grid : Boolean?=null
-    private var list : ArrayList<Media>?=null
+    private var pos: Int? = null
+    private var grid: Boolean? = null
+    private var list: ArrayList<Media>? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -24,20 +24,27 @@ class ListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = FragmentListBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val model : ListViewModel by activityViewModels()
+        val model: ListViewModel by activityViewModels()
         val screenWidth = resources.displayMetrics.run { widthPixels / density }
 
-        fun update(){
-            if (grid!=null && list!=null) {
-                val adapter = MediaAdaptor(if(grid!!) 0 else 1,list!!, requireActivity(), true)
-                binding.listRecyclerView.layoutManager = GridLayoutManager(requireContext(), if (grid!!) (screenWidth / 124f).toInt() else 1)
+        fun update() {
+            if (grid != null && list != null) {
+                val adapter = MediaAdaptor(if (grid!!) 0 else 1, list!!, requireActivity(), true)
+                binding.listRecyclerView.layoutManager = GridLayoutManager(
+                    requireContext(),
+                    if (grid!!) (screenWidth / 124f).toInt() else 1
+                )
                 binding.listRecyclerView.adapter = adapter
             }
         }
@@ -55,7 +62,7 @@ class ListFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance(pos:Int): ListFragment =
+        fun newInstance(pos: Int): ListFragment =
             ListFragment().apply {
                 arguments = Bundle().apply {
                     putInt("list", pos)

@@ -1,5 +1,7 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <stroke android:width="2dp" android:color="#208358" />
-    <solid android:color="#6BF170"/>
-    <corners android:radius="8dp"/>
+    <stroke
+        android:width="2dp"
+        android:color="#208358" />
+    <solid android:color="#6BF170" />
+    <corners android:radius="8dp" />
 </shape>
