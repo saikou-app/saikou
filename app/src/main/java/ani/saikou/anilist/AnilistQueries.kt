@@ -301,7 +301,9 @@ class AnilistQueries{
             if (lists != null && lists.isNotEmpty()) {
                 lists.forEach { li->
                     li.entries!!.reversed().forEach {
-                        map[it.media!!.id] = Media(it)
+                        val m = Media(it)
+                        m.cameFromContinue = true
+                        map[it.media!!.id] = m
                     }
                 }
             }

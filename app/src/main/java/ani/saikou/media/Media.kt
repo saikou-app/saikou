@@ -77,53 +77,23 @@ data class Media(
         isFav = apiMedia.isFavourite,
         isAdult = apiMedia.isAdult ?: false,
         userProgress = apiMedia.mediaListEntry?.progress,
-        userScore = if (apiMedia.mediaListEntry != null) apiMedia.mediaListEntry!!.score!!.toInt() else 0,
-        userStatus = if (apiMedia.mediaListEntry != null) apiMedia.mediaListEntry!!.status!!.toString() else null,
+        userScore = apiMedia.mediaListEntry?.score?.toInt() ?: 0,
+        userStatus = apiMedia.mediaListEntry?.status?.toString(),
         meanScore = apiMedia.meanScore,
         anime = if (apiMedia.type!! == MediaType.ANIME) Anime(totalEpisodes = apiMedia.episodes, nextAiringEpisode = if (apiMedia.nextAiringEpisode != null) apiMedia.nextAiringEpisode!!.episode - 1 else null) else null,
         manga = if (apiMedia.type!! == MediaType.MANGA) Manga(totalChapters = apiMedia.chapters) else null,
     )
 
-    constructor(mediaEdge: MediaEdge): this(
-        id = mediaEdge.node!!.id,
-        idMAL = mediaEdge.node!!.idMal,
-        popularity = mediaEdge.node!!.popularity,
-        name = mediaEdge.node!!.title!!.english.toString(),
-        nameRomaji = mediaEdge.node!!.title!!.romaji.toString(),
-        userPreferredName = mediaEdge.node!!.title!!.userPreferred.toString(),
-        cover = mediaEdge.node!!.coverImage!!.large,
-        banner = mediaEdge.node!!.bannerImage,
-        status = mediaEdge.node!!.status.toString().replace("_", " "),
-        isFav = mediaEdge.node!!.isFavourite,
-        isAdult = mediaEdge.node!!.isAdult ?: false,
-        userProgress = if (mediaEdge.node!!.mediaListEntry != null) mediaEdge.node!!.mediaListEntry!!.progress else null,
-        userScore = if (mediaEdge.node!!.mediaListEntry != null) mediaEdge.node!!.mediaListEntry!!.score!!.toInt() else 0,
-        userStatus = if (mediaEdge.node!!.mediaListEntry != null) mediaEdge.node!!.mediaListEntry!!.status!!.toString() else null,
-        meanScore = if (mediaEdge.node!!.meanScore != null) mediaEdge.node!!.meanScore!! else null,
-        relation = mediaEdge.relationType.toString(),
-        anime = if (mediaEdge.node!!.type!! == MediaType.ANIME) Anime(totalEpisodes = mediaEdge.node!!.episodes, nextAiringEpisode = if (mediaEdge.node!!.nextAiringEpisode != null) mediaEdge.node!!.nextAiringEpisode!!.episode - 1 else null) else null,
-        manga = if (mediaEdge.node!!.type!! == MediaType.MANGA) Manga(totalChapters = mediaEdge.node!!.chapters) else null,
-    )
+    constructor(mediaList: MediaList): this(mediaList.media!!) {
+        this.userProgress = mediaList.progress
+        this.userScore = mediaList.score?.toInt() ?: 0
+        this.userStatus = mediaList.status.toString()
+    }
 
-    constructor(mediaList: MediaList): this(
-        id = mediaList.media!!.id,
-        idMAL = mediaList.media!!.idMal,
-        name = mediaList.media!!.title!!.english.toString(),
-        nameRomaji = mediaList.media!!.title!!.romaji.toString(),
-        userPreferredName = mediaList.media!!.title!!.userPreferred.toString(),
-        cover = mediaList.media!!.coverImage!!.large,
-        banner = mediaList.media!!.bannerImage,
-        status = mediaList.media!!.status.toString().replace("_"," "),
-        meanScore = mediaList.media?.meanScore,
-        isFav = mediaList.media!!.isFavourite,
-        isAdult = mediaList.media!!.isAdult ?: false,
-        userProgress = mediaList.progress,
-        userScore = mediaList.score?.toInt() ?: 0,
-        userStatus = mediaList.status.toString(),
-        cameFromContinue = true,
-        anime = if (mediaList.media!!.type!! == MediaType.ANIME) Anime(totalEpisodes = mediaList.media!!.episodes, nextAiringEpisode = if (mediaList.media!!.nextAiringEpisode != null) mediaList.media!!.nextAiringEpisode!!.episode - 1 else null) else null,
-        manga = if (mediaList.media!!.type!! == MediaType.MANGA) Manga(totalChapters = mediaList.media!!.chapters) else null,
-    )
+    constructor(mediaEdge: MediaEdge): this(mediaEdge.node!!) {
+        this.relation = mediaEdge.relationType.toString()
+    }
+
     fun getMainName() = if (name!="null") name else nameRomaji
     fun getMangaName() = if (countryOfOrigin!="JP") getMainName() else nameRomaji
 }
