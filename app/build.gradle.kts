@@ -1,3 +1,5 @@
+import android.annotation.SuppressLint
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -36,6 +38,8 @@ android {
 }
 
 dependencies {
+    implementation(project(":saicore"))
+
     // Core
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.browser:browser:1.4.0")
@@ -49,7 +53,8 @@ dependencies {
     implementation("org.jsoup:jsoup:1.14.3")
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.0-native-mt")
+    // separated notation to avoid IDE warning about updating to 1.6.0
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.6.0-native-mt")
 
     implementation("com.github.bumptech.glide:glide:4.13.0")
     kapt("com.github.bumptech.glide:compiler:4.13.0")
