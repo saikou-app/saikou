@@ -777,7 +777,9 @@ Page(page:1,perPage:50) {
         )
         character.roles = arrayListOf()
         fetchedCharacter.media?.edges?.forEach { i->
-            character.roles!!.add(Media(i))
+            val m = Media(i)
+            m.relation = i.characterRole.toString()
+            character.roles!!.add(m)
         }
         return character
     }

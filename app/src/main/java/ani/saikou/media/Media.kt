@@ -91,7 +91,7 @@ data class Media(
     }
 
     constructor(mediaEdge: MediaEdge): this(mediaEdge.node!!) {
-        this.relation = mediaEdge.relationType.toString()
+        this.relation = mediaEdge.relationType.toString().replace("_", " ")
     }
 
     fun getMainName() = if (name!="null") name else nameRomaji
