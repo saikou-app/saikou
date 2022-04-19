@@ -175,7 +175,7 @@ class AnilistQueries{
                             fetchedMedia.characters!!.edges!!.forEach { i ->
                                 media.characters!!.add(
                                     Character(
-                                        id = i.node!!.id,
+                                        id = i.node!!.id!!,
                                         name = i.node!!.name!!.userPreferred!!,
                                         image = i.node!!.image!!.medium!!,
                                         banner = media.banner ?: media.cover,
@@ -303,7 +303,7 @@ class AnilistQueries{
                     li.entries!!.reversed().forEach {
                         val m = Media(it)
                         m.cameFromContinue = true
-                        map[it.media!!.id] = m
+                        map[it.media!!.id!!] = m
                     }
                 }
             }
@@ -352,7 +352,7 @@ class AnilistQueries{
                     this.reversed().forEach{
                         val json = it.mediaRecommendation
                         if (json!=null && json.id !in ids) {
-                            ids.add(json.id)
+                            ids.add(json.id!!)
                             responseArray.add(Media(json))
                         }
                     }
@@ -401,7 +401,7 @@ class AnilistQueries{
     }
 
     fun getMediaLists(anime:Boolean,userId:Int): MutableMap<String,ArrayList<Media>> {
-        val response = executeQuery("""{ MediaListCollection(userId: $userId, type: ${if(anime) "ANIME" else "MANGA"}) { lists { name entries { status progress score(format:POINT_100) media { id idMal isAdult status chapters episodes nextAiringEpisode {episode} bannerImage meanScore isFavourite coverImage{large} title {english romaji userPreferred } } } } user { mediaListOptions { rowOrder animeList { sectionOrder } mangaList { sectionOrder } } } } }""")
+        val response = executeQuery("""{ MediaListCollection(userId: $userId, type: ${if(anime) "ANIME" else "MANGA"}) { lists { name entries { status progress score(format:POINT_100) media { id idMal isAdult type status chapters episodes nextAiringEpisode {episode} bannerImage meanScore isFavourite coverImage{large} title {english romaji userPreferred } } } } user { mediaListOptions { rowOrder animeList { sectionOrder } mangaList { sectionOrder } } } } }""")
         val sorted = mutableMapOf<String,ArrayList<Media>>()
         val unsorted = mutableMapOf<String,ArrayList<Media>>()
         val all = arrayListOf<Media>()
@@ -414,7 +414,7 @@ class AnilistQueries{
             val name = i.name.toString().trim('"')
             unsorted[name] = arrayListOf()
             i.entries!!.forEach {
-                val a = Media(it.media!!)
+                val a = Media(it)
                 unsorted[name]!!.add(a)
                 if(!allIds.contains(a.id)) {
                     allIds.add(a.id)
@@ -485,7 +485,7 @@ class AnilistQueries{
                         if(this!=JsonNull) jsonArray.forEach{ node ->
                             val mediaTag: MediaTag = mapper.readValue(node.toString())
                             if(mediaTag.isAdult == true)
-                                tags!!.add(mediaTag.name)
+                                tags!!.add(mediaTag.name!!)
                         }
                     }
                     saveData("tags_list",tags!!)
@@ -518,10 +518,10 @@ class AnilistQueries{
                 if (response.jsonObject["media"] != JsonNull) {
                     response.jsonObject["media"]!!.jsonArray.forEach {
                         val media: ApiMedia = mapper.readValue(it.toString())
-                        if (genres.checkId(media.id) && media.bannerImage != null) {
+                        if (genres.checkId(media.id!!) && media.bannerImage != null) {
                             genres[genre] = Genre(
                                 genre,
-                                media.id,
+                                media.id!!,
                                 media.bannerImage!!,
                                 System.currentTimeMillis()
                             )
@@ -702,7 +702,7 @@ Page(page:1,perPage:50) {
                 val i = it.media!!
                 val id = i.id
                 if(!idArr.contains(id)) if (!listOnly && (i.countryOfOrigin =="JP" && (if(!Anilist.adult) i.isAdult == false else true)) || (listOnly && i.mediaListEntry!=null)) {
-                    idArr.add(id)
+                    idArr.add(id!!)
                     responseArray.add(Media(i))
                 }
             }

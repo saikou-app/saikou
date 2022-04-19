@@ -2,14 +2,14 @@ package ani.saikou.anilist.api
 
 data class Studio(
     // The id of the studio
-    var id: Int,
+    var id: Int?,
 
     // The name of the studio
     // Originally non-nullable, needs to be nullable due to it not being always queried
     var name: String?,
 
     // If the studio is an animation studio or a different kind of company
-    var isAnimationStudio: Boolean,
+    var isAnimationStudio: Boolean?,
 
     // The media the studio has worked on
     var media: MediaConnection?,
@@ -18,7 +18,7 @@ data class Studio(
     var siteUrl: String?,
 
     // If the studio is marked as favourite by the currently authenticated user
-    var isFavourite: Boolean,
+    var isFavourite: Boolean?,
 
     // The amount of user's who have favourited the studio
     var favourites: Int?,

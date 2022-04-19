@@ -2,7 +2,7 @@ package ani.saikou.anilist.api
 
 data class Staff(
     // The id of the staff member
-    var id: Int,
+    var id: Int?,
 
     // The names of the staff member
     // var name: StaffName?,
@@ -39,10 +39,10 @@ data class Staff(
     var bloodType: String?,
 
     // If the staff member is marked as favourite by the currently authenticated user
-    var isFavourite: Boolean,
+    var isFavourite: Boolean?,
 
     // If the staff member is blocked from being added to favourites
-    var isFavouriteBlocked: Boolean,
+    var isFavouriteBlocked: Boolean?,
 
     // The url for the staff page on the AniList website
     var siteUrl: String?,

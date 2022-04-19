@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Recommendation(
     // The id of the recommendation
-    var id: Int,
+    var id: Int?,
 
     // Users rating of the recommendation
     var rating: Int?,

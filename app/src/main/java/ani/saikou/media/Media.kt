@@ -65,23 +65,23 @@ data class Media(
     var cameFromContinue:Boolean=false
 ) : Serializable{
     constructor(apiMedia: ApiMedia): this(
-        id = apiMedia.id,
+        id = apiMedia.id!!,
         idMAL = apiMedia.idMal,
         popularity = apiMedia.popularity,
         name = apiMedia.title!!.english.toString(),
         nameRomaji = apiMedia.title!!.romaji.toString(),
         userPreferredName = apiMedia.title!!.userPreferred.toString(),
-        cover = apiMedia.coverImage!!.large,
+        cover = apiMedia.coverImage?.large,
         banner = apiMedia.bannerImage,
         status = apiMedia.status.toString().replace("_", " "),
-        isFav = apiMedia.isFavourite,
+        isFav = apiMedia.isFavourite!!,
         isAdult = apiMedia.isAdult ?: false,
         userProgress = apiMedia.mediaListEntry?.progress,
         userScore = apiMedia.mediaListEntry?.score?.toInt() ?: 0,
         userStatus = apiMedia.mediaListEntry?.status?.toString(),
         meanScore = apiMedia.meanScore,
-        anime = if (apiMedia.type!! == MediaType.ANIME) Anime(totalEpisodes = apiMedia.episodes, nextAiringEpisode = if (apiMedia.nextAiringEpisode != null) apiMedia.nextAiringEpisode!!.episode - 1 else null) else null,
-        manga = if (apiMedia.type!! == MediaType.MANGA) Manga(totalChapters = apiMedia.chapters) else null,
+        anime = if (apiMedia.type == MediaType.ANIME) Anime(totalEpisodes = apiMedia.episodes, nextAiringEpisode = apiMedia.nextAiringEpisode?.episode?.minus(1)) else null,
+        manga = if (apiMedia.type == MediaType.MANGA) Manga(totalChapters = apiMedia.chapters) else null,
     )
 
     constructor(mediaList: MediaList): this(mediaList.media!!) {

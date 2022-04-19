@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class Media(
     // The id of the media
-    var id: Int,
+    var id: Int?,
 
     // The mal id of the media
     var idMal: Int?,
@@ -117,10 +117,10 @@ data class Media(
     var studios: StudioConnection?,
 
     // If the media is marked as favourite by the current authenticated user
-    var isFavourite: Boolean,
+    var isFavourite: Boolean?,
 
     // If the media is blocked from being added to favourites
-    var isFavouriteBlocked: Boolean,
+    var isFavouriteBlocked: Boolean?,
 
     // If the media is intended only for 18+ adult audiences
     var isAdult: Boolean?,
@@ -196,19 +196,19 @@ enum class MediaStatus() {
 
 data class AiringSchedule(
     // The id of the airing schedule item
-    var id: Int,
+    var id: Int?,
 
     // The time the episode airs at
-    var airingAt: Int,
+    var airingAt: Int?,
 
     // Seconds until episode starts airing
-    var timeUntilAiring: Int,
+    var timeUntilAiring: Int?,
 
     // The airing episode number
-    var episode: Int,
+    var episode: Int?,
 
     // The associate media id of the airing episode
-    var mediaId: Int,
+    var mediaId: Int?,
 
     // The associate media of the airing episode
     var media: Media?,
@@ -231,13 +231,13 @@ data class MediaCoverImage(
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class MediaList(
     // The id of the list entry
-    var id: Int,
+    var id: Int?,
 
     // The id of the user owner of the list entry
-    var userId: Int,
+    var userId: Int?,
 
     // The id of the media
-    var mediaId: Int,
+    var mediaId: Int?,
 
     // The watching/reading status
     var status: MediaListStatus?,
@@ -314,10 +314,10 @@ data class MediaTrailer(
 
 data class MediaTag(
     // The id of the tag
-    var id: Int,
+    var id: Int?,
 
     // The name of the tag
-    var name: String,
+    var name: String?,
 
     // A general description of the tag
     var description: String?,
@@ -363,7 +363,7 @@ data class MediaEdge(
     var relationType: MediaRelation?,
 
     // If the studio is the main animation studio of the media (For Studio->MediaConnection field only)
-    var isMainStudio: Boolean,
+    var isMainStudio: Boolean?,
 
     // The characters in the media voiced by the parent actor
     var characters: List<Character>?,
@@ -403,13 +403,13 @@ enum class MediaSeason() {
 
 data class MediaExternalLink(
     // The id of the external link
-    var id: Int,
+    var id: Int?,
 
     // The url of the external link or base url of link source
     var url: String?,
 
     // The links website site name
-    var site: String,
+    var site: String?,
 
     // The links website site id
     var siteId: Int?,

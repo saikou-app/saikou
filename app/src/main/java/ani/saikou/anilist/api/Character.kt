@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 
 data class Character(
     // The id of the character
-    var id: Int,
+    var id: Int?,
 
     // The names of the character
     var name: CharacterName?,
@@ -28,10 +28,10 @@ data class Character(
     var bloodType: String?,
 
     // If the character is marked as favourite by the currently authenticated user
-    var isFavourite: Boolean,
+    var isFavourite: Boolean?,
 
     // If the character is blocked from being added to favourites
-    var isFavouriteBlocked: Boolean,
+    var isFavouriteBlocked: Boolean?,
 
     // The url for the character page on the AniList website
     var siteUrl: String?,

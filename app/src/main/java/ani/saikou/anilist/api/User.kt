@@ -5,10 +5,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class User(
     // The id of the user
-    var id: Int,
+    var id: Int?,
 
     // The name of the user
-    var name: String,
+    var name: String?,
 
     // The bio written by user (Markdown)
     var about: String?,
@@ -116,13 +116,13 @@ data class UserStatisticTypes(
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 data class UserStatistics( //
-    var count: Int,
-    var meanScore: Float,
-    var standardDeviation: Float,
-    var minutesWatched: Int,
-    var episodesWatched: Int,
-    var chaptersRead: Int,
-    var volumesRead: Int,
+    var count: Int?,
+    var meanScore: Float?,
+    var standardDeviation: Float?,
+    var minutesWatched: Int?,
+    var episodesWatched: Int?,
+    var chaptersRead: Int?,
+    var volumesRead: Int?,
     //    var formats: List<UserFormatStatistic>?,
     //    var statuses: List<UserStatusStatistic>?,
     //    var scores: List<UserScoreStatistic>?,
