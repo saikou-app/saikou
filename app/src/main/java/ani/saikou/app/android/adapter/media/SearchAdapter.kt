@@ -12,7 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.app.R
 import ani.saikou.app.android.activity.media.SearchActivity
-import ani.saikou.app.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.databinding.ItemSearchHeaderBinding
 import ani.saikou.core.service.STORE
 

@@ -1,4 +1,4 @@
-package ani.saikou.app.anime
+package ani.saikou.app.android.adapter.anime
 
 import android.annotation.SuppressLint
 import android.content.Intent
@@ -12,6 +12,7 @@ import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.app.R
 import ani.saikou.app.android.fragment.media.SourceSearchDialogFragment
+import ani.saikou.app.android.fragment.anime.AnimeWatchFragment
 import ani.saikou.app.databinding.ItemAnimeWatchBinding
 import ani.saikou.app.databinding.ItemChipBinding
 import ani.saikou.app.util.countDown

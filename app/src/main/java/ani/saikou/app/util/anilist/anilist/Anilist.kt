@@ -1,4 +1,4 @@
-package ani.saikou.app.anilist
+package ani.saikou.app.util.anilist.anilist
 
 import android.content.ActivityNotFoundException
 import android.content.Context

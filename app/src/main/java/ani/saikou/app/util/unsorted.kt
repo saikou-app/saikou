@@ -42,8 +42,8 @@ import androidx.viewpager2.widget.ViewPager2
 import ani.saikou.app.R
 import ani.saikou.app.Saikou
 import ani.saikou.app.android.activity.MainActivity
-import ani.saikou.app.anilist.Anilist
 import ani.saikou.app.databinding.ItemCountDownBinding
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.core.model.anime.Episode
 import ani.saikou.core.model.media.Media
 import ani.saikou.core.model.settings.UserInterfaceSettings

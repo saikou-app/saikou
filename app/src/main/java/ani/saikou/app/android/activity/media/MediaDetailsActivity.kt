@@ -31,9 +31,9 @@ import ani.saikou.app.android.fragment.manga.MangaReadFragment
 import ani.saikou.app.android.fragment.media.MediaInfoFragment
 import ani.saikou.app.android.fragment.media.MediaListDialogFragment
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.anilist.Anilist
-import ani.saikou.app.anime.AnimeWatchFragment
-import ani.saikou.app.anime.HWatchFragment
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.android.fragment.anime.AnimeWatchFragment
+import ani.saikou.app.android.fragment.anime.HWatchFragment
 import ani.saikou.app.databinding.ActivityMediaBinding
 import ani.saikou.app.util.*
 import ani.saikou.core.model.media.Media

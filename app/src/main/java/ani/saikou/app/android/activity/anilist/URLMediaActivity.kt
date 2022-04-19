@@ -1,4 +1,4 @@
-package ani.saikou.app.anilist
+package ani.saikou.app.android.activity.anilist
 
 import android.net.Uri
 import android.os.Bundle
@@ -14,8 +14,9 @@ class UrlMedia : AppCompatActivity() {
         val data: Uri? = intent?.data
         if (data?.host != "anilist.co") loadIsMAL = true
         try {
-            if (data?.pathSegments?.get(1) != null) loadMedia =
-                data.pathSegments?.get(1)?.toIntOrNull()
+            if (data?.pathSegments?.get(1) != null) {
+                loadMedia = data.pathSegments?.get(1)?.toIntOrNull()
+            }
         } catch (e: Exception) {
             LOG.notify(e.toString())
         }

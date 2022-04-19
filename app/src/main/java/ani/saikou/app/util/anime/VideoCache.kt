@@ -1,4 +1,4 @@
-package ani.saikou.app.anime
+package ani.saikou.app.util.anime
 
 import android.content.Context
 import com.google.android.exoplayer2.database.StandaloneDatabaseProvider

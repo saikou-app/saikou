@@ -1,4 +1,4 @@
-package ani.saikou.app.anime
+package ani.saikou.app.android.activity.anime
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -20,7 +20,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.Settings.System
+import android.provider.Settings
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Rational
 import android.util.TypedValue
@@ -34,14 +34,15 @@ import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.math.MathUtils.clamp
+import androidx.core.math.MathUtils
 import androidx.core.view.WindowCompat
 import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import androidx.media.session.MediaButtonReceiver
 import ani.saikou.app.R
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.util.anime.VideoCache
 import ani.saikou.app.databinding.ActivityExoplayerBinding
 import ani.saikou.app.util.*
 import ani.saikou.core.model.anime.Episode
@@ -60,7 +61,6 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.CaptionStyleCompat
-import com.google.android.exoplayer2.ui.CaptionStyleCompat.EDGE_TYPE_OUTLINE
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.ui.TrackSelectionDialogBuilder
 import com.google.android.exoplayer2.upstream.DataSource
@@ -230,7 +230,7 @@ class ExoplayerActivity : AppCompatActivity(), Player.Listener {
         playerView.controllerShowTimeoutMs = 5000
 
         val audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
-        if (System.getInt(contentResolver, System.ACCELEROMETER_ROTATION, 0) != 1) {
+        if (Settings.System.getInt(contentResolver, Settings.System.ACCELEROMETER_ROTATION, 0) != 1) {
             requestedOrientation = rotation
             exoRotate.setOnClickListener {
                 requestedOrientation = rotation
@@ -258,7 +258,7 @@ class ExoplayerActivity : AppCompatActivity(), Player.Listener {
                 Color.WHITE,
                 Color.TRANSPARENT,
                 Color.TRANSPARENT,
-                EDGE_TYPE_OUTLINE,
+                CaptionStyleCompat.EDGE_TYPE_OUTLINE,
                 Color.BLACK,
                 ResourcesCompat.getFont(this, R.font.poppins_bold)
             )
@@ -482,7 +482,8 @@ class ExoplayerActivity : AppCompatActivity(), Player.Listener {
 
                 override fun onScrollYClick(y: Float) {
                     if (!locked && settings.gestures) {
-                        exoBrightness.value = clamp(exoBrightness.value + y / 100, 0f, 10f)
+                        exoBrightness.value =
+                            MathUtils.clamp(exoBrightness.value + y / 100, 0f, 10f)
                         if (exoBrightnessCont.visibility != View.VISIBLE) {
                             exoBrightnessCont.visibility = View.VISIBLE
                         }
@@ -540,7 +541,7 @@ class ExoplayerActivity : AppCompatActivity(), Player.Listener {
 
                 override fun onScrollYClick(y: Float) {
                     if (!locked && settings.gestures) {
-                        exoVolume.value = clamp(exoVolume.value + y / 100, 0f, 10f)
+                        exoVolume.value = MathUtils.clamp(exoVolume.value + y / 100, 0f, 10f)
                         if (exoVolumeCont.visibility != View.VISIBLE) {
                             exoVolumeCont.visibility = View.VISIBLE
                         }
@@ -1265,8 +1266,7 @@ class ExoplayerActivity : AppCompatActivity(), Player.Listener {
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 enterPictureInPictureMode(
-                    PictureInPictureParams
-                        .Builder()
+                    PictureInPictureParams.Builder()
                         .setAspectRatio(aspectRatio)
                         .build()
                 )

@@ -14,9 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.app.android.adapter.media.MediaAdapter
 import ani.saikou.app.android.adapter.media.ProgressAdapter
 import ani.saikou.app.android.adapter.media.SearchAdapter
-import ani.saikou.app.anilist.Anilist
-import ani.saikou.app.anilist.AnilistSearch
-import ani.saikou.app.anilist.SearchResults
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.AnilistSearch
+import ani.saikou.app.util.anilist.anilist.SearchResults
 import ani.saikou.app.databinding.ActivitySearchBinding
 import ani.saikou.app.util.initActivity
 import ani.saikou.app.util.navBarHeight

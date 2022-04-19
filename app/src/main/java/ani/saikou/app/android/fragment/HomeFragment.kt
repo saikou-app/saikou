@@ -21,8 +21,8 @@ import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.app.android.activity.user.ListActivity
 import ani.saikou.app.android.adapter.media.MediaAdapter
 import ani.saikou.app.android.fragment.settings.SettingsDialogFragment
-import ani.saikou.app.anilist.Anilist
-import ani.saikou.app.anilist.AnilistHomeViewModel
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.AnilistHomeViewModel
 import ani.saikou.app.databinding.FragmentHomeBinding
 import ani.saikou.app.util.*
 import ani.saikou.core.model.media.Media

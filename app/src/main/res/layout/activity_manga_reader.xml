@@ -270,7 +270,7 @@
         </FrameLayout>
     </FrameLayout>
 
-    <ani.saikou.app.others.OutlineTextView
+    <ani.saikou.app.util.others.OutlineTextView
         android:id="@+id/mangaReaderPageNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

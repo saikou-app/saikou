@@ -1,4 +1,4 @@
-package ani.saikou.app.anime
+package ani.saikou.app.android.adapter.anime
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import ani.saikou.app.android.fragment.anime.AnimeWatchFragment
 import ani.saikou.app.databinding.ItemEpisodeCompactBinding
 import ani.saikou.app.databinding.ItemEpisodeGridBinding
 import ani.saikou.app.databinding.ItemEpisodeListBinding

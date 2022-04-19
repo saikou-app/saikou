@@ -18,7 +18,7 @@ import androidx.viewpager2.widget.ViewPager2
 import ani.saikou.app.android.activity.media.SearchActivity
 import ani.saikou.app.android.adapter.media.MediaAdapter
 import ani.saikou.app.android.fragment.settings.SettingsDialogFragment
-import ani.saikou.app.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.databinding.ItemAnimePageBinding
 import ani.saikou.app.util.*
 import ani.saikou.core.model.settings.UserInterfaceSettings

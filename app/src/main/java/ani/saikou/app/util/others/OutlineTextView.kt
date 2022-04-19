@@ -1,4 +1,4 @@
-package ani.saikou.app.others
+package ani.saikou.app.util.others
 
 import android.content.Context
 import android.graphics.Canvas

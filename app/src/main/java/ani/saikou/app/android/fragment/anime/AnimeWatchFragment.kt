@@ -1,4 +1,4 @@
-package ani.saikou.app.anime
+package ani.saikou.app.android.fragment.anime
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -13,6 +13,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
+import ani.saikou.app.android.adapter.anime.AnimeWatchAdapter
+import ani.saikou.app.android.adapter.anime.EpisodeAdapter
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
 import ani.saikou.app.databinding.FragmentAnimeWatchBinding
 import ani.saikou.app.util.dp

@@ -13,7 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.app.R
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.databinding.BottomSheetMediaListBinding
 import ani.saikou.app.util.*
 import ani.saikou.core.model.media.Media

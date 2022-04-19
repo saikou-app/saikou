@@ -1,4 +1,4 @@
-package ani.saikou.app.others
+package ani.saikou.app.util.others
 
 import ani.saikou.core.model.anime.Episode
 import ani.saikou.core.service.LOG

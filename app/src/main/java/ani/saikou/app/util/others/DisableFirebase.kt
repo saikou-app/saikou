@@ -1,4 +1,4 @@
-package ani.saikou.app.others
+package ani.saikou.app.util.others
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 

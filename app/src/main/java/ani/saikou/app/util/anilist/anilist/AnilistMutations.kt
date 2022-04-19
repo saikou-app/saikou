@@ -1,4 +1,4 @@
-package ani.saikou.app.anilist
+package ani.saikou.app.util.anilist.anilist
 
 import ani.saikou.core.utils.FuzzyDate
 

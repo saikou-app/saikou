@@ -9,9 +9,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.app.R
+import ani.saikou.app.android.adapter.anime.handleProgress
 import ani.saikou.app.android.fragment.manga.MangaReadFragment
 import ani.saikou.app.android.fragment.media.SourceSearchDialogFragment
-import ani.saikou.app.anime.handleProgress
 import ani.saikou.app.databinding.ItemAnimeWatchBinding
 import ani.saikou.app.databinding.ItemChipBinding
 import ani.saikou.app.util.loadData

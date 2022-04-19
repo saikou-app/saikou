@@ -3,7 +3,7 @@ package ani.saikou.app.android.model.media
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ani.saikou.app.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.core.model.media.Character
 import ani.saikou.core.model.media.Studio
 

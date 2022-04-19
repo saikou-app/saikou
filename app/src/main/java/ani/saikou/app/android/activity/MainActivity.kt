@@ -24,11 +24,11 @@ import ani.saikou.app.android.fragment.AnimeFragment
 import ani.saikou.app.android.fragment.HomeFragment
 import ani.saikou.app.android.fragment.LoginFragment
 import ani.saikou.app.android.fragment.MangaFragment
-import ani.saikou.app.anilist.Anilist
-import ani.saikou.app.anilist.AnilistHomeViewModel
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.AnilistHomeViewModel
 import ani.saikou.app.databinding.ActivityMainBinding
-import ani.saikou.app.others.AppUpdater
-import ani.saikou.app.others.DisableFirebase
+import ani.saikou.app.util.others.AppUpdater
+import ani.saikou.app.util.others.DisableFirebase
 import ani.saikou.app.util.*
 import ani.saikou.core.model.settings.UserInterfaceSettings
 import ani.saikou.core.service.LOG

@@ -1,4 +1,4 @@
-package ani.saikou.app.anime
+package ani.saikou.app.android.fragment.anime
 
 import android.annotation.SuppressLint
 import android.content.DialogInterface
@@ -12,6 +12,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import ani.saikou.app.android.activity.anime.ExoplayerActivity
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
 import ani.saikou.app.databinding.BottomSheetSelectorBinding
 import ani.saikou.app.databinding.ItemStreamBinding

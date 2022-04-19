@@ -1,4 +1,4 @@
-package ani.saikou.app.others
+package ani.saikou.app.util.others
 
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.module.AppGlideModule

@@ -1,4 +1,4 @@
-package ani.saikou.app.anilist
+package ani.saikou.app.util.anilist.anilist
 
 import android.app.Activity
 import ani.saikou.app.util.*

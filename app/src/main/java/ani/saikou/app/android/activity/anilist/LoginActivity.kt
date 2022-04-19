@@ -1,9 +1,9 @@
-package ani.saikou.app.anilist
+package ani.saikou.app.android.activity.anilist
 
-import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.util.startMainActivity
 import ani.saikou.core.service.LOG
 
@@ -16,7 +16,7 @@ class Login : AppCompatActivity() {
             Anilist.token =
                 Regex("""(?<=access_token=).+(?=&token_type)""").find(data.toString())!!.value
             val filename = "anilistToken"
-            this.openFileOutput(filename, Context.MODE_PRIVATE).use {
+            this.openFileOutput(filename, MODE_PRIVATE).use {
                 it.write(Anilist.token!!.toByteArray())
             }
         } catch (e: Exception) {

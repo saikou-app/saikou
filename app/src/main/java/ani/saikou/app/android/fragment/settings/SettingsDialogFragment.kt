@@ -11,7 +11,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import ani.saikou.app.R
 import ani.saikou.app.android.activity.settings.SettingsActivity
-import ani.saikou.app.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.databinding.BottomSheetSettingsBinding
 import ani.saikou.app.util.*
 

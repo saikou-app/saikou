@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.app.R
 import ani.saikou.app.android.adapter.manga.ImageAdapter
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.databinding.ActivityMangaReaderBinding
 import ani.saikou.app.util.*
 import ani.saikou.core.model.manga.MangaChapter

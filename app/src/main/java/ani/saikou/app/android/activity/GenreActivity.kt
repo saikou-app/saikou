@@ -9,8 +9,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import ani.saikou.app.android.adapter.media.GenreAdapter
-import ani.saikou.app.anilist.Anilist
-import ani.saikou.app.anilist.GenresViewModel
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.GenresViewModel
 import ani.saikou.app.databinding.ActivityGenreBinding
 import ani.saikou.app.util.initActivity
 import ani.saikou.app.util.navBarHeight

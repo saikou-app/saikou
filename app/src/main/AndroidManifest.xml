@@ -63,7 +63,7 @@
             android:name=".android.activity.NoInternetActivity"
             android:exported="true" />
         <activity
-            android:name=".anime.ExoplayerActivity"
+            android:name=".android.activity.anime.ExoplayerActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -72,7 +72,7 @@
             android:supportsPictureInPicture="true"
             tools:targetApi="n" />
         <activity
-            android:name=".anilist.Login"
+            android:name=".android.activity.anilist.Login"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:exported="true"
             android:launchMode="singleTask">
@@ -88,7 +88,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".anilist.UrlMedia"
+            android:name=".android.activity.anilist.UrlMedia"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:exported="true"
             android:launchMode="singleTask">

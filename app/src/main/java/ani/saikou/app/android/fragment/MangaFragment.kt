@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.app.android.activity.MangaPageAdapter
 import ani.saikou.app.android.adapter.media.MediaAdapter
 import ani.saikou.app.android.adapter.media.ProgressAdapter
-import ani.saikou.app.anilist.Anilist
-import ani.saikou.app.anilist.AnilistMangaViewModel
-import ani.saikou.app.anilist.SearchResults
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.util.anilist.anilist.AnilistMangaViewModel
+import ani.saikou.app.util.anilist.anilist.SearchResults
 import ani.saikou.app.databinding.FragmentMangaBinding
 import ani.saikou.app.util.*
 import ani.saikou.core.model.settings.UserInterfaceSettings

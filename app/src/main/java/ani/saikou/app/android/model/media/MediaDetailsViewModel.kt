@@ -7,10 +7,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ani.saikou.app.anilist.Anilist
-import ani.saikou.app.anime.SelectorDialogFragment
-import ani.saikou.app.others.AnimeFillerList
-import ani.saikou.app.others.Kitsu
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.android.fragment.anime.SelectorDialogFragment
+import ani.saikou.app.util.others.AnimeFillerList
+import ani.saikou.app.util.others.Kitsu
 import ani.saikou.app.util.loadData
 import ani.saikou.app.util.logger
 import ani.saikou.app.util.saveData

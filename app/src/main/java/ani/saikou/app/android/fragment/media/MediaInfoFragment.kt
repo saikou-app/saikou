@@ -27,7 +27,7 @@ import ani.saikou.app.android.adapter.media.CharacterAdapter
 import ani.saikou.app.android.adapter.media.GenreAdapter
 import ani.saikou.app.android.adapter.media.MediaAdapter
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.anilist.GenresViewModel
+import ani.saikou.app.util.anilist.anilist.GenresViewModel
 import ani.saikou.app.databinding.*
 import ani.saikou.app.util.*
 import io.noties.markwon.Markwon
