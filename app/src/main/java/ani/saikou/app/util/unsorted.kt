@@ -47,7 +47,7 @@ import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.core.model.anime.Episode
 import ani.saikou.core.model.media.Media
 import ani.saikou.core.model.settings.UserInterfaceSettings
-import ani.saikou.core.utils.FuzzyDate
+import ani.saikou.core.util.FuzzyDate
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions.withCrossFade

@@ -1,6 +1,6 @@
 package ani.saikou.app.util.anilist.anilist
 
-import ani.saikou.core.utils.FuzzyDate
+import ani.saikou.core.util.FuzzyDate
 
 class AnilistMutations {
 

@@ -9,9 +9,9 @@ import ani.saikou.core.model.manga.Manga
 import ani.saikou.core.model.media.Character
 import ani.saikou.core.model.media.Media
 import ani.saikou.core.model.media.Studio
-import ani.saikou.core.utils.FuzzyDate
-import ani.saikou.core.utils.extension.checkGenreTime
-import ani.saikou.core.utils.extension.checkId
+import ani.saikou.core.util.FuzzyDate
+import ani.saikou.core.util.extension.checkGenreTime
+import ani.saikou.core.util.extension.checkId
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking

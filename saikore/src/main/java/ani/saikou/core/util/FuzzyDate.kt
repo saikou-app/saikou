@@ -1,4 +1,4 @@
-package ani.saikou.core.utils
+package ani.saikou.core.util
 
 import java.io.Serializable
 import java.text.DateFormatSymbols

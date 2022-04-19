@@ -6,8 +6,8 @@ import ani.saikou.core.model.media.Source
 import ani.saikou.core.service.LOG
 import ani.saikou.core.service.STORE
 import ani.saikou.core.source.manga.MangaParser
-import ani.saikou.core.utils.extension.findBetween
-import ani.saikou.core.utils.extension.sortByTitle
+import ani.saikou.core.util.extension.findBetween
+import ani.saikou.core.util.extension.sortByTitle
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import org.jsoup.Jsoup

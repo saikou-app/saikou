@@ -6,7 +6,7 @@ import ani.saikou.core.model.media.Source
 import ani.saikou.core.service.LOG
 import ani.saikou.core.service.STORE
 import ani.saikou.core.source.anime.AnimeParser
-import ani.saikou.core.utils.extension.sortByTitle
+import ani.saikou.core.util.extension.sortByTitle
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray

@@ -1,4 +1,4 @@
-package ani.saikou.core.utils.extension
+package ani.saikou.core.util.extension
 
 import ani.saikou.core.model.anilist.Banner
 import ani.saikou.core.model.anilist.Genre

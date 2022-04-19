@@ -2,7 +2,7 @@ package ani.saikou.core.model.media
 
 import ani.saikou.core.model.anime.Anime
 import ani.saikou.core.model.manga.Manga
-import ani.saikou.core.utils.FuzzyDate
+import ani.saikou.core.util.FuzzyDate
 import java.io.Serializable
 
 data class Media(

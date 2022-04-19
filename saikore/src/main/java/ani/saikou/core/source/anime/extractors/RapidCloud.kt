@@ -4,7 +4,7 @@ import android.net.Uri
 import android.util.Base64
 import ani.saikou.core.model.anime.Episode
 import ani.saikou.core.source.anime.Extractor
-import ani.saikou.core.utils.extension.findBetween
+import ani.saikou.core.util.extension.findBetween
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject

@@ -18,7 +18,7 @@ import ani.saikou.app.databinding.BottomSheetMediaListBinding
 import ani.saikou.app.util.*
 import ani.saikou.core.model.media.Media
 import ani.saikou.core.service.LOG
-import ani.saikou.core.utils.FuzzyDate
+import ani.saikou.core.util.FuzzyDate
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext

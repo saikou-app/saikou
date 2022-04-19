@@ -2,7 +2,7 @@ package ani.saikou.core.source.anime
 
 import ani.saikou.core.model.media.Source
 import ani.saikou.core.service.LOG
-import ani.saikou.core.utils.extension.findBetween
+import ani.saikou.core.util.extension.findBetween
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject

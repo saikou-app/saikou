@@ -10,7 +10,7 @@ import ani.saikou.core.source.anime.AnimeParser
 import ani.saikou.core.source.anime.Extractor
 import ani.saikou.core.source.anime.extractors.RapidCloud
 import ani.saikou.core.source.anime.extractors.StreamSB
-import ani.saikou.core.utils.extension.findBetween
+import ani.saikou.core.util.extension.findBetween
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking

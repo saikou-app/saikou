@@ -3,7 +3,7 @@ package ani.saikou.core.source.anime.extractors
 import ani.saikou.core.model.anime.Episode
 import ani.saikou.core.service.LOG
 import ani.saikou.core.source.anime.Extractor
-import ani.saikou.core.utils.getSize
+import ani.saikou.core.util.getSize
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking

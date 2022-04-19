@@ -4,8 +4,8 @@ import android.net.Uri
 import android.util.Base64
 import ani.saikou.core.model.anime.Episode
 import ani.saikou.core.source.anime.Extractor
-import ani.saikou.core.utils.extension.findBetween
-import ani.saikou.core.utils.getSize
+import ani.saikou.core.util.extension.findBetween
+import ani.saikou.core.util.getSize
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll

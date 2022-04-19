@@ -6,7 +6,7 @@ import ani.saikou.core.model.media.Source
 import ani.saikou.core.service.LOG
 import ani.saikou.core.service.STORE
 import ani.saikou.core.source.manga.MangaParser
-import ani.saikou.core.utils.extension.findBetween
+import ani.saikou.core.util.extension.findBetween
 import org.jsoup.Jsoup
 
 class MangaBuddy(override val name: String = "mangabuddy.com") : MangaParser() {

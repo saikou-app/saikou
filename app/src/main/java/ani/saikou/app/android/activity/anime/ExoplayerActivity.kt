@@ -51,7 +51,7 @@ import ani.saikou.core.model.settings.PlayerSettings
 import ani.saikou.core.model.settings.UserInterfaceSettings
 import ani.saikou.core.source.anime.AnimeSources
 import ani.saikou.core.source.anime.HAnimeSources
-import ani.saikou.core.utils.extension.ignoreAllSSLErrors
+import ani.saikou.core.util.extension.ignoreAllSSLErrors
 import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector

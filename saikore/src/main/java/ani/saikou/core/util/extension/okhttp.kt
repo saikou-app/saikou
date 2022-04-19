@@ -1,4 +1,4 @@
-package ani.saikou.core.utils.extension
+package ani.saikou.core.util.extension
 
 import okhttp3.OkHttpClient
 import java.security.SecureRandom

@@ -1,6 +1,6 @@
 package ani.saikou.core.model.media
 
-import ani.saikou.core.utils.FuzzyDate
+import ani.saikou.core.util.FuzzyDate
 import java.io.Serializable
 
 data class Character(

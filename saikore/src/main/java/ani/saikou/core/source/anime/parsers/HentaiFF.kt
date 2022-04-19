@@ -8,7 +8,7 @@ import ani.saikou.core.service.LOG
 import ani.saikou.core.service.STORE
 import ani.saikou.core.source.anime.AnimeParser
 import ani.saikou.core.source.anime.extractors.FPlayer
-import ani.saikou.core.utils.extension.findBetween
+import ani.saikou.core.util.extension.findBetween
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.jsoup.Jsoup

@@ -1,4 +1,4 @@
-package ani.saikou.core.utils
+package ani.saikou.core.util
 
 import org.jsoup.Connection
 import org.jsoup.Jsoup

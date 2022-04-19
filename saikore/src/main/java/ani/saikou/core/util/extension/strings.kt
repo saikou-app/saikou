@@ -1,4 +1,4 @@
-package ani.saikou.core.utils.extension
+package ani.saikou.core.util.extension
 
 import kotlin.math.min
 
