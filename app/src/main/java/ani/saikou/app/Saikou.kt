@@ -8,11 +8,18 @@ import ani.saikou.app.service.SeikouLoggingService
 import ani.saikou.app.service.SeikouStorageService
 import ani.saikou.app.util.FTActivityLifecycleCallbacks
 
+/**
+ * The **best**.
+ */
 class Saikou : MultiDexApplication() {
-    override fun attachBaseContext(base: Context?) {
-        super.attachBaseContext(base)
-        MultiDex.install(this)
+    companion object {
+        private lateinit var instance: Saikou
+
+        fun currentActivity(): Activity? =
+            instance.lifecycleCallbacks.currentActivity
     }
+
+    val lifecycleCallbacks = FTActivityLifecycleCallbacks()
 
     init {
         instance = this
@@ -22,18 +29,13 @@ class Saikou : MultiDexApplication() {
         SeikouStorageService
     }
 
-    val mFTActivityLifecycleCallbacks = FTActivityLifecycleCallbacks()
-
     override fun onCreate() {
         super.onCreate()
-        registerActivityLifecycleCallbacks(mFTActivityLifecycleCallbacks)
+        registerActivityLifecycleCallbacks(lifecycleCallbacks)
     }
 
-    companion object {
-        private lateinit var instance: Saikou
-
-        fun currentActivity(): Activity? {
-            return instance.mFTActivityLifecycleCallbacks.currentActivity
-        }
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 }
