@@ -1,6 +1,5 @@
 package ani.saikou.core.utils.extension
 
-import android.annotation.SuppressLint
 import okhttp3.OkHttpClient
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
@@ -9,8 +8,7 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 fun OkHttpClient.Builder.ignoreAllSSLErrors(): OkHttpClient.Builder {
-    val naiveTrustManager = @SuppressLint("CustomX509TrustManager")
-    object : X509TrustManager {
+    val naiveTrustManager = object : X509TrustManager {
         override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
         override fun checkClientTrusted(certs: Array<X509Certificate>, authType: String) = Unit
         override fun checkServerTrusted(certs: Array<X509Certificate>, authType: String) = Unit

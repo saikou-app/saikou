@@ -39,7 +39,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":saicore"))
+    implementation(project(":saikore"))
 
     // Core
     implementation("androidx.appcompat:appcompat:1.4.1")

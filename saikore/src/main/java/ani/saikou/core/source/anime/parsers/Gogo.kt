@@ -7,10 +7,10 @@ import ani.saikou.core.service.LOG
 import ani.saikou.core.service.STORE
 import ani.saikou.core.source.anime.AnimeParser
 import ani.saikou.core.source.anime.Extractor
+import ani.saikou.core.source.anime.MALSyncFetcher
 import ani.saikou.core.source.anime.extractors.FPlayer
 import ani.saikou.core.source.anime.extractors.GogoCDN
 import ani.saikou.core.source.anime.extractors.StreamSB
-import ani.saikou.core.utils.MALSyncBackup
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -97,7 +97,7 @@ class Gogo(private val dub: Boolean = false, override val name: String = "gogoan
                         }
                     }
                 }
-                return@runBlocking (linkForVideos)
+                return@runBlocking linkForVideos
             }
         } catch (e: Exception) {
             LOG.notify(e.toString())
@@ -109,10 +109,10 @@ class Gogo(private val dub: Boolean = false, override val name: String = "gogoan
         try {
             var slug: Source? = STORE.loadData("${base}_${media.id}")
             if (slug == null) {
-                slug = MALSyncBackup[media.id, "Gogoanime", dub]
-                if (slug != null)
+                slug = MALSyncFetcher.fetch(media.id, "Gogoanime", dub)
+                if (slug != null) {
                     saveSource(slug, media.id, false)
-                else {
+                } else {
                     var it = (media.nameMAL ?: media.nameRomaji) + if (dub) " (Dub)" else ""
                     setTextListener("Searching for $it")
                     LOG.log("Gogo : Searching for $it")
@@ -134,7 +134,9 @@ class Gogo(private val dub: Boolean = false, override val name: String = "gogoan
             } else {
                 setTextListener("Selected : ${slug.name}")
             }
-            if (slug != null) return getSlugEpisodes(slug.link)
+            if (slug != null) {
+                return getSlugEpisodes(slug.link)
+            }
         } catch (e: Exception) {
             LOG.notify(e.toString())
         }

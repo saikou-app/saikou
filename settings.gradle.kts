@@ -1,5 +1,5 @@
 rootProject.name = "Saikou"
 
 include(":app")
-include(":saicore")
+include(":saikore")
 
