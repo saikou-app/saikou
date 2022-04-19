@@ -7,7 +7,7 @@ import ani.saikou.core.model.media.Source
 abstract class MangaParser {
     abstract val name: String
     var text = ""
-    var textListener: ((String) -> Unit)? = null
+    var textListener: ((String) -> Unit) = {}
 
     abstract fun getLinkChapters(link: String): MutableMap<String, MangaChapter>
 
@@ -23,6 +23,6 @@ abstract class MangaParser {
 
     fun setTextListener(string: String) {
         text = string
-        textListener?.invoke(text)
+        textListener.invoke(text)
     }
 }

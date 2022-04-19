@@ -3,7 +3,9 @@ package ani.saikou.core.source.anime.extractors
 import android.net.Uri
 import android.util.Base64
 import ani.saikou.core.model.anime.Episode
+import ani.saikou.core.service.LOG
 import ani.saikou.core.source.anime.Extractor
+import ani.saikou.core.util.extension.asJsoup
 import ani.saikou.core.util.extension.findBetween
 import ani.saikou.core.util.getSize
 import kotlinx.coroutines.Deferred
@@ -12,6 +14,8 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import javax.crypto.Cipher
@@ -27,7 +31,7 @@ class GogoCDN(val host: String) : Extractor() {
                 .ignoreHttpErrors(true)
                 .get()
             if (url.contains("streaming.php")) {
-                getKeysAndIv()?.apply {
+                fetchKeys(url)?.apply {
                     val keys = this
                     response.select("script[data-name=\"episode\"]").attr("data-value").also {
                         val decrypted =
@@ -131,7 +135,6 @@ class GogoCDN(val host: String) : Extractor() {
         iv: String,
         encrypt: Boolean = true
     ): String? {
-
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
         return if (!encrypt) {
             cipher.init(
@@ -151,19 +154,40 @@ class GogoCDN(val host: String) : Extractor() {
     }
 
     companion object {
-        private var keysAndIv: Triple<String, String, String>? = null
-        fun getKeysAndIv(): Triple<String, String, String>? =
-            if (keysAndIv != null) keysAndIv else let {
-//                val keys = OkHttpClient().newCall(Request.Builder().url("https://raw.githubusercontent.com/justfoolingaround/animdl-provider-benchmarks/master/api/gogoanime.json").build()).execute().body?.string()?:return null
-//                Json.decodeFromString<JsonObject>(keys).apply {
-//                    keysAndIv =  Triple(this.jsonObject["key"].toString().trim('"'),this.jsonObject["second_key"].toString().trim('"'),this.jsonObject["iv"].toString().trim('"'))
-//                }
-                keysAndIv = Triple(
-                    "93106165734640459728346589106791",
-                    "97952160493714852094564712118349",
-                    "8244002440089157"
-                )
-                return keysAndIv
+        private val httpClient = OkHttpClient()
+
+        /**
+         * Fetches the decryption keys from the DOM.
+         *
+         * **See**: [jmir1/aniyomi-extensions][https://github.com/jmir1/aniyomi-extensions/blob/c62c6be6cba7b1645b939897520ebe07218fec4d/src/en/gogoanime/src/eu/kanade/tachiyomi/animeextension/en/gogoanime/extractors/GogoCdnExtractor.kt#L27]
+         * @author jmir#9379
+         *
+         * @param url The URL to fetch the keys from.
+         *
+         * @return The decryption keys.
+         */
+        private fun fetchKeys(url: String): Triple<String, String, String>? {
+            val request = Request.Builder().url(url).build()
+            return httpClient.newCall(request).execute().let { response ->
+                try {
+                    val document = response.asJsoup()
+
+                    val iv = document.select("div.wrapper")
+                        .attr("class").substringAfter("container-")
+                        .filter { it.isDigit() }
+                    val secretKey = document.select("body[class]")
+                        .attr("class").substringAfter("container-")
+                        .filter { it.isDigit() }
+                    val decryptionKey = document.select("div.videocontent")
+                        .attr("class").substringAfter("videocontent-")
+                        .filter { it.isDigit() }
+
+                    Triple(secretKey, decryptionKey, iv)
+                } catch (throwable: Throwable) {
+                    LOG.notify(throwable)
+                    null
+                }
             }
+        }
     }
 }
