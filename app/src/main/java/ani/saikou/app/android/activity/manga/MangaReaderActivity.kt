@@ -330,7 +330,7 @@ class MangaReaderActivity : AppCompatActivity() {
         }
 
         val chapterObserverRunnable = Runnable {
-            model.getMangaChapter().observe(this) {
+            model.currentChapter.observe(this) {
                 hideSystemBars()
                 if (it != null) {
                     chapter = it

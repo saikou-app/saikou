@@ -27,6 +27,53 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class MediaDetailsViewModel : ViewModel() {
+    var continueMedia: Boolean? = null
+    private var loading = false
+
+    private val _media: MutableLiveData<Media> = MutableLiveData<Media>(null)
+    val media: LiveData<Media>
+        get() = _media
+
+    val sources = MutableLiveData<List<Source>?>(null)
+
+    // Anime
+    private val _kitsuEpisodes: MutableLiveData<MutableMap<String, Episode>> =
+        MutableLiveData<MutableMap<String, Episode>>(null)
+    val kitsuEpisodes: LiveData<MutableMap<String, Episode>>
+        get() = _kitsuEpisodes
+
+    private val _fillerEpisodes: MutableLiveData<MutableMap<String, Episode>> =
+        MutableLiveData<MutableMap<String, Episode>>(null)
+    val fillerEpisodes: LiveData<MutableMap<String, Episode>>
+        get() = _fillerEpisodes
+
+    var watchAnimeWatchSources: WatchSources? = null
+
+    private val _episodes: MutableLiveData<MutableMap<Int, MutableMap<String, Episode>>> =
+        MutableLiveData<MutableMap<Int, MutableMap<String, Episode>>>(null)
+    val episodes: LiveData<MutableMap<Int, MutableMap<String, Episode>>>
+        get() = _episodes
+
+    private var _currentEpsiode: MutableLiveData<Episode?> = MutableLiveData<Episode?>(null)
+    val currentEpisode: LiveData<Episode?>
+        get() = _currentEpsiode
+
+    private val epsLoaded = mutableMapOf<Int, MutableMap<String, Episode>>()
+
+    // Manga
+    var readMangaReadSources: MangaReadSources? = null
+
+    private val _mangaChapters: MutableLiveData<MutableMap<Int, MutableMap<String, MangaChapter>>> =
+        MutableLiveData<MutableMap<Int, MutableMap<String, MangaChapter>>>(null)
+    val mangaChapters: LiveData<MutableMap<Int, MutableMap<String, MangaChapter>>>
+        get() = _mangaChapters
+
+    private val _currentChapter = MutableLiveData<MangaChapter?>(null)
+    val currentChapter: LiveData<MangaChapter?>
+        get() = _currentChapter
+
+    private val mangaLoaded = mutableMapOf<Int, MutableMap<String, MangaChapter>>()
+
     fun saveSelected(id: Int, data: Selected, activity: Activity) {
         saveData("$id-select", data, activity)
     }
@@ -41,14 +88,6 @@ class MediaDetailsViewModel : ViewModel() {
         }
     }
 
-    var continueMedia: Boolean? = null
-    private var loading = false
-
-    private val _media: MutableLiveData<Media> = MutableLiveData<Media>(null)
-
-    val media: LiveData<Media>
-        get() = _media
-
     fun loadMedia(m: Media) {
         if (!loading) {
             loading = true
@@ -61,50 +100,33 @@ class MediaDetailsViewModel : ViewModel() {
         _media.postValue(m)
     }
 
-    val sources = MutableLiveData<List<Source>?>(null)
-
-    //Anime
-    private val kitsuEpisodes: MutableLiveData<MutableMap<String, Episode>> =
-        MutableLiveData<MutableMap<String, Episode>>(null)
-
-    fun getKitsuEpisodes(): LiveData<MutableMap<String, Episode>> = kitsuEpisodes
     fun loadKitsuEpisodes(s: Media) {
-        if (kitsuEpisodes.value == null) kitsuEpisodes.postValue(Kitsu.getKitsuEpisodesDetails(s))
+        if (_kitsuEpisodes.value == null) {
+            _kitsuEpisodes.postValue(Kitsu.getKitsuEpisodesDetails(s))
+        }
     }
 
-    private val fillerEpisodes: MutableLiveData<MutableMap<String, Episode>> =
-        MutableLiveData<MutableMap<String, Episode>>(null)
-
-    fun getFillerEpisodes(): LiveData<MutableMap<String, Episode>> = fillerEpisodes
     fun loadFillerEpisodes(s: Media) {
-        if (fillerEpisodes.value == null) fillerEpisodes.postValue(
+        if (_fillerEpisodes.value == null) _fillerEpisodes.postValue(
             AnimeFillerList.getFillers(
                 s.idMAL ?: return
             )
         )
     }
 
-    var watchAnimeWatchSources: WatchSources? = null
-
-    private val episodes: MutableLiveData<MutableMap<Int, MutableMap<String, Episode>>> =
-        MutableLiveData<MutableMap<Int, MutableMap<String, Episode>>>(null)
-    private val epsLoaded = mutableMapOf<Int, MutableMap<String, Episode>>()
-    fun getEpisodes(): LiveData<MutableMap<Int, MutableMap<String, Episode>>> = episodes
     fun loadEpisodes(media: Media, i: Int) {
         if (!epsLoaded.containsKey(i)) {
             epsLoaded[i] = watchAnimeWatchSources?.get(i)!!.getEpisodes(media)
         }
-        episodes.postValue(epsLoaded)
+        _episodes.postValue(epsLoaded)
     }
 
     fun overrideEpisodes(i: Int, source: Source, id: Int) {
         watchAnimeWatchSources?.get(i)!!.saveSource(source, id)
         epsLoaded[i] = watchAnimeWatchSources?.get(i)!!.getSlugEpisodes(source.link)
-        episodes.postValue(epsLoaded)
+        _episodes.postValue(epsLoaded)
     }
 
-    private var episode: MutableLiveData<Episode?> = MutableLiveData<Episode?>(null)
-    fun getEpisode(): LiveData<Episode?> = episode
     fun loadEpisodeStreams(ep: Episode, i: Int, post: Boolean = true) {
         if (!ep.allStreams || ep.streamLinks.isNullOrEmpty() || !ep.saveStreams) {
             watchAnimeWatchSources?.get(i)?.getStreams(ep)?.apply {
@@ -112,9 +134,9 @@ class MediaDetailsViewModel : ViewModel() {
             }
         }
         if (post) {
-            episode.postValue(ep)
+            _currentEpsiode.postValue(ep)
             MainScope().launch(Dispatchers.Main) {
-                episode.value = null
+                _currentEpsiode.value = null
             }
         }
 
@@ -129,9 +151,9 @@ class MediaDetailsViewModel : ViewModel() {
                     }
             }
             if (post) {
-                episode.postValue(ep)
+                _currentEpsiode.postValue(ep)
                 MainScope().launch(Dispatchers.Main) {
-                    episode.value = null
+                    _currentEpsiode.value = null
                 }
             }
             true
@@ -140,13 +162,14 @@ class MediaDetailsViewModel : ViewModel() {
 
     fun setEpisode(ep: Episode?, who: String) {
         logger("set episode ${ep?.number} - $who", false)
-        episode.postValue(ep)
+        _currentEpsiode.postValue(ep)
         MainScope().launch(Dispatchers.Main) {
-            episode.value = null
+            _currentEpsiode.value = null
         }
     }
 
     val epChanged = MutableLiveData(true)
+
     fun onEpisodeClick(
         media: Media,
         i: String,
@@ -170,34 +193,22 @@ class MediaDetailsViewModel : ViewModel() {
         }
     }
 
-
-    //Manga
-    var readMangaReadSources: MangaReadSources? = null
-
-    private val mangaChapters: MutableLiveData<MutableMap<Int, MutableMap<String, MangaChapter>>> =
-        MutableLiveData<MutableMap<Int, MutableMap<String, MangaChapter>>>(null)
-    private val mangaLoaded = mutableMapOf<Int, MutableMap<String, MangaChapter>>()
-    fun getMangaChapters(): LiveData<MutableMap<Int, MutableMap<String, MangaChapter>>> =
-        mangaChapters
-
     fun loadMangaChapters(media: Media, i: Int) {
         logger("Loading Manga Chapters : $mangaLoaded")
         if (!mangaLoaded.containsKey(i)) {
             mangaLoaded[i] = readMangaReadSources?.get(i)!!.getChapters(media)
         }
-        mangaChapters.postValue(mangaLoaded)
+        _mangaChapters.postValue(mangaLoaded)
     }
 
     fun overrideMangaChapters(i: Int, source: Source, id: Int) {
         readMangaReadSources?.get(i)!!.saveSource(source, id)
         mangaLoaded[i] = readMangaReadSources?.get(i)!!.getLinkChapters(source.link)
-        mangaChapters.postValue(mangaLoaded)
+        _mangaChapters.postValue(mangaLoaded)
     }
 
-    private val mangaChapter = MutableLiveData<MangaChapter?>(null)
-    fun getMangaChapter(): LiveData<MangaChapter?> = mangaChapter
     fun loadMangaChapterImages(chapter: MangaChapter, selected: Selected) {
         readMangaReadSources?.get(selected.source)?.getChapter(chapter)
-        mangaChapter.postValue(chapter)
+        _currentChapter.postValue(chapter)
     }
 }

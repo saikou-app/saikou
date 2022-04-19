@@ -90,7 +90,7 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                             } else fail()
                         }
                         if (episode?.streamLinks?.isEmpty() == true || episode?.saveStreams == false) {
-                            model.getEpisode().observe(this) {
+                            model.currentEpisode.observe(this) {
                                 if (it != null) {
                                     episode = it
                                     load()
@@ -131,7 +131,7 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                             binding.selectorRecyclerView.adapter = StreamAdapter()
                         }
                         if (episode!!.streamLinks.isEmpty() || !episode!!.allStreams || episode?.saveStreams == false) {
-                            model.getEpisode().observe(this) {
+                            model.currentEpisode.observe(this) {
                                 if (it != null) {
                                     episode = it
                                     load()

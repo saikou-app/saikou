@@ -138,7 +138,7 @@ open class AnimeWatchFragment : Fragment() {
                 }
             }
         }
-        model.getEpisodes().observe(viewLifecycleOwner) { loadedEpisodes ->
+        model.episodes.observe(viewLifecycleOwner) { loadedEpisodes ->
             if (loadedEpisodes != null) {
                 val episodes = loadedEpisodes[media.selected!!.source]
                 if (episodes != null) {
@@ -191,14 +191,16 @@ open class AnimeWatchFragment : Fragment() {
             }
         }
 
-        model.getKitsuEpisodes().observe(viewLifecycleOwner) { i ->
-            if (i != null)
+        model.kitsuEpisodes.observe(viewLifecycleOwner) { i ->
+            if (i != null) {
                 media.anime?.kitsuEpisodes = i
+            }
         }
 
-        model.getFillerEpisodes().observe(viewLifecycleOwner) { i ->
-            if (i != null)
+        model.fillerEpisodes.observe(viewLifecycleOwner) { i ->
+            if (i != null) {
                 media.anime?.fillerEpisodes = i
+            }
         }
     }
 

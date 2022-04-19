@@ -41,10 +41,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.media.session.MediaButtonReceiver
 import ani.saikou.app.R
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.util.anilist.anilist.Anilist
-import ani.saikou.app.util.anime.VideoCache
 import ani.saikou.app.databinding.ActivityExoplayerBinding
 import ani.saikou.app.util.*
+import ani.saikou.app.util.anilist.anilist.Anilist
+import ani.saikou.app.util.anime.VideoCache
 import ani.saikou.core.model.anime.Episode
 import ani.saikou.core.model.media.Media
 import ani.saikou.core.model.settings.PlayerSettings
@@ -671,7 +671,7 @@ class ExoplayerActivity : AppCompatActivity(), Player.Listener {
                 toastString("This is the 1st Episode!")
         }
 
-        model.getEpisode().observe(this) {
+        model.currentEpisode.observe(this) {
             hideSystemBars()
             if (it != null && !epChanging) {
                 episode = it

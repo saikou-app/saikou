@@ -134,7 +134,7 @@ open class MangaReadFragment : Fragment() {
             }
         }
 
-        model.getMangaChapters().observe(viewLifecycleOwner) { loadedChapters ->
+        model.mangaChapters.observe(viewLifecycleOwner) { loadedChapters ->
             if (loadedChapters != null) {
                 val chapters = loadedChapters[media.selected!!.source]
                 if (chapters != null) {
