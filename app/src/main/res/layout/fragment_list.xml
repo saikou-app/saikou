@@ -3,9 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".user.ListFragment">
+    tools:context=".android.fragment.user.ListFragment">
 
-    <ani.saikou.android.FadingEdgeRecyclerView
+    <ani.saikou.app.android.activity.FadingEdgeRecyclerView
         android:id="@+id/listRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

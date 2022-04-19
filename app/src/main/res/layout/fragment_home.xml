@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clipToPadding="false"
-    tools:context=".HomeFragment">
+    tools:context=".android.fragment.HomeFragment">
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/homeScroll"
@@ -479,7 +479,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="90dp" />
 
-                    <ani.saikou.android.FadingEdgeRecyclerView
+                    <ani.saikou.app.android.activity.FadingEdgeRecyclerView
                         android:id="@+id/homeReadingRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -625,7 +625,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="90dp" />
 
-                    <ani.saikou.android.FadingEdgeRecyclerView
+                    <ani.saikou.app.android.activity.FadingEdgeRecyclerView
                         android:id="@+id/homeRecommendedRecyclerView"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

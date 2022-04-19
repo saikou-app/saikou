@@ -7,7 +7,7 @@
     app:cardBackgroundColor="@color/bg"
     app:cardCornerRadius="0dp"
     app:cardElevation="0dp"
-    tools:context=".media.MediaInfoFragment"
+    tools:context=".android.fragment.media.MediaInfoFragment"
     tools:ignore="SpeakableTextPresentCheck">
 
     <androidx.core.widget.NestedScrollView
@@ -308,7 +308,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:breakStrategy="balanced"
-                            android:fontFamily="@font/poppins_bold" />
+                            android:fontFamily="@font/poppins_bold"
+                            tools:ignore="UnusedAttribute" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -329,7 +330,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:breakStrategy="balanced"
-                            android:fontFamily="@font/poppins_bold" />
+                            android:fontFamily="@font/poppins_bold"
+                            tools:ignore="UnusedAttribute" />
                     </LinearLayout>
                 </TableLayout>
 

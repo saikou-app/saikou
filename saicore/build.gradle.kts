@@ -36,6 +36,12 @@ dependencies {
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("com.google.android.material:material:1.5.0")
 
+    implementation("com.squareup.okhttp3:okhttp:4.9.3")
+    implementation("org.jsoup:jsoup:1.14.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
+    // split notation to avoid IDE warning about updating to 1.6.0
+    implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.6.0-native-mt")
+
     implementation("com.github.bumptech.glide:glide:4.13.0")
     implementation("com.squareup.okhttp3:okhttp:4.9.3")
 }

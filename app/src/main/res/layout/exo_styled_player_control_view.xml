@@ -293,7 +293,7 @@
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
-                    <ani.saikou.android.SpinnerNoSwipe
+                    <ani.saikou.app.util.SpinnerNoSwipe
                         android:id="@+id/exo_ep_sel"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
@@ -425,7 +425,7 @@
             android:layout_marginEnd="40dp"
             android:orientation="vertical">
 
-            <ani.saikou.android.ExtendedTimeBar
+            <ani.saikou.app.util.ExtendedTimeBar
                 android:id="@id/exo_progress"
                 android:layout_width="match_parent"
                 android:layout_height="24dp"

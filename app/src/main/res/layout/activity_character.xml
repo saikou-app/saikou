@@ -77,7 +77,7 @@
         android:indeterminate="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <ani.saikou.android.FadingEdgeRecyclerView
+    <ani.saikou.app.android.activity.FadingEdgeRecyclerView
         android:id="@+id/characterRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

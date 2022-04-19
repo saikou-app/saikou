@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="ani.saikou.android">
+    package="ani.saikou.app">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".App"
+        android:name=".Saikou"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -27,43 +27,43 @@
         tools:ignore="AllowBackup"
         tools:targetApi="m">
         <activity
-            android:name=".settings.UserInterfaceSettingsActivity"
+            android:name=".android.activity.settings.UserInterfaceSettingsActivity"
             android:exported="false" />
         <activity
-            android:name=".settings.PlayerSettingsActivity"
+            android:name=".android.activity.settings.PlayerSettingsActivity"
             android:exported="true" />
         <activity
-            android:name=".settings.SettingsActivity"
+            android:name=".android.activity.settings.SettingsActivity"
             android:exported="true" />
         <activity
-            android:name=".media.SearchActivity"
+            android:name=".android.activity.media.SearchActivity"
             android:exported="true" />
         <activity
-            android:name=".media.StudioActivity"
+            android:name=".android.activity.media.StudioActivity"
             android:exported="true"
             android:launchMode="singleTask" />
         <activity
-            android:name=".user.ListActivity"
+            android:name=".android.activity.user.ListActivity"
             android:exported="true" />
         <activity
-            android:name=".manga.MangaReaderActivity"
+            android:name=".android.activity.manga.MangaReaderActivity"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:exported="true" />
         <activity
-            android:name=".GenreActivity"
+            android:name=".android.activity.GenreActivity"
             android:exported="true" />
         <activity
-            android:name=".media.MediaDetailsActivity"
+            android:name=".android.activity.media.MediaDetailsActivity"
             android:exported="true"
             android:theme="@style/Theme.Saikou.NeverCutout" />
         <activity
-            android:name=".media.CharacterDetailsActivity"
+            android:name=".android.activity.media.CharacterDetailsActivity"
             android:exported="true" />
         <activity
-            android:name=".NoInternet"
+            android:name=".android.activity.NoInternetActivity"
             android:exported="true" />
         <activity
-            android:name=".anime.ExoplayerView"
+            android:name=".anime.ExoplayerActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation"
             android:excludeFromRecents="true"
             android:exported="true"
@@ -118,7 +118,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="ani.saikou.app.android.activity.MainActivity"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:exported="true">
             <intent-filter>

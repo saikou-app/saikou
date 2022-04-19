@@ -235,7 +235,7 @@
             tools:ignore="SpeakableTextPresentCheck" />
     </LinearLayout>
 
-    <ani.saikou.android.CustomBottomNavBar
+    <ani.saikou.app.util.CustomBottomNavBar
         android:id="@+id/mediaTab"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

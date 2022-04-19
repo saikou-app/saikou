@@ -5,7 +5,7 @@
     android:id="@+id/bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".android.activity.MainActivity">
 
     <ProgressBar
         android:id="@+id/mainProgressBar"
