@@ -18,9 +18,9 @@ import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.app.R
 import ani.saikou.app.android.adapter.manga.ImageAdapter
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.databinding.ActivityMangaReaderBinding
 import ani.saikou.app.util.*
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.core.model.manga.MangaChapter
 import ani.saikou.core.model.media.Media
 import ani.saikou.core.model.settings.ReaderSettings
@@ -113,6 +113,7 @@ class MangaReaderActivity : AppCompatActivity() {
         val overshoot = AccelerateDecelerateInterpolator()
         val controllerDuration = (uiSettings.animationSpeed * 200).toLong()
         var goneTimer = Timer()
+
         fun gone() {
             goneTimer.cancel()
             goneTimer.purge()
@@ -220,30 +221,33 @@ class MangaReaderActivity : AppCompatActivity() {
                 currentChapterPage = page
                 saveData("${media.id}_${chapter.number}", page, this)
                 binding.mangaReaderPageNumber.text = "${currentChapterPage}/$maxChapterPage"
-                if (!sliding) binding.mangaReaderPageSlider.value = currentChapterPage.toFloat()
+                if (!sliding) {
+                    binding.mangaReaderPageSlider.value = currentChapterPage.toFloat()
+                }
             }
         }
 
         binding.mangaReaderRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(v: RecyclerView, dx: Int, dy: Int) {
-
-                if (!v.canScrollVertically(-1) || !v.canScrollVertically(1)) {
-                    handleController(true)
-                } else handleController(false)
+                val shouldShow = !v.canScrollVertically(-1) || !v.canScrollVertically(1)
+                handleController(shouldShow)
 
                 updatePageNumber(layoutManager.findLastVisibleItemPosition().toLong() + 1)
+
                 super.onScrolled(v, dx, dy)
             }
         })
 
-        media = if (model.getMedia().value == null)
+        media = if (model.media.value == null) {
             try {
                 (intent.getSerializableExtra("media") as? Media) ?: return
             } catch (e: Exception) {
-                LOG.notify(e.toString())
+                LOG.notify(e)
                 return
             }
-        else model.getMedia().value ?: return
+        } else {
+            model.media.value ?: return
+        }
         model.setMedia(media)
         chapters = media.manga?.chapters ?: return
         chapter = chapters[media.manga!!.selectedChapter] ?: return

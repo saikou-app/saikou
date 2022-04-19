@@ -13,9 +13,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import ani.saikou.app.R
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.databinding.BottomSheetMediaListBinding
 import ani.saikou.app.util.*
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.core.model.media.Media
 import ani.saikou.core.service.LOG
 import ani.saikou.core.util.FuzzyDate
@@ -45,7 +45,7 @@ class MediaListDialogFragment : BottomSheetDialogFragment() {
         val model: MediaDetailsViewModel by activityViewModels()
         val scope = viewLifecycleOwner.lifecycleScope
 
-        model.getMedia().observe(this) {
+        model.media.observe(this) {
             media = it
             if (media != null) {
                 binding.mediaListProgressBar.visibility = View.GONE

@@ -103,7 +103,7 @@ open class AnimeWatchFragment : Fragment() {
 
         binding.animeSourceRecycler.layoutManager = gridLayoutManager
         continueEp = model.continueMedia ?: false
-        model.getMedia().observe(viewLifecycleOwner) {
+        model.media.observe(viewLifecycleOwner) {
             if (it != null) {
                 media = it
                 media.selected = model.loadSelected(media)

@@ -27,9 +27,9 @@ import ani.saikou.app.android.adapter.media.CharacterAdapter
 import ani.saikou.app.android.adapter.media.GenreAdapter
 import ani.saikou.app.android.adapter.media.MediaAdapter
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.util.anilist.anilist.GenresViewModel
 import ani.saikou.app.databinding.*
 import ani.saikou.app.util.*
+import ani.saikou.app.util.anilist.anilist.GenresViewModel
 import io.noties.markwon.Markwon
 import io.noties.markwon.SoftBreakAddsNewLinePlugin
 import kotlinx.coroutines.Dispatchers
@@ -68,7 +68,7 @@ class MediaInfoFragment : Fragment() {
         binding.mediaInfoContainer.visibility = if (loaded) View.VISIBLE else View.GONE
         binding.mediaInfoContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin += 128f.px + navBarHeight }
 
-        model.getMedia().observe(viewLifecycleOwner) { media ->
+        model.media.observe(viewLifecycleOwner) { media ->
             if (media != null && !loaded) {
                 loaded = true
                 binding.mediaInfoProgressBar.visibility = View.GONE

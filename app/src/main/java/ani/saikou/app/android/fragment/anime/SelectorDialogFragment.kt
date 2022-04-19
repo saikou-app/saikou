@@ -58,7 +58,7 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         var loaded = false
-        model.getMedia().observe(viewLifecycleOwner) { m ->
+        model.media.observe(viewLifecycleOwner) { m ->
             media = m
             if (media != null && !loaded) {
                 loaded = true

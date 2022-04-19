@@ -27,15 +27,15 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import ani.saikou.app.R
+import ani.saikou.app.android.fragment.anime.AnimeWatchFragment
+import ani.saikou.app.android.fragment.anime.HWatchFragment
 import ani.saikou.app.android.fragment.manga.MangaReadFragment
 import ani.saikou.app.android.fragment.media.MediaInfoFragment
 import ani.saikou.app.android.fragment.media.MediaListDialogFragment
 import ani.saikou.app.android.model.media.MediaDetailsViewModel
-import ani.saikou.app.util.anilist.anilist.Anilist
-import ani.saikou.app.android.fragment.anime.AnimeWatchFragment
-import ani.saikou.app.android.fragment.anime.HWatchFragment
 import ani.saikou.app.databinding.ActivityMediaBinding
 import ani.saikou.app.util.*
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.core.model.media.Media
 import ani.saikou.core.model.settings.UserInterfaceSettings
 import ani.saikou.core.service.STORE
@@ -214,7 +214,7 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         progress()
 
         //Share Button
-        model.getMedia().observe(this) {
+        model.media.observe(this) {
             if (it != null) {
                 media = it
                 if (it.notify) binding.mediaNotify.setImageDrawable(

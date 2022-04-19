@@ -97,7 +97,7 @@ open class MangaReadFragment : Fragment() {
 
         binding.animeSourceRecycler.layoutManager = gridLayoutManager
         continueEp = model.continueMedia ?: false
-        model.getMedia().observe(viewLifecycleOwner) {
+        model.media.observe(viewLifecycleOwner) {
             if (it != null) {
                 media = it
                 progress = View.GONE

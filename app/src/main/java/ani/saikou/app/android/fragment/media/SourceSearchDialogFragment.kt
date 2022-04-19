@@ -51,9 +51,8 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment() {
         binding.mediaListContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin += navBarHeight }
 
         val scope = viewLifecycleOwner.lifecycleScope
-        val imm =
-            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        model.getMedia().observe(viewLifecycleOwner) {
+        val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        model.media.observe(viewLifecycleOwner) {
             media = it
             if (media != null) {
                 binding.mediaListProgressBar.visibility = View.GONE

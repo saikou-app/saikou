@@ -7,12 +7,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.android.fragment.anime.SelectorDialogFragment
-import ani.saikou.app.util.others.AnimeFillerList
-import ani.saikou.app.util.others.Kitsu
+import ani.saikou.app.util.anilist.anilist.Anilist
 import ani.saikou.app.util.loadData
 import ani.saikou.app.util.logger
+import ani.saikou.app.util.others.AnimeFillerList
+import ani.saikou.app.util.others.Kitsu
 import ani.saikou.app.util.saveData
 import ani.saikou.app.util.toastString
 import ani.saikou.core.model.anime.Episode
@@ -44,18 +44,21 @@ class MediaDetailsViewModel : ViewModel() {
     var continueMedia: Boolean? = null
     private var loading = false
 
-    private val media: MutableLiveData<Media> = MutableLiveData<Media>(null)
-    fun getMedia(): LiveData<Media> = media
+    private val _media: MutableLiveData<Media> = MutableLiveData<Media>(null)
+
+    val media: LiveData<Media>
+        get() = _media
+
     fun loadMedia(m: Media) {
         if (!loading) {
             loading = true
-            media.postValue(Anilist.query.mediaDetails(m))
+            _media.postValue(Anilist.query.mediaDetails(m))
         }
         loading = false
     }
 
     fun setMedia(m: Media) {
-        media.postValue(m)
+        _media.postValue(m)
     }
 
     val sources = MutableLiveData<List<Source>?>(null)
