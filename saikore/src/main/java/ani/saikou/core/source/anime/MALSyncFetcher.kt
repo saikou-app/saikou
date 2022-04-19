@@ -86,17 +86,4 @@ object GogoAnimeFetcher : MALSyncFetcherInterface {
         )
         return slug?.let { Source(slug, "Automatically", "") }
     }
-
-    /*
-    Json.decodeFromString<JsonObject>(json)["Pages"]?.jsonObject?.get(hostname)
-                            ?.also {
-                                val slug = it.toString().replace("\n", "").findBetween(
-                                    (if (dub) "-dub" else "") + "\":{\"identifier\":\"",
-                                    "\","
-                                )
-                                if (slug != null) {
-                                    return@run Source(slug, "Automatically", "")
-                                }
-                            }
-     */
 }
