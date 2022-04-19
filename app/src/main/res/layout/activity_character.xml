@@ -27,6 +27,7 @@
                 app:layout_collapseMode="parallax"
                 tools:ignore="ContentDescription,ImageContrastCheck"
                 tools:srcCompat="@tools:sample/backgrounds/scenic[0]" />
+
             <ImageView
                 android:id="@+id/characterBannerNoKen"
                 android:layout_width="match_parent"
@@ -76,7 +77,7 @@
         android:indeterminate="true"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <ani.saikou.FadingEdgeRecyclerView
+    <ani.saikou.app.android.activity.FadingEdgeRecyclerView
         android:id="@+id/characterRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -114,13 +115,13 @@
         android:id="@+id/characterCover"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_anchorGravity="center_horizontal"
         android:layout_gravity="center_horizontal"
         android:translationY="-32dp"
         android:translationZ="4dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="16dp"
-        app:layout_anchor="@id/characterTitle">
+        app:layout_anchor="@id/characterTitle"
+        app:layout_anchorGravity="center_horizontal">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/characterCoverImage"

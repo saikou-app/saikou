@@ -3,16 +3,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".user.ListFragment">
+    tools:context=".android.fragment.user.ListFragment">
 
-    <ani.saikou.FadingEdgeRecyclerView
+    <ani.saikou.app.android.activity.FadingEdgeRecyclerView
         android:id="@+id/listRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:nestedScrollingEnabled="true"
-        android:requiresFadingEdge="vertical"
         android:padding="8dp"
+        android:requiresFadingEdge="vertical"
         tools:itemCount="4"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/item_media_large"

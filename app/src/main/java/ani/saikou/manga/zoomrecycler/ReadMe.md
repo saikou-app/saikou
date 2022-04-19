@@ -1,1 +1,0 @@
-#Blatantly taken from Tachiyomi's [Webtoon Reader](https://github.com/tachiyomiorg/tachiyomi/tree/ff369010074b058bb734ce24c66508300e6e9ac6/app/src/main/java/eu/kanade/tachiyomi/ui/reader/viewer/webtoon)

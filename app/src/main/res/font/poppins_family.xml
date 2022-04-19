@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <font-family xmlns:app="http://schemas.android.com/apk/res-auto">
     <font
+        app:font="@font/poppins"
         app:fontStyle="normal"
-        app:fontWeight="400"
-        app:font="@font/poppins" />
+        app:fontWeight="400" />
     <font
+        app:font="@font/poppins_bold"
         app:fontStyle="normal"
-        app:fontWeight="600"
-        app:font="@font/poppins_bold" />
+        app:fontWeight="600" />
 </font-family>

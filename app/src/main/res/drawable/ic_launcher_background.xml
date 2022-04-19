@@ -3,16 +3,17 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
-  <group android:scaleX="0.140625"
-      android:scaleY="0.140625">
-    <path
-        android:pathData="M0,0h768v384h-768z"
-        android:fillColor="#FF4BA8"/>
-    <path
-        android:pathData="M0,384h768v384h-768z"
-        android:fillColor="#C50053"/>
-    <path
-        android:pathData="M384,384m-172.3,0a172.3,172.3 0,1 1,344.6 0a172.3,172.3 0,1 1,-344.6 0"
-        android:fillColor="#FF0080"/>
-  </group>
+    <group
+        android:scaleX="0.140625"
+        android:scaleY="0.140625">
+        <path
+            android:fillColor="#FF4BA8"
+            android:pathData="M0,0h768v384h-768z" />
+        <path
+            android:fillColor="#C50053"
+            android:pathData="M0,384h768v384h-768z" />
+        <path
+            android:fillColor="#FF0080"
+            android:pathData="M384,384m-172.3,0a172.3,172.3 0,1 1,344.6 0a172.3,172.3 0,1 1,-344.6 0" />
+    </group>
 </vector>

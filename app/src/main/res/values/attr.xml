@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ZoomableRecyclerView">
-        <attr format="float" name="min_scale"/>
-        <attr format="float" name="max_scale"/>
-        <attr format="float" name="default_scale"/>
-        <attr format="integer" name="zoom_duration"/>
-        <attr format="boolean" name="zoom_enabled"/>
+        <attr name="min_scale" format="float" />
+        <attr name="max_scale" format="float" />
+        <attr name="default_scale" format="float" />
+        <attr name="zoom_duration" format="integer" />
+        <attr name="zoom_enabled" format="boolean" />
     </declare-styleable>
     <declare-styleable name="OutlineTextView">
-        <attr name="outlineColor" format="color"/>
-        <attr name="outlineWidth" format="float"/>
+        <attr name="outlineColor" format="color" />
+        <attr name="outlineWidth" format="float" />
     </declare-styleable>
 </resources>

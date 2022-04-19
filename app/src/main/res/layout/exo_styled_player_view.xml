@@ -10,7 +10,8 @@
         android:background="#000"
         tools:visibility="gone" />
 
-    <com.google.android.exoplayer2.ui.AspectRatioFrameLayout android:id="@id/exo_content_frame"
+    <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+        android:id="@id/exo_content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center">
@@ -128,6 +129,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
+            android:layout_marginTop="16dp"
             android:layout_weight="1"
             android:alpha="0"
             android:fontFamily="@font/poppins_bold"
@@ -136,17 +138,18 @@
             android:textColor="#FFFFFF"
             android:textSize="16sp"
             app:drawableTopCompat="@drawable/anim_rewind"
-            android:layout_marginTop="16dp"
             tools:ignore="HardcodedText,RtlCompat" />
+
         <View
             android:layout_width="128dp"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <TextView
             android:id="@+id/exo_fast_forward_anim"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical|end"
+            android:layout_marginTop="16dp"
             android:layout_weight="1"
             android:alpha="0"
             android:fontFamily="@font/poppins_bold"
@@ -154,14 +157,14 @@
             android:textAlignment="center"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
-            android:layout_marginTop="16dp"
             app:drawableTopCompat="@drawable/anim_skip"
             tools:ignore="HardcodedText,RtlCompat" />
     </LinearLayout>
 
-    <View android:id="@id/exo_controller_placeholder"
+    <View
+        android:id="@id/exo_controller_placeholder"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/exo_brightness_cont"

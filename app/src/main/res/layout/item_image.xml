@@ -7,7 +7,7 @@
     android:background="@color/bg"
     android:focusable="false">
 
-    <ani.saikou.NoGestureSubsamplingImageView
+    <ani.saikou.app.android.activity.NoGestureSubsamplingImageView
         android:id="@+id/imgProgImageNoGestures"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

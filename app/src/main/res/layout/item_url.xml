@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="1dp"
     app:cardCornerRadius="0dp">
 
@@ -68,10 +68,10 @@
             android:layout_marginEnd="16dp"
             android:backgroundTint="#00FFFFFF"
             android:src="@drawable/ic_round_download_24"
-            app:tint="@color/bg_opp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:tint="@color/bg_opp"
             tools:ignore="ContentDescription,SpeakableTextPresentCheck"
             tools:visibility="visible" />
     </LinearLayout>

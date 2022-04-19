@@ -13,7 +13,8 @@
         android:layout_marginTop="14dp"
         app:cardBackgroundColor="@color/nav_tab"
         app:cardCornerRadius="2dp"
-        app:cardElevation="0dp"/>
+        app:cardElevation="0dp" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -23,7 +24,7 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <ani.saikou.FadingEdgeRecyclerView
+    <ani.saikou.app.android.activity.FadingEdgeRecyclerView
         android:id="@+id/devsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

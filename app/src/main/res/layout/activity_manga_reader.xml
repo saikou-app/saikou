@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".manga.MangaReaderActivity">
+    tools:context=".android.activity.manga.MangaReaderActivity">
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/mangaReaderPager"
@@ -14,20 +14,20 @@
         android:visibility="gone"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <ani.saikou.manga.zoomrecycler.ZoomFrame
+    <ani.saikou.app.util.manga.zoomrecycler.ZoomFrame
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent">
 
-        <ani.saikou.manga.zoomrecycler.ZoomRecyclerView
+        <ani.saikou.app.util.manga.zoomrecycler.ZoomRecyclerView
             android:id="@+id/mangaReaderRecycler"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
             android:paddingTop="128dp"
             android:paddingBottom="128dp"
-            tools:ignore="SpeakableTextPresentCheck"/>
+            tools:ignore="SpeakableTextPresentCheck" />
 
-    </ani.saikou.manga.zoomrecycler.ZoomFrame>
+    </ani.saikou.app.util.manga.zoomrecycler.ZoomFrame>
 
     <FrameLayout
         android:id="@+id/mangaReaderCont"
@@ -196,7 +196,7 @@
                         android:gravity="center_vertical"
                         android:orientation="vertical">
 
-                        <ani.saikou.SpinnerNoSwipe
+                        <ani.saikou.app.util.SpinnerNoSwipe
                             android:id="@+id/mangaReaderChapterSelect"
                             android:layout_width="match_parent"
                             android:layout_height="48dp"
@@ -270,16 +270,16 @@
         </FrameLayout>
     </FrameLayout>
 
-    <ani.saikou.others.OutlineTextView
+    <ani.saikou.app.util.others.OutlineTextView
         android:id="@+id/mangaReaderPageNumber"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center"
         android:fontFamily="@font/poppins_bold"
         android:padding="4dp"
-        app:outlineWidth="1"
-        app:outlineColor="#A9000000"
         android:textAlignment="center"
         android:textColor="#FFFFFF"
+        app:outlineColor="#A9000000"
+        app:outlineWidth="1"
         tools:text="1/10" />
 </FrameLayout>

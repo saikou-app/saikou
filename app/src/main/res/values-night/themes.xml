@@ -1,4 +1,5 @@
 <resources>
+
     <style name="Theme.Saikou" parent="Theme.Base">
         <item name="android:statusBarColor">@color/status</item>
         <item name="colorPrimary">@color/pink_200</item>
