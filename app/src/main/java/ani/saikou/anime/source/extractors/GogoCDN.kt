@@ -12,8 +12,12 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 import org.jsoup.Connection
 import org.jsoup.Jsoup
+import org.jsoup.nodes.Document
 import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
@@ -27,7 +31,7 @@ class GogoCDN(val host:String) : Extractor() {
                 .ignoreHttpErrors(true)
                 .get()
         if(url.contains("streaming.php")) {
-            getKeysAndIv()?.apply {
+            fetchKeys(url)?.apply {
                 val keys = this
                 response.select("script[data-name=\"episode\"]").attr("data-value").also {
                     val decrypted = cryptoHandler(it,keys.first,keys.third,false)!!.replace("\t","")
@@ -100,15 +104,53 @@ class GogoCDN(val host:String) : Extractor() {
     }
 
     companion object {
-        private var keysAndIv: Triple<String,String,String>?=null
-        fun getKeysAndIv(): Triple<String,String,String>? =
-            if(keysAndIv!=null) keysAndIv else let {
-//                val keys = OkHttpClient().newCall(Request.Builder().url("https://raw.githubusercontent.com/justfoolingaround/animdl-provider-benchmarks/master/api/gogoanime.json").build()).execute().body?.string()?:return null
-//                Json.decodeFromString<JsonObject>(keys).apply {
-//                    keysAndIv =  Triple(this.jsonObject["key"].toString().trim('"'),this.jsonObject["second_key"].toString().trim('"'),this.jsonObject["iv"].toString().trim('"'))
-//                }
-                keysAndIv = Triple("93106165734640459728346589106791","97952160493714852094564712118349","8244002440089157")
-                return keysAndIv
+        private val httpClient = OkHttpClient()
+
+        /**
+         * Parses the response body as a [Document].
+         *
+         * **From**: [tachiyomi/JsoupExtensions.kt][https://github.com/tachiyomiorg/tachiyomi/blob/3c41a5e91042c260641c7fe03f010fc9b98a60f4/app/src/main/java/eu/kanade/tachiyomi/util/JsoupExtensions.kt]
+         *
+         * @param html the body of the response. Use only if the body was read before calling this method.
+         *
+         * @return a Jsoup [Document] for this response.
+         */
+        private fun Response.asJsoup(html: String? = null): Document {
+            return Jsoup.parse(html ?: body!!.string(), request.url.toString())
+        }
+
+        /**
+         * Fetches the decryption keys from the DOM.
+         *
+         * **See**: [jmir1/aniyomi-extensions][https://github.com/jmir1/aniyomi-extensions/blob/c62c6be6cba7b1645b939897520ebe07218fec4d/src/en/gogoanime/src/eu/kanade/tachiyomi/animeextension/en/gogoanime/extractors/GogoCdnExtractor.kt#L27]
+         * @author jmir#9379
+         *
+         * @param url The URL to fetch the keys from.
+         *
+         * @return The decryption keys.
+         */
+        private fun fetchKeys(url: String): Triple<String, String, String>? {
+            val request = Request.Builder().url(url).build()
+            return httpClient.newCall(request).execute().let { response ->
+                try {
+                    val document = response.asJsoup()
+
+                    val iv = document.select("div.wrapper")
+                            .attr("class").substringAfter("container-")
+                            .filter { it.isDigit() }
+                    val secretKey = document.select("body[class]")
+                            .attr("class").substringAfter("container-")
+                            .filter { it.isDigit() }
+                    val decryptionKey = document.select("div.videocontent")
+                            .attr("class").substringAfter("videocontent-")
+                            .filter { it.isDigit() }
+
+                    Triple(secretKey, decryptionKey, iv)
+                } catch (throwable: Throwable) {
+//                    logger(throwable.toString())
+                    null
+                }
             }
+        }
     }
 }
