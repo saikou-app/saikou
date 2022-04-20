@@ -839,7 +839,7 @@ Page(page:1,perPage:50) {
             hasNextPage = mediaConnection?.pageInfo?.hasNextPage == true
             mediaConnection?.edges?.forEach { i->
                 val node = i.node!!
-                val status = node.status.toString().replace("_"," ")
+                val status = node.status.toString()
                 val year = node.startDate!!.year?.toString() ?: "TBA"
                 val title = if(status!="CANCELLED") year else status
                 if(!studio.yearMedia!!.containsKey(title))

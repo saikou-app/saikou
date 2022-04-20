@@ -187,11 +187,19 @@ data class MediaTitle(
 )
 
 enum class MediaType() {
-    ANIME, MANGA
+    ANIME, MANGA;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 enum class MediaStatus() {
-    FINISHED, RELEASING, NOT_YET_RELEASED, CANCELLED, HIATUS
+    FINISHED, RELEASING, NOT_YET_RELEASED, CANCELLED, HIATUS;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 data class AiringSchedule(
@@ -290,15 +298,27 @@ data class MediaList(
 )
 
 enum class MediaListStatus() {
-    CURRENT, PLANNING, COMPLETED, DROPPED, PAUSED, REPEATING
+    CURRENT, PLANNING, COMPLETED, DROPPED, PAUSED, REPEATING;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 enum class MediaSource() {
-    ORIGINAL, MANGA, LIGHT_NOVEL, VISUAL_NOVEL, VIDEO_GAME, OTHER, NOVEL, DOUHINSHI, ANIME, WEB_NOVEL, LIVE_ACTION, GAME,  COMIC, MULTIMEDIA_PROJECT, PICTURE_BOOK
+    ORIGINAL, MANGA, LIGHT_NOVEL, VISUAL_NOVEL, VIDEO_GAME, OTHER, NOVEL, DOUHINSHI, ANIME, WEB_NOVEL, LIVE_ACTION, GAME,  COMIC, MULTIMEDIA_PROJECT, PICTURE_BOOK;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 enum class MediaFormat() {
-    TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT
+    TV, TV_SHORT, MOVIE, SPECIAL, OVA, ONA, MUSIC, MANGA, NOVEL, ONE_SHOT;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 data class MediaTrailer(
@@ -394,11 +414,19 @@ data class MediaEdge(
 )
 
 enum class MediaRelation() {
-    ADAPTATION, PREQUEL, SEQUEL, PARENT, SIDE_STORY, CHARACTER, SUMMARY, ALTERNATIVE, SPIN_OFF, OTHER, SOURCE, COMPILATION, CONTAINS
+    ADAPTATION, PREQUEL, SEQUEL, PARENT, SIDE_STORY, CHARACTER, SUMMARY, ALTERNATIVE, SPIN_OFF, OTHER, SOURCE, COMPILATION, CONTAINS;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 enum class MediaSeason() {
-    WINTER, SPRING, SUMMER, FALL
+    WINTER, SPRING, SUMMER, FALL;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 data class MediaExternalLink(
@@ -429,7 +457,11 @@ data class MediaExternalLink(
 )
 
 enum class ExternalLinkType() {
-    INFO, STREAMING, SOCIAL
+    INFO, STREAMING, SOCIAL;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 data class MediaListCollection(

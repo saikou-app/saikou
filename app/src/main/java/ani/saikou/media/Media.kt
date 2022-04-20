@@ -73,7 +73,7 @@ data class Media(
         userPreferredName = apiMedia.title!!.userPreferred.toString(),
         cover = apiMedia.coverImage?.large,
         banner = apiMedia.bannerImage,
-        status = apiMedia.status.toString().replace("_", " "),
+        status = apiMedia.status.toString(),
         isFav = apiMedia.isFavourite!!,
         isAdult = apiMedia.isAdult ?: false,
         userProgress = apiMedia.mediaListEntry?.progress,
@@ -91,7 +91,7 @@ data class Media(
     }
 
     constructor(mediaEdge: MediaEdge): this(mediaEdge.node!!) {
-        this.relation = mediaEdge.relationType.toString().replace("_", " ")
+        this.relation = mediaEdge.relationType.toString()
     }
 
     fun getMainName() = if (name!="null") name else nameRomaji

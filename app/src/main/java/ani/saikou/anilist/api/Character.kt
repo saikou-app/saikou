@@ -83,7 +83,11 @@ data class CharacterEdge(
 )
 
 enum class CharacterRole() {
-    MAIN, SUPPORTING, BACKGROUND
+    MAIN, SUPPORTING, BACKGROUND;
+
+    override fun toString(): String {
+        return super.toString().replace("_", " ")
+    }
 }
 
 data class CharacterName(
