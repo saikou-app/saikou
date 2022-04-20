@@ -26,7 +26,7 @@ object AppUpdater {
             else {
                 OkHttpClient().newCall(
                     Request.Builder()
-                        .url("https://raw.githubusercontent.com/saikou-app/saikou/main/app/build.gradle")
+                        .url("https://raw.githubusercontent.com/saikou-app/saikou/main/app/build.gradle.kts")
                         .build()
                 ).execute().body?.string()?.substringAfter("versionName \"")?.substringBefore('"') ?: return
             }
