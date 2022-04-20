@@ -353,7 +353,9 @@ class AnilistQueries{
                         val json = it.mediaRecommendation
                         if (json!=null && json.id !in ids) {
                             ids.add(json.id!!)
-                            responseArray.add(Media(json))
+                            val m = Media(json)
+                            m.relation = json.type.toString()
+                            responseArray.add(m)
                         }
                     }
                 }
