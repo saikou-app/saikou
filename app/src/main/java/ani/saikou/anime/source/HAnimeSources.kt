@@ -9,11 +9,13 @@ object HAnimeSources : WatchSources() {
         "HAHO",
         "GOGO",
         "GOGO-DUB",
+        "ANIMEKISA",
+        "ANIMEKISA-DUB",
         "9ANIME",
         "9ANIME-DUB",
+        "TENSHI",
         "ZORO",
         "TWIST",
-        "TENSHI",
     )
 
     private val hParsers:MutableMap<Int,AnimeParser> = mutableMapOf()
@@ -23,11 +25,13 @@ object HAnimeSources : WatchSources() {
             1 -> hParsers.getOrPut(i) { Haho() }
             2 -> animeParsers.getOrPut(i) { Gogo() }
             3 -> animeParsers.getOrPut(i) { Gogo(true) }
-            4 -> animeParsers.getOrPut(i) { NineAnime() }
-            5 -> animeParsers.getOrPut(i) { NineAnime(true) }
-            6 -> animeParsers.getOrPut(i) { Zoro() }
-            7 -> animeParsers.getOrPut(i) { Twist() }
+            4 -> animeParsers.getOrPut(i) { Animekisa() }
+            5 -> animeParsers.getOrPut(i) { Animekisa(true) }
+            6 -> animeParsers.getOrPut(i) { NineAnime() }
+            7 -> animeParsers.getOrPut(i) { NineAnime(true) }
             8 -> animeParsers.getOrPut(i) { Tenshi() }
+            9 -> animeParsers.getOrPut(i) { Zoro() }
+            10 -> animeParsers.getOrPut(i) { Twist() }
             else -> null
         }
         return a
