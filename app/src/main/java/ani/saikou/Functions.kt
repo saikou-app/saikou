@@ -620,15 +620,15 @@ fun openLinkInBrowser(link:String?){
 fun download(activity: Activity, episode:Episode, animeTitle:String){
     val manager = activity.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
     val stream = episode.streamLinks[episode.selectedStream]?:return
-    val uri = Uri.parse(stream.quality[episode.selectedQuality].url)
+    val uri = if(stream.quality.size>episode.selectedQuality) Uri.parse(stream.quality[episode.selectedQuality].url) else return
     val regex = "[\\\\/:*?\"<>|]".toRegex()
     val aTitle = animeTitle.replace(regex, "")
     val request: DownloadManager.Request = DownloadManager.Request(uri)
-    if(stream.headers!=null) {
-        stream.headers.forEach{
-            request.addRequestHeader(it.key,it.value)
-        }
+
+    stream.headers?.forEach{
+        request.addRequestHeader(it.key,it.value)
     }
+
     val title = "Episode ${episode.number}${if (episode.title != null) " - ${episode.title}" else ""}".replace(regex,"")
 
     CoroutineScope(Dispatchers.IO).launch {
@@ -824,6 +824,7 @@ fun toastString(s: String?,activity: Activity?=null){
                 }
                 snackBar.view.setOnLongClickListener {
                     copyToClipboard(s,false)
+                    toast("Copied to Clipboard")
                     true
                 }
                 snackBar.show()

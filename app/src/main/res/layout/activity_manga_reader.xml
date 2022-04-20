@@ -90,6 +90,40 @@
                     app:trackColorInactive="@color/bg_white"
                     app:trackHeight="2dp" />
 
+                <LinearLayout
+                    android:id="@+id/mangaReaderOnePage"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:elegantTextHeight="true"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/previous"
+                        android:textColor="#fff"
+                        tools:ignore="NestedWeights" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:elegantTextHeight="true"
+                        android:ellipsize="end"
+                        android:fontFamily="@font/poppins_bold"
+                        android:text="@string/next"
+                        android:textAlignment="textEnd"
+                        android:textColor="#fff" />
+                </LinearLayout>
+
                 <androidx.cardview.widget.CardView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,7 +141,7 @@
                         android:scaleX="1.5"
                         android:scaleY="1.5"
                         android:src="@drawable/ic_round_skip_next_24"
-                        tools:ignore="ImageContrastCheck" />
+                        tools:ignore="ImageContrastCheck,DuplicateSpeakableTextCheck" />
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>

@@ -141,6 +141,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private val handler = Handler(Looper.getMainLooper())
     private val model: MediaDetailsViewModel by viewModels()
 
+    var rotation = 0
+
     override fun onAttachedToWindow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val displayCutout =window.decorView.rootWindowInsets.displayCutout
@@ -208,20 +210,14 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
         playerView.controllerShowTimeoutMs = 5000
 
-        if (Build.VERSION.SDK_INT >= 26) {
-            playerView.useController = !isInPictureInPictureMode
-        }
-
         val audioManager = applicationContext.getSystemService(AUDIO_SERVICE) as AudioManager
         if (System.getInt(contentResolver, System.ACCELEROMETER_ROTATION, 0) != 1) {
-            var rotation = 0
             requestedOrientation = rotation
             exoRotate.setOnClickListener {
                 requestedOrientation = rotation
                 it.visibility = View.GONE
             }
-            orientationListener =
-                object : OrientationEventListener(this, SensorManager.SENSOR_DELAY_UI) {
+            orientationListener = object : OrientationEventListener(this, SensorManager.SENSOR_DELAY_UI) {
                     override fun onOrientationChanged(orientation: Int) {
                         if (orientation in 45..135) {
                             if(rotation != ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) exoRotate.visibility = View.VISIBLE
@@ -268,14 +264,13 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         // Picture-in-picture
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             pipEnabled = packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE) && settings.pip
-            if (pipEnabled && !settings.alwaysMinimize) {
+            if (pipEnabled) {
                 exoPip.visibility = View.VISIBLE
                 exoPip.setOnClickListener {
                     enterPipMode()
                 }
-            } else {
-                exoPip.visibility = View.GONE
             }
+            else exoPip.visibility = View.GONE
         }
 
 
@@ -342,15 +337,15 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         val overshoot = AnimationUtils.loadInterpolator(this,R.anim.over_shoot)
         val controllerDuration = (uiSettings.animationSpeed*200).toLong()
         fun handleController(){
-            if(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) !isInPictureInPictureMode else true)
-            {
+            if(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) !isInPictureInPictureMode else true) {
                 if(playerView.isControllerFullyVisible){
                     ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_controller),"alpha",1f,0f).setDuration(controllerDuration).start()
                     ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_bottom_cont),"translationY",0f,128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
                     ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_timeline_cont),"translationY",0f,128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
                     ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_top_cont),"translationY",0f,-128f).apply { interpolator=overshoot;duration=controllerDuration;start() }
                     playerView.postDelayed({ playerView.hideController() },controllerDuration)
-                }else{
+                }
+                else{
                     checkNotch()
                     playerView.showController()
                     ObjectAnimator.ofFloat(playerView.findViewById(R.id.exo_controller),"alpha",0f,1f).setDuration(controllerDuration).start()
@@ -828,11 +823,15 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             }
         playerView.player = exoPlayer
 
-        val mediaButtonReceiver = ComponentName(this, MediaButtonReceiver::class.java)
-        MediaSessionCompat(this, "Player", mediaButtonReceiver, null).let { media ->
-            val mediaSessionConnector = MediaSessionConnector(media)
-            mediaSessionConnector.setPlayer(exoPlayer)
-            media.isActive = true
+        try{
+            val mediaButtonReceiver = ComponentName(this, MediaButtonReceiver::class.java)
+            MediaSessionCompat(this, "Player", mediaButtonReceiver, null).let { media ->
+                val mediaSessionConnector = MediaSessionConnector(media)
+                mediaSessionConnector.setPlayer(exoPlayer)
+                media.isActive = true
+            }
+        }catch (e:Exception){
+            toast(e.toString())
         }
 
         exoPlayer.addListener(this)
@@ -987,7 +986,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         isBuffering = playbackState == Player.STATE_BUFFERING
         if(playbackState == Player.STATE_ENDED && settings.autoPlay){
             if(interacted) exoNext.performClick()
-            else if(if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) !isInPictureInPictureMode else true) toast("Autoplay cancelled, no Interaction for more than 1 Hour.")
+            else toast("Autoplay cancelled, no Interaction for more than 1 Hour.")
         }
         super.onPlaybackStateChanged(playbackState)
     }
@@ -1020,33 +1019,25 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        finish()
+        finishAndRemoveTask()
         startActivity(intent)
     }
 
     override fun onBackPressed() {
-        if (settings.alwaysMinimize && pipEnabled) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                enterPipMode()
-            }
-            else {
-                super.onBackPressed()
-                finish()
-            }
-        }else{
-            super.onBackPressed()
-            finish()
-        }
+        super.onBackPressed()
+        finishAndRemoveTask()
     }
 
     override fun onDestroy() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        VideoCache.release()
 
         if(isInitialized) {
             updateAniProgress()
+            releasePlayer()
         }
+
         super.onDestroy()
+        finishAndRemoveTask()
     }
 
     // QUALITY SELECTOR
@@ -1119,6 +1110,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
     private fun cast(){
         val stream = episode.streamLinks[episode.selectedStream]?:return
+        if(episode.selectedQuality >= stream.quality.size) return
         val videoURL = stream.quality[episode.selectedQuality].url
         val shareVideo = Intent(Intent.ACTION_VIEW)
         shareVideo.setDataAndType(Uri.parse(videoURL), "video/*")
@@ -1147,7 +1139,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     @Suppress("DEPRECATION")
     @RequiresApi(Build.VERSION_CODES.N)
     private fun enterPipMode() {
-        if(isInitialized) exoPlayer.pause()
         if (!pipEnabled) return
         try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -1164,15 +1155,18 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         }
     }
 
-    // Enter PiP when user leaves player through gestures
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun onUserLeaveHint() {
-        if((wasPlaying || isPlayerPlaying) && pipEnabled && settings.alwaysMinimize ) enterPipMode()
-    }
-
-    override fun onSurfaceSizeChanged(width: Int, height: Int) {
+    override fun onPictureInPictureModeChanged(isInPictureInPictureMode: Boolean, newConfig: Configuration?) {
+        playerView.useController = !isInPictureInPictureMode
         saveData("${media.id}_${episode.number}", exoPlayer.currentPosition, this)
-        super.onSurfaceSizeChanged(width, height)
+        if(isInPictureInPictureMode){
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            orientationListener?.disable()
+        }else{
+            orientationListener?.enable()
+        }
+        if (isInitialized) exoPlayer.play()
+        saveData("${media.id}_${episode.number}", exoPlayer.currentPosition, this)
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
     }
 
 }

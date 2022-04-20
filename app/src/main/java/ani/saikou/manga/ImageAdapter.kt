@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.updateLayoutParams
 import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
+import ani.saikou.R
 import ani.saikou.databinding.ItemImageBinding
 import ani.saikou.px
 import ani.saikou.settings.CurrentReaderSettings
@@ -49,26 +50,33 @@ private val uiSettings: UserInterfaceSettings
                 binding.imgProgImageNoGestures
             }else binding.imgProgImageGestures
 
-            imageView.recycle()
-            imageView.visibility= View.VISIBLE
+            loadImage(imageView,position,binding.root)
+        }
+    }
+    fun loadImage(imageView:SubsamplingScaleImageView,position: Int,parent:View){
 
-            Glide.with(imageView).download(GlideUrl(images[position]){chapter.headers?: mutableMapOf()})
+        val progress = parent.findViewById<View>(R.id.imgProgProgress)
+        imageView.recycle()
+        imageView.visibility= View.GONE
+        if(images[position].isEmpty()) return
+        Glide.with(imageView).download(GlideUrl(images[position]){chapter.headers?: mutableMapOf()})
             .override(Target.SIZE_ORIGINAL)
             .apply{
                 val target = object : CustomViewTarget<SubsamplingScaleImageView, File>(imageView) {
                     override fun onLoadFailed(errorDrawable: Drawable?) {
-                        binding.imgProgProgress.visibility= View.GONE
+                        progress.visibility= View.GONE
+//                        toastString("Failed to load Page ${position+1}, Long Click to reload")
                     }
                     override fun onResourceCleared(placeholder: Drawable?) {}
 
                     override fun onResourceReady(resource: File, transition: Transition<in File>?) {
                         imageView.visibility = View.VISIBLE
-                        if(settings.layout != CurrentReaderSettings.Layouts.PAGED) binding.root.updateLayoutParams {
+                        if(settings.layout != CurrentReaderSettings.Layouts.PAGED) parent.updateLayoutParams {
                             height = ViewGroup.LayoutParams.WRAP_CONTENT
                         }
                         view.setImage(ImageSource.uri(Uri.fromFile(resource)))
-                        ObjectAnimator.ofFloat(binding.root,"alpha",0f,1f).setDuration((400*uiSettings.animationSpeed).toLong()).start()
-                        binding.imgProgProgress.visibility= View.GONE
+                        ObjectAnimator.ofFloat(parent,"alpha",0f,1f).setDuration((400*uiSettings.animationSpeed).toLong()).start()
+                        progress.visibility= View.GONE
                     }
                 }
                 val transformation = chapter.transformation
@@ -76,8 +84,6 @@ private val uiSettings: UserInterfaceSettings
                     transform(File("").javaClass, transformation).into(target)
                 else
                     into(target)
-
             }
-        }
     }
 }

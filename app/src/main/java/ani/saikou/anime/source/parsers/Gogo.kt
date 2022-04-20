@@ -36,8 +36,8 @@ class Gogo(private val dub:Boolean=false, override val name: String = "gogoanime
     private fun directLinkify(name: String,url: String,getSize:Boolean=true): Episode.StreamLinks? {
         val domain = Regex("""(?<=^http[s]?://).+?(?=/)""").find(url)!!.value
         val extractor : Extractor?=when {
-            "gogo" in domain -> GogoCDN()
-            "goload" in domain -> GogoCDN()
+            "gogo" in domain -> GogoCDN(host[0])
+            "goload" in domain -> GogoCDN(host[0])
             "sb" in domain ->  StreamSB()
             "fplayer" in domain -> FPlayer(getSize)
             "fembed" in domain -> FPlayer(getSize)
@@ -65,7 +65,8 @@ class Gogo(private val dub:Boolean=false, override val name: String = "gogoanime
                             if(directLinks != null){linkForVideos[name] = directLinks}
                         }
                 }
-            }}catch (e:Exception){
+            }
+        }catch (e:Exception){
                 toastString(e.toString())
             }
             return@runBlocking (linkForVideos)

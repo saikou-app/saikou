@@ -1,7 +1,9 @@
 package ani.saikou.settings
 
 import android.app.AlertDialog
+import android.os.Build
 import android.os.Bundle
+import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.app.AppCompatActivity
@@ -151,10 +153,16 @@ class PlayerSettingsActivity : AppCompatActivity() {
             }
         }
 
-        binding.playerSettingsPiP.isChecked = settings.pip
-        binding.playerSettingsPiP.setOnCheckedChangeListener { _, isChecked ->
-            settings.pip = isChecked
-            saveData(player,settings)
+
+        binding.playerSettingsPiP.apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+                visibility = View.VISIBLE
+                isChecked = settings.pip
+                setOnCheckedChangeListener { _, isChecked ->
+                    settings.pip = isChecked
+                    saveData(player, settings)
+                }
+            } else visibility = View.GONE
         }
 
         binding.playerSettingsAlwaysMinimize.isChecked = settings.alwaysMinimize

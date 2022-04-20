@@ -720,7 +720,6 @@
                 android:checked="true"
                 android:drawableStart="@drawable/ic_round_fullscreen_24"
                 android:drawablePadding="16dp"
-                app:drawableTint="?attr/colorPrimary"
                 android:elegantTextHeight="true"
                 android:fontFamily="@font/poppins_bold"
                 android:minHeight="64dp"
@@ -729,7 +728,9 @@
                 android:text="@string/always_minimize"
                 android:textAlignment="viewStart"
                 android:textColor="@color/bg_opp"
+                android:visibility="gone"
                 app:cornerRadius="0dp"
+                app:drawableTint="?attr/colorPrimary"
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track">
 
@@ -746,7 +747,8 @@
                 android:paddingStart="32dp"
                 android:paddingEnd="32dp"
                 android:text="@string/always_minimize_info"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone" />
 
             <com.google.android.material.switchmaterial.SwitchMaterial
                 android:id="@+id/playerSettingsCast"

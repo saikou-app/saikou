@@ -24,6 +24,7 @@ import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
 import ani.saikou.settings.ReaderSettings
 import ani.saikou.settings.UserInterfaceSettings
+import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
@@ -52,6 +53,8 @@ class MangaReaderActivity : AppCompatActivity() {
 
     private var notchHeight:Int=0
 
+    private var adapter:ImageAdapter?=null
+    
     override fun onAttachedToWindow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             val displayCutout = window.decorView.rootWindowInsets.displayCutout
@@ -142,6 +145,15 @@ class MangaReaderActivity : AppCompatActivity() {
 
         binding.mangaReaderRecycler.tapListener = {
             handleController()
+        }
+        binding.mangaReaderRecycler.longTapListener = { event ->
+            binding.mangaReaderRecycler.findChildViewUnder(event.x,event.y).let { child ->
+                val image = child?.findViewById<SubsamplingScaleImageView>(R.id.imgProgImageNoGestures)
+                if(image!=null){
+                    adapter?.loadImage(image,binding.mangaReaderRecycler.getChildAdapterPosition(child),child)
+                    true
+                }else false
+            }
         }
 
         var pageSliderTimer = Timer()
@@ -273,9 +285,21 @@ class MangaReaderActivity : AppCompatActivity() {
                         maxChapterPage = chapImages.size.toLong()
                         saveData("${media.id}_${it.number}_max", maxChapterPage)
 
-                        binding.mangaReaderRecycler.adapter = ImageAdapter(chapter,settings.default,uiSettings)
-                        binding.mangaReaderPageSlider.value = currentChapterPage.toFloat()
-                        binding.mangaReaderPageSlider.valueTo = maxChapterPage.toFloat()
+                        adapter = ImageAdapter(chapter,settings.default,uiSettings)
+                        binding.mangaReaderRecycler.adapter = adapter
+
+                        if(chapImages.size>1) {
+                            binding.mangaReaderOnePage.visibility = View.GONE
+                            binding.mangaReaderPageSlider.apply {
+                                visibility = View.VISIBLE
+                                value = currentChapterPage.toFloat()
+                                valueTo = maxChapterPage.toFloat()
+                            }
+                        }
+                        else{
+                            binding.mangaReaderOnePage.visibility = View.VISIBLE
+                            binding.mangaReaderPageSlider.visibility = View.GONE
+                        }
                         binding.mangaReaderPageNumber.text = "${currentChapterPage}/$maxChapterPage"
 
                         binding.mangaReaderRecycler.scrollToPosition(currentChapterPage.toInt()-1)

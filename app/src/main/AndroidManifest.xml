@@ -66,7 +66,7 @@
             android:name=".anime.ExoplayerView"
             android:label="@string/video"
             android:supportsPictureInPicture="true"
-            android:configChanges="orientation|screenSize|layoutDirection"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|navigation"
             android:exported="true"
             android:launchMode="singleTask"
             android:excludeFromRecents="true"
