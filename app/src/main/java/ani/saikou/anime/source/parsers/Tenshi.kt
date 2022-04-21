@@ -128,7 +128,7 @@ open class Tenshi : AnimeProvider() {
                 updateStatus("Selected : ${source!!.name}")
             }
             if (source != null) {
-                return getEpisodes(source!!.id)
+                return getEpisodes(source!!.link)
             }
         } catch (e: Exception) {
             toastString("$e")
@@ -147,7 +147,7 @@ open class Tenshi : AnimeProvider() {
             Jsoup.parse(htmlResponse).select("ul.loop.anime-loop.thumb > li > a").forEach {
                 responseArray.add(
                     Source(
-                        id = it.attr("abs:href"),
+                        link = it.attr("abs:href"),
                         name = it.attr("title"),
                         cover = it.select(".image")[0].attr("src"),
                         headers = mutableMapOf("Cookie" to cookie)

@@ -66,7 +66,7 @@ class MangaReaderTo(override val name: String="MangaReader") : MangaParser() {
         else{
             setTextListener("Selected : ${source.name}")
         }
-        if (source!=null) return getLinkChapters(source.id)
+        if (source!=null) return getLinkChapters(source.link)
         return mutableMapOf()
     }
 

@@ -77,7 +77,7 @@ class MediaDetailsViewModel:ViewModel() {
     }
     fun overrideEpisodes(i: Int, source: Source,id:Int){
         watchAnimeWatchSources?.get(i)!!.saveSource(source,id)
-        epsLoaded[i] = watchAnimeWatchSources?.get(i)!!.getSlugEpisodes(source.id)
+        epsLoaded[i] = watchAnimeWatchSources?.get(i)!!.getSlugEpisodes(source.link)
         episodes.postValue(epsLoaded)
     }
 
@@ -156,7 +156,7 @@ class MediaDetailsViewModel:ViewModel() {
 
     fun overrideMangaChapters(i: Int, source: Source,id:Int){
         readMangaReadSources?.get(i)!!.saveSource(source,id)
-        mangaLoaded[i] = readMangaReadSources?.get(i)!!.getLinkChapters(source.id)
+        mangaLoaded[i] = readMangaReadSources?.get(i)!!.getLinkChapters(source.link)
         mangaChapters.postValue(mangaLoaded)
     }
 

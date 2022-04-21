@@ -76,7 +76,7 @@ class MangaDex(override val name: String="mangadex.org") :MangaParser() {
             setTextListener("Selected : ${source.name}")
         }
         if (source!=null) {
-            val s = getLinkChapters(source.id)
+            val s = getLinkChapters(source.link)
             setTextListener("Loaded : ${source.name}")
             return s
         }

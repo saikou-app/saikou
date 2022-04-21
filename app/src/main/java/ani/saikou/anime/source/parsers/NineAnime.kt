@@ -105,7 +105,7 @@ class NineAnime(private val dub: Boolean = false) : AnimeProvider() {
             updateStatus("Selected : ${slug.name}")
         }
         if (slug != null) {
-            return getEpisodes(slug.id)
+            return getEpisodes(slug.link)
         }
         return mutableMapOf()
     }

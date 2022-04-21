@@ -54,7 +54,7 @@ object Twist : AnimeProvider() {
         val load: Source? = loadData("twist_${media.id}")
         if (load != null) {
             updateStatus("Selected : ${load.name}")
-            return getEpisodes(load.id)
+            return getEpisodes(load.link)
         }
         try {
             val animeJson = Jsoup.connect("https://api.twist.moe/api/anime").ignoreContentType(true).get().body().text()
@@ -70,7 +70,7 @@ object Twist : AnimeProvider() {
                     val result = search(media.nameRomaji)[0]
                     updateStatus("Found : ${result.name}")
                     saveSource(result, media.id, false)
-                    getEpisodes(result.id)
+                    getEpisodes(result.link)
                 }
             }
         } catch (e: Exception) {

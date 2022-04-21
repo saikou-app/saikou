@@ -75,7 +75,7 @@ class MangaSee(override val name: String="MangaSee") : MangaParser() {
         else{
             setTextListener("Selected : ${source.name}")
         }
-        if (source!=null) return getLinkChapters(source.id)
+        if (source!=null) return getLinkChapters(source.link)
         return mutableMapOf()
     }
 
@@ -87,7 +87,7 @@ class MangaSee(override val name: String="MangaSee") : MangaParser() {
             Json.decodeFromString<JsonArray>(json).forEach {
                 response.add(Source(
                  name = it.jsonObject["s"].toString().trim('"'),
-                 id = it.jsonObject["i"].toString().trim('"'),
+                 link = it.jsonObject["i"].toString().trim('"'),
                  cover = "https://cover.nep.li/cover/${it.jsonObject["i"].toString().trim('"')}.jpg"
                 ))
             }
