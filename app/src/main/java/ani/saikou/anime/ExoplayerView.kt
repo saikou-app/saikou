@@ -71,7 +71,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import java.util.*
-import java.util.concurrent.TimeUnit
+import java.util.concurrent.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -85,11 +85,11 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
     private lateinit var exoPlayer: ExoPlayer
     private lateinit var trackSelector: DefaultTrackSelector
-    private lateinit var cacheFactory : CacheDataSource.Factory
+    private lateinit var cacheFactory: CacheDataSource.Factory
     private lateinit var playbackParameters: PlaybackParameters
-    private lateinit var mediaItem : MediaItem
+    private lateinit var mediaItem: MediaItem
 
-    private lateinit var binding : ActivityExoplayerBinding
+    private lateinit var binding: ActivityExoplayerBinding
     private lateinit var playerView: StyledPlayerView
     private lateinit var exoPlay: ImageButton
     private lateinit var exoSource: ImageButton
@@ -104,26 +104,26 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private lateinit var exoVolume: Slider
     private lateinit var exoBrightnessCont: View
     private lateinit var exoVolumeCont: View
-    private lateinit var animeTitle : TextView
-    private lateinit var videoInfo : TextView
-    private lateinit var serverInfo : TextView
-    private lateinit var episodeTitle : Spinner
+    private lateinit var animeTitle: TextView
+    private lateinit var videoInfo: TextView
+    private lateinit var serverInfo: TextView
+    private lateinit var episodeTitle: Spinner
 
-    private var orientationListener : OrientationEventListener? =null
+    private var orientationListener: OrientationEventListener? =null
 
     private lateinit var media: Media
     private lateinit var episode: Episode
-    private lateinit var episodes: MutableMap<String,Episode>
+    private lateinit var episodes: MutableMap<String, Episode>
     private lateinit var episodeArr: List<String>
     private lateinit var episodeTitleArr: ArrayList<String>
     private var currentEpisodeIndex = 0
     private var epChanging = false
 
-    private var notchHeight:Int=0
+    private var notchHeight = 0
     private var currentWindow = 0
-    private var playbackPosition: Long = 0
-    private var episodeLength: Float = 0f
-    private var isFullscreen : Int = 0
+    private var playbackPosition = 0L
+    private var episodeLength = 0f
+    private var isFullscreen = 0
     private var isInitialized = false
     private var isPlayerPlaying = true
     private var changingServer = false
@@ -132,8 +132,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private var pipEnabled = false
     private var aspectRatio = Rational(16, 9)
 
-    private var t1=Timer()
-    private var t2=Timer()
+    private var t1 = Timer()
+    private var t2 = Timer()
 
     private var settings = PlayerSettings()
     private var uiSettings = UserInterfaceSettings()
