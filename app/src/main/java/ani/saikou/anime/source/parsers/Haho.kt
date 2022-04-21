@@ -24,18 +24,18 @@ object Haho : Tenshi() {
         runBlocking {
             Jsoup.connect(url).headers(mutableMapOf("Cookie" to cookie, "referer" to episode.link!!)).get()
                 .select("video#player>source").forEach {
-                a.add(async {
-                    val uri = it.attr("src")
-                    if (uri != "")
-                        qualities.add(
-                            Episode.VideoQuality(
-                                videoUrl = uri,
-                                quality = it.attr("title"),
-                                size = getSize(uri, headers)
+                    a.add(async {
+                        val uri = it.attr("src")
+                        if (uri != "")
+                            qualities.add(
+                                Episode.VideoQuality(
+                                    videoUrl = uri,
+                                    quality = it.attr("title"),
+                                    size = getSize(uri, headers)
+                                )
                             )
-                        )
-                })
-            }
+                    })
+                }
             a.awaitAll()
         }
 

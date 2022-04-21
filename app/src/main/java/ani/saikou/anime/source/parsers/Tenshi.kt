@@ -172,7 +172,7 @@ open class Tenshi : AnimeProvider() {
                 .select(".entry-episodes > h2 > span.badge.badge-secondary.align-top")
                 .text().toInt()
 
-            for(i in 1..nbEp) {
+            for (i in 1..nbEp) {
                 responseArray["$i"] = Episode("$i", link = "${animeId}/$i")
             }
         } catch (e: Exception) {

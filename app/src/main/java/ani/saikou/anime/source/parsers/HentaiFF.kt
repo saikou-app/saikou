@@ -4,6 +4,7 @@ import android.util.Base64
 import ani.saikou.*
 import ani.saikou.anime.Episode
 import ani.saikou.anime.newsrc.AnimeProvider
+import ani.saikou.anime.source.extractors.FPlayer
 import ani.saikou.media.Media
 import ani.saikou.media.Source
 import kotlinx.coroutines.launch
@@ -25,49 +26,50 @@ object HentaiFF : AnimeProvider() {
         }
     }
 
-    override fun getStream(episode: Episode, server: String): Episode {
+    override fun fetchVideoServer(episode: Episode, server: String): Map<String, Episode.VideoServer> {
+        val videoServers = mutableMapOf<String, Episode.VideoServer>()
         try {
             Jsoup.connect(episode.link!!).get().select("select.mirror>option").forEach {
                 val base64 = it.attr("value")
                 val link = String(Base64.decode(base64, Base64.DEFAULT)).findBetween("src=\"", "\" ")
                 if (!link.isNullOrEmpty() && server == it.text()) {
                     val a = when {
-                        link.contains("amhentai") -> FPlayer(true).getStreamLinks(it.text(), link)
+                        link.contains("amhentai") -> FPlayer.getStreamLinks(it.text(), link)
                         link.contains("cdnview")  -> getCdnViewLink(it.text(), link)
                         else                      -> null
                     }
-                    if (a != null) episode.videoServers[it.text()] = a
+                    if (a != null) {
+                        videoServers[it.text()] = a
+                    }
                 }
             }
         } catch (e: Exception) {
             toastString(e.toString())
         }
-        return episode
+        return videoServers
     }
 
-    override fun getStreams(episode: Episode): Episode {
-        try {
-            runBlocking {
-                Jsoup.connect(episode.link!!).get().select("select.mirror>option").forEach {
-                    val base64 = it.attr("value")
-                    val link = String(Base64.decode(base64, Base64.DEFAULT)).substringAfter("src=\"").substringBefore('"')
-                    if (link.isNotEmpty()) {
-                        launch {
-                            val a = when {
-                                link.contains("amhentai") -> FPlayer(true).getStreamLinks(it.text(), link)
-                                link.contains("cdnview")  -> getCdnViewLink(it.text(), link)
-                                else                      -> null
-                            }
-                            if (a != null) episode.videoServers[it.text()] = a
+    override fun fetchVideoServers(episode: Episode): Map<String, Episode.VideoServer> =
+        runBlocking {
+            val videoServers = mutableMapOf<String, Episode.VideoServer>()
+            Jsoup.connect(episode.link!!).get().select("select.mirror>option").forEach {
+                val base64 = it.attr("value")
+                val link = String(Base64.decode(base64, Base64.DEFAULT)).substringAfter("src=\"").substringBefore('"')
+                if (link.isNotEmpty()) {
+                    launch {
+                        val a = when {
+                            link.contains("amhentai") -> FPlayer.getStreamLinks(it.text(), link)
+                            link.contains("cdnview")  -> getCdnViewLink(it.text(), link)
+                            else                      -> null
+                        }
+                        if (a != null) {
+                            videoServers[it.text()] = a
                         }
                     }
                 }
             }
-        } catch (e: Exception) {
-            toastString(e.toString())
+            videoServers
         }
-        return episode
-    }
 
     override fun getEpisodes(media: Media): MutableMap<String, Episode> {
         var slug: Source? = loadData("hentaiff_${media.id}")
@@ -86,7 +88,7 @@ object HentaiFF : AnimeProvider() {
             updateStatus("Selected : ${slug.name}")
         }
         if (slug != null) {
-            return getSlugEpisodes(slug.id)
+            return getEpisodes(slug.id)
         }
         return mutableMapOf()
     }
@@ -96,7 +98,7 @@ object HentaiFF : AnimeProvider() {
         try {
             Jsoup.connect("${host}/?s=$string").get().body()
                 .select(".bs>.bsx>a").forEach {
-                    val link = it.attr("href").toString()
+                    val link = it.attr("href")
                     val title = it.attr("title")
                     val cover = it.select("img").attr("src")
                     responseArray.add(Source(link, title, cover))
