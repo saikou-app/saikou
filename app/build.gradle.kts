@@ -7,14 +7,14 @@ plugins {
 }
 
 android {
-    compileSdk = 31
+    compileSdk = Android.TARGET_SDK
 
     defaultConfig {
-        applicationId = "ani.saikou"
-        minSdk = 21
-        targetSdk = 31
-        versionCode = 41
-        versionName = "1.1.6"
+        applicationId = Coordinates.GROUP_ID
+        minSdk = Android.MIN_SDK
+        targetSdk = Android.TARGET_SDK
+        versionCode = Coordinates.VERSION_CODE
+        versionName = Coordinates.VERSION
         signingConfig = signingConfigs["debug"]
     }
 
@@ -42,8 +42,9 @@ dependencies {
     // Core
     implementation("androidx.appcompat:appcompat:1.4.1")
     implementation("androidx.browser:browser:1.4.0")
-    implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.fragment:fragment-ktx:1.4.1")
+
+    implementation("androidx.core:core-ktx:1.7.0")
     implementation("androidx.swiperefreshlayout:swiperefreshlayout:1.1.0")
     implementation("androidx.legacy:legacy-support-v4:1.0.0")
     implementation("androidx.multidex:multidex:2.0.1")
@@ -62,11 +63,12 @@ dependencies {
     implementation("com.google.firebase:firebase-crashlytics-ktx")
 
     // Exoplayer
-    implementation("com.google.android.exoplayer:exoplayer-core:2.17.1")
-    implementation("com.google.android.exoplayer:exoplayer-ui:2.17.1")
-    implementation("com.google.android.exoplayer:exoplayer-hls:2.17.1")
-    implementation("com.google.android.exoplayer:extension-okhttp:2.17.1")
-    implementation("com.google.android.exoplayer:extension-mediasession:2.17.1")
+    arrayOf("core", "ui", "hls").forEach {
+        implementation("com.google.android.exoplayer:exoplayer-$it:2.17.1")
+    }
+    arrayOf("okhttp", "mediasession").forEach {
+        implementation("com.google.android.exoplayer:extension-$it:2.17.1")
+    }
 
     // UI
     implementation("com.google.android.material:material:1.5.0")
