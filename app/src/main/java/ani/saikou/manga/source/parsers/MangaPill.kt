@@ -58,7 +58,7 @@ class MangaPill(override val name: String="mangapill.com") :MangaParser() {
         else{
             setTextListener("Selected : ${source.name}")
         }
-        if (source!=null) return getLinkChapters(source.link)
+        if (source!=null) return getLinkChapters(source.id)
         return mutableMapOf()
     }
 
@@ -68,7 +68,7 @@ class MangaPill(override val name: String="mangapill.com") :MangaParser() {
         Jsoup.connect("https://mangapill.com/quick-search?q=${URLEncoder.encode(string,"utf-8")}").get().select(".bg-card").forEach{
             val text2 = it.select(".text-sm").text()
             response.add(Source(
-                link = it.attr("abs:href"),
+                id = it.attr("abs:href"),
                 name = it.select(".flex .flex-col").text().replace(text2,"").trim(),
                 cover = it.select("img").attr("src")
             ))

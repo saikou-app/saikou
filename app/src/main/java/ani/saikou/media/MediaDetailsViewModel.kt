@@ -77,14 +77,14 @@ class MediaDetailsViewModel:ViewModel() {
     }
     fun overrideEpisodes(i: Int, source: Source,id:Int){
         watchAnimeWatchSources?.get(i)!!.saveSource(source,id)
-        epsLoaded[i] = watchAnimeWatchSources?.get(i)!!.getSlugEpisodes(source.link)
+        epsLoaded[i] = watchAnimeWatchSources?.get(i)!!.getSlugEpisodes(source.id)
         episodes.postValue(epsLoaded)
     }
 
     private var episode: MutableLiveData<Episode?> = MutableLiveData<Episode?>(null)
     fun getEpisode() : LiveData<Episode?> = episode
     fun loadEpisodeStreams(ep: Episode,i:Int,post:Boolean=true){
-        if(!ep.allStreams || ep.streamLinks.isNullOrEmpty() || !ep.saveStreams) {
+        if(!ep.allStreams || ep.videoServers.isNullOrEmpty() || !ep.saveStreams) {
             watchAnimeWatchSources?.get(i)?.getStreams(ep)?.apply {
                 this.allStreams = true
             }
@@ -99,7 +99,7 @@ class MediaDetailsViewModel:ViewModel() {
     }
     fun loadEpisodeStream(ep: Episode,selected: Selected,post: Boolean=true):Boolean{
         return if(selected.stream!=null) {
-            if(ep.streamLinks.isNullOrEmpty() || !ep.saveStreams) {
+            if(ep.videoServers.isNullOrEmpty() || !ep.saveStreams) {
                 watchAnimeWatchSources?.get(selected.source)?.getStream(ep, selected.stream!!)?.apply {
                     this.allStreams = false
                 }
@@ -156,7 +156,7 @@ class MediaDetailsViewModel:ViewModel() {
 
     fun overrideMangaChapters(i: Int, source: Source,id:Int){
         readMangaReadSources?.get(i)!!.saveSource(source,id)
-        mangaLoaded[i] = readMangaReadSources?.get(i)!!.getLinkChapters(source.link)
+        mangaLoaded[i] = readMangaReadSources?.get(i)!!.getLinkChapters(source.id)
         mangaChapters.postValue(mangaLoaded)
     }
 

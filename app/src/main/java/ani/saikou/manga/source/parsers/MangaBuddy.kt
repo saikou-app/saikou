@@ -67,7 +67,7 @@ class MangaBuddy(override val name: String="mangabuddy.com") : MangaParser() {
         else{
             setTextListener("Selected : ${source.name}")
         }
-        if (source!=null) return getLinkChapters(source.link)
+        if (source!=null) return getLinkChapters(source.id)
         return mutableMapOf()
     }
 
@@ -77,7 +77,7 @@ class MangaBuddy(override val name: String="mangabuddy.com") : MangaParser() {
         Jsoup.connect("https://mangabuddy.com/search?status=all&sort=views&q=$string").get().select(".list > .book-item > .book-detailed-item > .thumb > a").forEach {
             if (it.attr("title")!=""){
                 response.add(Source(
-                    link = it.attr("href"),
+                    id = it.attr("href"),
                     name = it.attr("title"),
                     cover = it.select("img").attr("data-src"),
                     headers = mutableMapOf("referer" to "https://mangabuddy.com/")

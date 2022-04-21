@@ -60,7 +60,7 @@ class MangaKakaLot(override val name: String="MangaKakaLot") :MangaParser() {
         else{
             setTextListener("Selected : ${source.name}")
         }
-        if (source!=null) return getLinkChapters(source.link)
+        if (source!=null) return getLinkChapters(source.id)
         return mutableMapOf()
     }
 
@@ -70,7 +70,7 @@ class MangaKakaLot(override val name: String="MangaKakaLot") :MangaParser() {
             Jsoup.connect("$host/search/story/${string.replace(" ", "_").replace(Regex("\\W"),"")}").get().select(".story_item").forEach {
                 if (it.select(".story_name > a").text()!=""){
                     response.add(Source(
-                        link = it.select("a").attr("href"),
+                        id = it.select("a").attr("href"),
                         name = it.select(".story_name > a").text(),
                         cover = it.select("img").attr("src"),
                         headers = mutableMapOf("referer" to host)

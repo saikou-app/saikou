@@ -73,8 +73,8 @@ class SelectorDialogFragment : BottomSheetDialogFragment(){
                         }
 
                         fun load() {
-                            if (episode?.streamLinks?.containsKey(selected) == true) {
-                                if (episode!!.streamLinks[selected]!!.quality.size >= media!!.selected!!.quality) {
+                            if (episode?.videoServers?.containsKey(selected) == true) {
+                                if (episode!!.videoServers[selected]!!.videoQuality.size >= media!!.selected!!.quality) {
                                     media!!.anime!!.episodes?.get(media!!.anime!!.selectedEpisode!!)?.selectedStream =
                                         selected
                                     media!!.anime!!.episodes?.get(media!!.anime!!.selectedEpisode!!)?.selectedQuality =
@@ -83,7 +83,7 @@ class SelectorDialogFragment : BottomSheetDialogFragment(){
                                 } else fail()
                             } else fail()
                         }
-                        if (episode?.streamLinks?.isEmpty() == true || episode?.saveStreams==false) {
+                        if (episode?.videoServers?.isEmpty() == true || episode?.saveStreams==false) {
                             model.getEpisode().observe(this) {
                                 if (it != null) {
                                     episode = it
@@ -117,7 +117,7 @@ class SelectorDialogFragment : BottomSheetDialogFragment(){
                             )
                             binding.selectorRecyclerView.adapter = StreamAdapter()
                         }
-                        if (episode!!.streamLinks.isEmpty() || !episode!!.allStreams || episode?.saveStreams==false) {
+                        if (episode!!.videoServers.isEmpty() || !episode!!.allStreams || episode?.saveStreams==false) {
                             model.getEpisode().observe(this) {
                                 if (it != null) {
                                     episode = it
@@ -152,11 +152,11 @@ class SelectorDialogFragment : BottomSheetDialogFragment(){
     }
 
     private inner class StreamAdapter : RecyclerView.Adapter<StreamAdapter.StreamViewHolder>() {
-        val links = episode!!.streamLinks
+        val links = episode!!.videoServers
         val keys = links.keys.toList()
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StreamViewHolder = StreamViewHolder(ItemStreamBinding.inflate(LayoutInflater.from(parent.context), parent, false))
         override fun onBindViewHolder(holder: StreamViewHolder, position: Int) {
-            val server = if(position<keys.size) links[keys[position]]?.server else null
+            val server = if(position<keys.size) links[keys[position]]?.serverName else null
             if(server!=null) {
                 holder.binding.streamName.text = server
                 holder.binding.streamRecyclerView.layoutManager = LinearLayoutManager(requireContext())
@@ -168,7 +168,7 @@ class SelectorDialogFragment : BottomSheetDialogFragment(){
     }
 
     private inner class QualityAdapter(private val stream:String) : RecyclerView.Adapter<QualityAdapter.UrlViewHolder>() {
-        val urls = episode!!.streamLinks[stream]!!.quality
+        val urls = episode!!.videoServers[stream]!!.videoQuality
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UrlViewHolder {
             return UrlViewHolder(ItemUrlBinding.inflate(LayoutInflater.from(parent.context), parent, false))

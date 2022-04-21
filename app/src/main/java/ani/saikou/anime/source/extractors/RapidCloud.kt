@@ -3,7 +3,7 @@ package ani.saikou.anime.source.extractors
 import android.net.Uri
 import android.util.Base64
 import ani.saikou.anime.Episode
-import ani.saikou.anime.source.Extractor
+import ani.saikou.anime.newsrc.IAnimeExtractor
 import ani.saikou.findBetween
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -14,11 +14,12 @@ import okhttp3.*
 import org.jsoup.Jsoup
 import java.util.concurrent.*
 
-class RapidCloud : Extractor() {
+object RapidCloud : IAnimeExtractor {
+    override val name = "RapidCloud"
 
-    override fun getStreamLinks(name: String, url: String): Episode.StreamLinks {
-        val qualities = arrayListOf<Episode.Quality>()
-        val subtitle = mutableMapOf<String, String>()
+    override fun resolveServer(serverName: String, url: String, fetchSize: Boolean): Episode.VideoServer {
+        val qualities = arrayListOf<Episode.VideoQuality>()
+        val subtitles = mutableListOf<Episode.Subtitle>()
 
         val client = OkHttpClient()
 
@@ -40,14 +41,20 @@ class RapidCloud : Extractor() {
                 val m3u8 = json["sources"]!!.jsonArray[0].jsonObject["file"].toString().trim('"')
 
                 json["tracks"]!!.jsonArray.forEach {
-                    if (it.jsonObject["kind"].toString().trim('"') == "captions")
-                        subtitle[it.jsonObject["label"].toString().trim('"')] = it.jsonObject["file"].toString().trim('"')
+                    if (it.jsonObject["kind"].toString().trim('"') == "captions") {
+                        val language = it.jsonObject["label"].toString().trim('"')
+                        val vttUrl = it.jsonObject["file"].toString().trim('"')
+                        subtitles += Episode.Subtitle(
+                            language,
+                            vttUrl
+                        )
+                    }
                 }
-                qualities.add(Episode.Quality(m3u8, "Multi Quality", null))
+                qualities.add(Episode.VideoQuality(m3u8, "Multi Quality", null))
             }
         }
 
-        return Episode.StreamLinks(
+        return Episode.VideoServer(
             name,
             qualities,
             mutableMapOf(
@@ -55,9 +62,12 @@ class RapidCloud : Extractor() {
                 "origin" to "https://rapid-cloud.ru",
                 "referer" to "https://zoro.to/"
             ),
-            subtitle
+            subtitles
         )
     }
+
+    override fun canResolve(url: String): Boolean =
+        "rapid-cloud.ru" in url
 
     private fun captcha(url: String, key: String): String? {
         val uri = Uri.parse(url)

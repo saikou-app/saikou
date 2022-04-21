@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.core.view.updateLayoutParams
 import ani.saikou.*
-import ani.saikou.anime.source.AnimeSources
+import ani.saikou.anime.newsrc.AnimeSourceRegistry
 import ani.saikou.databinding.ActivitySettingsBinding
 import ani.saikou.manga.source.MangaSources
 
@@ -39,8 +39,8 @@ class SettingsActivity : AppCompatActivity() {
             onBackPressed()
         }
 
-        binding.animeSource.setText(AnimeSources.names[loadData("settings_default_anime_source") ?: 0],false)
-        binding.animeSource.setAdapter(ArrayAdapter(this, R.layout.item_dropdown, AnimeSources.names))
+        binding.animeSource.setText(AnimeSourceRegistry.keys()[loadData("settings_default_anime_source") ?: 0],false)
+        binding.animeSource.setAdapter(ArrayAdapter(this, R.layout.item_dropdown, AnimeSourceRegistry.keys()))
         binding.animeSource.setOnItemClickListener { _, _, i, _ ->
             saveData("settings_default_anime_source",i)
             binding.animeSource.clearFocus()

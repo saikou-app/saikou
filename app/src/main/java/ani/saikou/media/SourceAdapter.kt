@@ -11,10 +11,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class SourceAdapter(
-    private val sources: ArrayList<Source>,
+    private val sources: List<Source>,
     private val dialogFragment: SourceSearchDialogFragment,
-    private val scope:CoroutineScope
-): RecyclerView.Adapter<SourceAdapter.SourceViewHolder>() {
+    private val scope: CoroutineScope
+) : RecyclerView.Adapter<SourceAdapter.SourceViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SourceViewHolder {
         val binding = ItemCharacterBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return SourceViewHolder(binding)
@@ -24,20 +24,20 @@ abstract class SourceAdapter(
     override fun onBindViewHolder(holder: SourceViewHolder, position: Int) {
         val binding = holder.binding
         val character = sources[position]
-        binding.itemCompactImage.loadImage(character.cover,200,character.headers)
+        binding.itemCompactImage.loadImage(character.cover, 200, character.headers)
         binding.itemCompactTitle.isSelected = true
         binding.itemCompactTitle.text = character.name
     }
 
     override fun getItemCount(): Int = sources.size
 
-    abstract fun onItemClick(source:Source)
+    abstract fun onItemClick(source: Source)
 
     inner class SourceViewHolder(val binding: ItemCharacterBinding) : RecyclerView.ViewHolder(binding.root) {
         init {
             itemView.setOnClickListener {
                 dialogFragment.dismiss()
-                scope.launch(Dispatchers.IO){ onItemClick(sources[bindingAdapterPosition]) }
+                scope.launch(Dispatchers.IO) { onItemClick(sources[bindingAdapterPosition]) }
             }
             var a = true
             itemView.setOnLongClickListener {
