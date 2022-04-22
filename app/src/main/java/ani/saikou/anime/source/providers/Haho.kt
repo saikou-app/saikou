@@ -1,4 +1,4 @@
-package ani.saikou.anime.source.parsers
+package ani.saikou.anime.source.providers
 
 import ani.saikou.anime.Episode
 import ani.saikou.findBetween

@@ -1,15 +1,15 @@
 package ani.saikou.anime.newsrc
 
 import ani.saikou.Registry
-import ani.saikou.anime.source.extractors.FPlayer
-import ani.saikou.anime.source.extractors.GogoCDN
-import ani.saikou.anime.source.extractors.RapidCloud
-import ani.saikou.anime.source.extractors.StreamSB
+import ani.saikou.anime.source.resolvers.FPlayer
+import ani.saikou.anime.source.resolvers.GogoCDN
+import ani.saikou.anime.source.resolvers.RapidCloud
+import ani.saikou.anime.source.resolvers.StreamSB
 
 /**
  * [Registry] implementation for anime extractors.
  */
-object AnimeExtractorRegistry : Registry<IAnimeExtractor>() {
+object AnimeExtractorRegistry : Registry<IVideoResolver>() {
     init {
         this += FPlayer
         this += GogoCDN
@@ -17,7 +17,7 @@ object AnimeExtractorRegistry : Registry<IAnimeExtractor>() {
         this += RapidCloud
     }
 
-    fun findFor(url: String): IAnimeExtractor? {
+    fun findFor(url: String): IVideoResolver? {
         val httpsUrl = toHttps(url)
         return this.values().firstOrNull { it.canResolve(httpsUrl) }
     }

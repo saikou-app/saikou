@@ -1,10 +1,10 @@
-package ani.saikou.anime.source.extractors
+package ani.saikou.anime.source.resolvers
 
 import android.net.Uri
 import android.util.Base64
 import ani.saikou.anime.Episode
-import ani.saikou.anime.newsrc.IAnimeExtractor
-import ani.saikou.anime.source.parsers.Gogo
+import ani.saikou.anime.newsrc.IVideoResolver
+import ani.saikou.anime.source.providers.Gogo
 import ani.saikou.findBetween
 import ani.saikou.getSize
 import ani.saikou.toastString
@@ -22,7 +22,7 @@ import javax.crypto.Cipher
 import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
-object GogoCDN : IAnimeExtractor {
+object GogoCDN : IVideoResolver {
     override val name = "GogoCDN"
 
     override fun resolveServer(serverName: String, url: String, fetchSize: Boolean): Episode.VideoServer {

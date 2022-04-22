@@ -1,4 +1,4 @@
-package ani.saikou.anime.source.parsers
+package ani.saikou.anime.source.providers
 
 import android.annotation.SuppressLint
 import ani.saikou.anime.Episode

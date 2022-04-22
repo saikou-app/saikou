@@ -1,9 +1,9 @@
-package ani.saikou.anime.source.extractors
+package ani.saikou.anime.source.resolvers
 
 import android.net.Uri
 import android.util.Base64
 import ani.saikou.anime.Episode
-import ani.saikou.anime.newsrc.IAnimeExtractor
+import ani.saikou.anime.newsrc.IVideoResolver
 import ani.saikou.findBetween
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -14,7 +14,7 @@ import okhttp3.*
 import org.jsoup.Jsoup
 import java.util.concurrent.*
 
-object RapidCloud : IAnimeExtractor {
+object RapidCloud : IVideoResolver {
     override val name = "RapidCloud"
 
     override fun resolveServer(serverName: String, url: String, fetchSize: Boolean): Episode.VideoServer {

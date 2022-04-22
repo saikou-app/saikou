@@ -1,10 +1,10 @@
-package ani.saikou.anime.source.parsers
+package ani.saikou.anime.source.providers
 
 import android.util.Base64
 import ani.saikou.*
 import ani.saikou.anime.Episode
 import ani.saikou.anime.newsrc.AnimeProvider
-import ani.saikou.anime.source.extractors.FPlayer
+import ani.saikou.anime.source.resolvers.FPlayer
 import ani.saikou.media.Media
 import ani.saikou.media.Source
 import kotlinx.coroutines.launch

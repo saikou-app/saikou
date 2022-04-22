@@ -1,7 +1,7 @@
 package ani.saikou.anime.source
 
 import ani.saikou.anime.source.AnimeSources.animeParsers
-import ani.saikou.anime.source.parsers.*
+import ani.saikou.anime.source.providers.*
 
 object HAnimeSources : WatchSources() {
     override val names = arrayListOf(

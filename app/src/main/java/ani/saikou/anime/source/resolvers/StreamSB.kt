@@ -1,7 +1,7 @@
-package ani.saikou.anime.source.extractors
+package ani.saikou.anime.source.resolvers
 
 import ani.saikou.anime.Episode
-import ani.saikou.anime.newsrc.IAnimeExtractor
+import ani.saikou.anime.newsrc.IVideoResolver
 import ani.saikou.findBetween
 import ani.saikou.toastString
 import kotlinx.serialization.decodeFromString
@@ -10,7 +10,7 @@ import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
 import org.jsoup.Jsoup
 
-object StreamSB : IAnimeExtractor {
+object StreamSB : IVideoResolver {
     override val name: String = "StreamSB"
 
     override fun resolveServer(serverName: String, url: String, fetchSize: Boolean): Episode.VideoServer {

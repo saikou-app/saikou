@@ -6,7 +6,7 @@ import ani.saikou.anime.Episode
 /**
  * Extracts proper links to anime content.
  */
-interface IAnimeExtractor: Named {
+interface IVideoResolver: Named {
     /**
      * Resolves the [VideoServer][Episode.VideoServer] from the provided link.
      *

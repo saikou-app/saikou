@@ -1,7 +1,7 @@
 package ani.saikou.anime.newsrc
 
 import ani.saikou.Registry
-import ani.saikou.anime.source.parsers.*
+import ani.saikou.anime.source.providers.*
 
 /**
  * [Registry] implementation for anime providers.

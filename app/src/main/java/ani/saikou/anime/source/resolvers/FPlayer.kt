@@ -1,7 +1,7 @@
-package ani.saikou.anime.source.extractors
+package ani.saikou.anime.source.resolvers
 
 import ani.saikou.anime.Episode
-import ani.saikou.anime.newsrc.IAnimeExtractor
+import ani.saikou.anime.newsrc.IVideoResolver
 import ani.saikou.anime.source.Extractor
 import ani.saikou.getSize
 import ani.saikou.toastString
@@ -15,7 +15,7 @@ import kotlinx.serialization.json.jsonArray
 import kotlinx.serialization.json.jsonObject
 import org.jsoup.Jsoup
 
-object FPlayer : Extractor(), IAnimeExtractor {
+object FPlayer : Extractor(), IVideoResolver {
     override val name: String = "FPlayer"
 
     override fun resolveServer(serverName: String, url: String, fetchSize: Boolean): Episode.VideoServer =
