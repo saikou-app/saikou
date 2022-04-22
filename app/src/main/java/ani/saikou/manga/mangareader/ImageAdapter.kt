@@ -1,4 +1,4 @@
-package ani.saikou.manga
+package ani.saikou.manga.mangareader
 
 import android.animation.ObjectAnimator
 import android.graphics.drawable.Drawable
@@ -11,6 +11,7 @@ import androidx.core.view.updatePadding
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.R
 import ani.saikou.databinding.ItemImageBinding
+import ani.saikou.manga.MangaChapter
 import ani.saikou.px
 import ani.saikou.settings.CurrentReaderSettings
 import ani.saikou.settings.UserInterfaceSettings
@@ -24,9 +25,9 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import java.io.File
 
 class ImageAdapter(
-private val chapter: MangaChapter,
-private val settings: CurrentReaderSettings,
-private val uiSettings: UserInterfaceSettings
+    private val chapter: MangaChapter,
+    private val settings: CurrentReaderSettings,
+    private val uiSettings: UserInterfaceSettings
 ): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     val images = chapter.images?: arrayListOf()
 

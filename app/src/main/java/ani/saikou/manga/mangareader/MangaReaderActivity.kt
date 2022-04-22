@@ -1,4 +1,4 @@
-package ani.saikou.manga
+package ani.saikou.manga.mangareader
 
 import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.*
 import ani.saikou.anilist.Anilist
 import ani.saikou.databinding.ActivityMangaReaderBinding
+import ani.saikou.manga.MangaChapter
 import ani.saikou.manga.source.HMangaSources
 import ani.saikou.manga.source.MangaSources
 import ani.saikou.media.Media
@@ -37,7 +38,7 @@ class MangaReaderActivity : AppCompatActivity() {
 
     private lateinit var media:Media
     private lateinit var chapter: MangaChapter
-    private lateinit var chapters:MutableMap<String,MangaChapter>
+    private lateinit var chapters:MutableMap<String, MangaChapter>
     private lateinit var chaptersArr: List<String>
     private lateinit var chaptersTitleArr: ArrayList<String>
     private var currentChapterIndex = 0
@@ -53,7 +54,7 @@ class MangaReaderActivity : AppCompatActivity() {
 
     private var notchHeight:Int=0
 
-    private var adapter:ImageAdapter?=null
+    private var adapter: ImageAdapter?=null
     
     override fun onAttachedToWindow() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {

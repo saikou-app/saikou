@@ -46,7 +46,7 @@
             android:name=".user.ListActivity"
             android:exported="true" />
         <activity
-            android:name=".manga.MangaReaderActivity"
+            android:name=".manga.mangareader.MangaReaderActivity"
             android:configChanges="orientation|screenSize|layoutDirection"
             android:exported="true" />
         <activity

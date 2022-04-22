@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
 import ani.saikou.*
 import ani.saikou.databinding.FragmentAnimeWatchBinding
+import ani.saikou.manga.mangareader.MangaReaderActivity
 import ani.saikou.manga.source.HMangaSources
 import ani.saikou.manga.source.MangaParser
 import ani.saikou.manga.source.MangaReadSources

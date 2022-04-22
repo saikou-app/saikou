@@ -6,12 +6,15 @@ import ani.saikou.anime.Episode
 import ani.saikou.anime.source.Extractor
 import ani.saikou.findBetween
 import ani.saikou.getSize
+import ani.saikou.toastString
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.jsoup.Connection
 import org.jsoup.Jsoup
 import javax.crypto.Cipher
@@ -80,7 +83,7 @@ class GogoCDN(val host:String) : Extractor() {
             }
         }
         }catch (e:Exception){
-            e.printStackTrace()
+            toastString(e.toString())
         }
         return Episode.StreamLinks(name, list, mutableMapOf("referer" to url))
     }
@@ -103,11 +106,11 @@ class GogoCDN(val host:String) : Extractor() {
         private var keysAndIv: Triple<String,String,String>?=null
         fun getKeysAndIv(): Triple<String,String,String>? =
             if(keysAndIv!=null) keysAndIv else let {
-//                val keys = OkHttpClient().newCall(Request.Builder().url("https://raw.githubusercontent.com/justfoolingaround/animdl-provider-benchmarks/master/api/gogoanime.json").build()).execute().body?.string()?:return null
-//                Json.decodeFromString<JsonObject>(keys).apply {
-//                    keysAndIv =  Triple(this.jsonObject["key"].toString().trim('"'),this.jsonObject["second_key"].toString().trim('"'),this.jsonObject["iv"].toString().trim('"'))
-//                }
-                keysAndIv = Triple("93106165734640459728346589106791","97952160493714852094564712118349","8244002440089157")
+                val keys = OkHttpClient().newCall(Request.Builder().url("https://raw.githubusercontent.com/justfoolingaround/animdl-provider-benchmarks/master/api/gogoanime.json").build()).execute().body?.string()?:return null
+                Json.decodeFromString<JsonObject>(keys).apply {
+                    keysAndIv =  Triple(this.jsonObject["key"].toString().trim('"'),this.jsonObject["second_key"].toString().trim('"'),this.jsonObject["iv"].toString().trim('"'))
+                }
+//                keysAndIv = Triple("93106165734640459728346589106791","97952160493714852094564712118349","8244002440089157")
                 return keysAndIv
             }
     }

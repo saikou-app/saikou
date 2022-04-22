@@ -1,4 +1,4 @@
-package ani.saikou.manga.zoomrecycler
+package ani.saikou.manga.mangareader.zoomrecycler
 
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
