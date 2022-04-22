@@ -27,6 +27,7 @@ class NineAnime(private val dub: Boolean = false, override val name: String = "9
         "https://9anime.pl",
     )
 
+//    Special thanks to the contributors of Aniyomi: https://github.com/jmir1 and https://github.com/silverwolf-waltz for most of the decoding code of 9anime!
     override fun getStream(episode: Episode, server: String): Episode {
         val streams = mutableMapOf<String, Episode.StreamLinks?>()
         val body = httpClient.newCall(
