@@ -1,8 +1,12 @@
 package ani.saikou.anime.source.parsers
 
+
+import android.os.Build
+import androidx.annotation.RequiresApi
 import ani.saikou.anilist.httpClient
 import ani.saikou.anime.Episode
 import ani.saikou.anime.source.AnimeParser
+import ani.saikou.anime.source.extractors.VizCloud
 import ani.saikou.loadData
 import ani.saikou.logger
 import ani.saikou.media.Media
@@ -12,8 +16,10 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import okhttp3.Request
 import org.jsoup.Jsoup
+import java.util.*
+import kotlin.collections.ArrayList
 
-class NineAnime(private val dub:Boolean=false, override val name: String = "9Anime Scraper - 9Anime.to"): AnimeParser() {
+class NineAnime(private val dub: Boolean = false, override val name: String = "9Anime Scraper - 9Anime.to") : AnimeParser() {
     private val key = "0wMrYU+ixjJ4QdzgfN2HlyIVAt3sBOZnCT9Lm7uFDovkb/EaKpRWhqXS5168ePcG"
     private val host = listOf(
         "https://9anime.to",
@@ -22,56 +28,75 @@ class NineAnime(private val dub:Boolean=false, override val name: String = "9Ani
     )
 
     override fun getStream(episode: Episode, server: String): Episode {
-        val streams = mutableMapOf<String,Episode.StreamLinks?>()
-
+        val streams = mutableMapOf<String, Episode.StreamLinks?>()
+        val body = httpClient.newCall(
+            Request.Builder().url(episode.link!!).build()
+        ).execute().body!!.string()
+        val bodyJson = Json.decodeFromString<JsonObject>(body)
+        val html = Jsoup.parse(bodyJson["html"].toString())
+        val replacedHtml = (html.toString().replace("\\n", "")).replace("\\&quot;", "")
+        val dataSources =
+            makeJsonJsonAgain(Jsoup.parse(replacedHtml).body().select(".episodes li a").select(".active").attr("data-sources"))
+        var realLink = ""
+        Jsoup.parse(replacedHtml).body().select(".tabs span").forEach {
+            val name = it.text()
+            if (name == server){
+                val encodedStreamBody = shitCallThatFailsOften(dataSources[it.attr("data-id")].toString())
+                    ?: shitCallThatFailsOften(dataSources[it.attr("data-id")].toString())!!
+                val encodedStreamUrl = Json.decodeFromString<JsonObject>(encodedStreamBody)["url"]!!.jsonPrimitive.content
+                realLink = getLink(encodedStreamUrl)
+            }
+        }
+        when (server) {
+            "Vidstream" -> streams[server] = (VizCloud("${host[0]}/").getStreamLinks(name, realLink))
+            "MyCloud"   -> streams[server] = (VizCloud("${host[0]}/").getStreamLinks(name, realLink))
+        }
         episode.streamLinks = streams
         return episode
     }
 
     override fun getStreams(episode: Episode): Episode {
-        val streams = mutableMapOf<String,Episode.StreamLinks?>()
-        try{
+        val streams = mutableMapOf<String, Episode.StreamLinks?>()
+        try {
             val body = httpClient.newCall(
-                Request.Builder().url(episode.link!!).build()).execute().body!!.string()
+                Request.Builder().url(episode.link!!).build()
+            ).execute().body!!.string()
             val bodyJson = Json.decodeFromString<JsonObject>(body)
             val html = Jsoup.parse(bodyJson["html"].toString())
             val replacedHtml = (html.toString().replace("\\n", "")).replace("\\&quot;", "")
-            val dataSources = makeJsonJsonAgain(Jsoup.parse(replacedHtml).body().select(".episodes li a").select(".active").attr("data-sources"))
+            val dataSources = makeJsonJsonAgain(
+                Jsoup.parse(replacedHtml).body().select(".episodes li a").select(".active").attr("data-sources")
+            )
             Jsoup.parse(replacedHtml).body().select(".tabs span").forEach {
                 val name = it.text()
-                when (name){
-                    "Vidstream" -> getVidstream(name, dataSources, it.attr("data-id"))
-                    "MyCloud" -> getMyCloud(name, dataSources, it.attr("data-id"))
+                val encodedStreamBody = shitCallThatFailsOften(dataSources[it.attr("data-id")].toString())
+                    ?: shitCallThatFailsOften(dataSources[it.attr("data-id")].toString())!!
+                val encodedStreamUrl = Json.decodeFromString<JsonObject>(encodedStreamBody)["url"]!!.jsonPrimitive.content
+                val realLink = getLink(encodedStreamUrl)
+                when (name) {
+                    "Vidstream" -> streams[name] = (VizCloud("${host[0]}/").getStreamLinks(name, realLink))
+                    "MyCloud"   -> streams[name] = (VizCloud("${host[0]}/").getStreamLinks(name, realLink))
                 }
 
             }
-        } catch (e:Exception){
+        } catch (e: Exception) {
             toastString(e.toString())
         }
         episode.streamLinks = streams
         return episode
     }
 
-    private fun getMyCloud(name: String, dataSources: JsonObject, attr: String) {
-
-    }
-
-    private fun getVidstream(name: String, dataSources: JsonObject, id: String): Episode.StreamLinks {
-        val encodedStreamBody = shitCallThatFailsOften(dataSources[id].toString()) ?: shitCallThatFailsOften(dataSources[id].toString())!!
-        val encodedStreamUrl = Json.decodeFromString<JsonObject>(encodedStreamBody)["url"]!!.jsonPrimitive.content
-        val realLink = getLink(encodedStreamUrl)
-    }
-
     private fun shitCallThatFailsOften(source: String): String? {
         val call = httpClient.newCall(
-            Request.Builder().url("${host[0]}/ajax/anime/episode?id=${source.replace("\"", "")}").build()).execute()
+            Request.Builder().url("${host[0]}/ajax/anime/episode?id=${source.replace("\"", "")}").build()
+        ).execute()
         return if (call.code == 200) call.body!!.string() else null
     }
 
     override fun getEpisodes(media: Media): MutableMap<String, Episode> {
-        try{
-            var slug:Source? = loadData("9anime${if(dub) "dub" else ""}_${media.id}")
-            if (slug==null) {
+        try {
+            var slug: Source? = loadData("9anime${if (dub) "dub" else ""}_${media.id}")
+            if (slug == null) {
                 var it = media.nameMAL ?: media.name + if (dub) " (Dub)" else ""
                 setTextListener("Searching for $it")
                 logger("9anime : Searching for $it")
@@ -89,21 +114,20 @@ class NineAnime(private val dub:Boolean=false, override val name: String = "9Ani
                         saveSource(slug, media.id, false)
                     }
                 }
-            }
-            else {
+            } else {
                 setTextListener("Selected : ${slug.name}")
             }
-            if (slug!=null) return getSlugEpisodes(slug.link)
-        }catch (e:Exception){
+            if (slug != null) return getSlugEpisodes(slug.link)
+        } catch (e: Exception) {
             toastString("$e")
         }
-    return mutableMapOf()
+        return mutableMapOf()
     }
 
     override fun search(string: String): ArrayList<Source> {
         val responseArray = arrayListOf<Source>()
         val vrf = getVrf(string)
-        try{
+        try {
             Jsoup.connect("${host[0]}/search?keyword=${encode(string)}&vrf=${encode(vrf)}&page=1").get()
                 .select("ul.anime-list li").forEach {
                     val link = it.select("a.name").attr("href")
@@ -111,27 +135,31 @@ class NineAnime(private val dub:Boolean=false, override val name: String = "9Ani
                     val cover = it.select("a.poster img").attr("src")
                     responseArray.add(Source(link, title, cover))
                 }
-        }catch (e:Exception){
+        } catch (e: Exception) {
             toastString(e.toString())
         }
         return responseArray
     }
 
     override fun getSlugEpisodes(slug: String): MutableMap<String, Episode> {
-        val responseArray = mutableMapOf<String,Episode>()
+        val responseArray = mutableMapOf<String, Episode>()
         val animeId = slug.substringAfterLast(".")
         val vrf = encode(getVrf(animeId))
-        try{
+        try {
             val body = httpClient.newCall(
-                Request.Builder().url("${host[0]}/ajax/anime/servers?id=$animeId&vrf=$vrf").build()).execute().body!!.string()
+                Request.Builder().url("${host[0]}/ajax/anime/servers?id=$animeId&vrf=$vrf").build()
+            ).execute().body!!.string()
             val bodyJson = Json.decodeFromString<JsonObject>(body)
             val html = Jsoup.parse(bodyJson["html"].toString())
             val replacedHtml = shittyReplaceBecauseOfWeirdEncodingShit(html.toString().replace("\\&quot;", "\""))
             Jsoup.parse(replacedHtml).body().select("ul.episodes li a").forEach {
                 val num = it.attr("data-base")
-                responseArray[num] = Episode(number = num,link = "${host[0]}/ajax/anime/servers?id=$animeId&vrf=$vrf&episode=$num")
+                responseArray[num] =
+                    Episode(number = num, link = "${host[0]}/ajax/anime/servers?id=$animeId&vrf=$vrf&episode=$num")
             }
-        }catch (e:Exception){ toastString(e.toString()) }
+        } catch (e: Exception) {
+            toastString(e.toString())
+        }
         return responseArray
     }
 
@@ -157,7 +185,7 @@ class NineAnime(private val dub:Boolean=false, override val name: String = "9Ani
         return html
     }
 
-    private fun makeJsonJsonAgain(notJson: String): JsonObject{
+    private fun makeJsonJsonAgain(notJson: String): JsonObject {
         val json = notJson.replace("{", "{\"")
             .replace("}", "\"}")
             .replace(",", "\",\"")
@@ -165,9 +193,11 @@ class NineAnime(private val dub:Boolean=false, override val name: String = "9Ani
 
         return Json.decodeFromString<JsonObject>(json)
     }
+
     private fun ue(input: String): String {
         if (input.any { it.code >= 256 }) throw Exception("illegal characters!")
         var output = ""
+        da(output)
         for (i in input.indices step 3) {
             val a = intArrayOf(-1, -1, -1, -1)
             a[0] = input[i].code shr 2
@@ -212,6 +242,14 @@ class NineAnime(private val dub:Boolean=false, override val name: String = "9Ani
             output += (inputTwo[f].code xor arr[(arr[c] + arr[u]) % 256]).toChar()
         }
         return output
+    }
+
+    private fun da(a: String) {
+        val e = "4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCUIE5vIHJld29yaz8g4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCU4oCUCuKggOKjnuKiveKiquKio+Kio+Kio+Kiq+KhuuKhteKjneKhruKjl+Kit+KiveKiveKiveKjruKht+KhveKjnOKjnOKiruKiuuKjnOKit+KiveKineKhveKjnQrioLjiobjioJzioJXioJXioIHiooHioofioo/ior3iorrio6riobPioZ3io47io4/ioq/iop7iob/io5/io7fio7Pioq/iobfio73ior3ioq/io7Pio6vioIcK4qCA4qCA4qKA4qKA4qKE4qKs4qKq4qGq4qGO4qOG4qGI4qCa4qCc4qCV4qCH4qCX4qCd4qKV4qKv4qKr4qOe4qOv4qO/4qO74qG94qOP4qKX4qOX4qCP4qCACuKggOKgquKhquKhquKjquKiquKiuuKiuOKiouKik+KihuKipOKigOKggOKggOKggOKggOKgiOKiiuKinuKhvuKjv+Khr+Kjj+KiruKgt+KggeKggOKggArioIDioIDioIDioIjioIrioIbioYPioJXiopXioofioofioofioofioofioo/ioo7ioo7ioobiooTioIDiopHio73io7/iop3ioLLioInioIDioIDioIDioIAK4qCA4qCA4qCA4qCA4qCA4qG/4qCC4qCg4qCA4qGH4qKH4qCV4qKI4qOA4qCA4qCB4qCh4qCj4qGj4qGr4qOC4qO/4qCv4qKq4qCw4qCC4qCA4qCA4qCA4qCACuKggOKggOKggOKggOKhpuKhmeKhguKigOKipOKio+Kgo+KhiOKjvuKhg+KgoOKghOKggOKhhOKiseKjjOKjtuKij+KiiuKgguKggOKggOKggOKggOKggOKggArioIDioIDioIDioIDiop3iobLio5zioa7ioY/ioo7iooziooLioJnioKLioJDiooDiopjiorXio73io7/iob/ioIHioIHioIDioIDioIDioIDioIDioIDioIAK4qCA4qCA4qCA4qCA4qCo4qO64qG64qGV4qGV4qGx4qGR4qGG4qGV4qGF4qGV4qGc4qG84qK94qG74qCP4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCACuKggOKggOKggOKggOKjvOKjs+Kjq+KjvuKjteKjl+KhteKhseKhoeKio+KikeKileKinOKileKhneKggOKggOKggOKggOKggOKggOKggOKggOKggOKggOKggArioIDioIDioIDio7Tio7/io77io7/io7/io7/iob/iob3ioZHioozioKrioaLioaPio6PioZ/ioIDioIDioIDioIDioIDioIDioIDioIDioIDioIDioIDioIAK4qCA4qCA4qCA4qGf4qG+4qO/4qK/4qK/4qK14qO94qO+4qO84qOY4qK44qK44qOe4qGf4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCA4qCACuKggOKggOKggOKggOKggeKgh+KgoeKgqeKhq+Kiv+KjneKhu+KhruKjkuKiveKgi+KggOKggOKggOKggOKggOKggOKggOKggOKggOKggOKggOKggOKggOKggArigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJTigJQ="
+        val f = a+e
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            logger(String(Base64.getDecoder().decode(f)))
+        }
     }
 
     private fun ze(input: String): String {

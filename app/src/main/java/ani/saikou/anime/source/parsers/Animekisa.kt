@@ -3,6 +3,7 @@ package ani.saikou.anime.source.parsers
 import ani.saikou.*
 import ani.saikou.anime.Episode
 import ani.saikou.anime.source.AnimeParser
+import ani.saikou.anime.source.extractors.VizCloud
 import ani.saikou.media.Media
 import ani.saikou.media.Source
 import kotlinx.serialization.decodeFromString
@@ -28,13 +29,14 @@ class Animekisa(private val dub:Boolean=false, override val name: String = "Anim
             val embedLink = servers.attr("data-embed") // embed link of servers
             val name = servers.select("span").text()
             if(name==server){
-                val token = Regex("(?<=window.skey = )'.*?'").find(
-                    Jsoup.connect(embedLink).header("referer", host[0]).get().html()
-                )?.value?.trim('\'') //token to get the m3u8
-                    val m3u8Link = Json.decodeFromString<JsonObject>(Jsoup.connect("${embedLink.replace("/e/", "/info/")}&skey=$token")
-                        .header("referer", host[0])
-                        .ignoreContentType(true).get().body().text())["media"]!!.jsonObject["sources"]!!.jsonArray[0].jsonObject["file"].toString().trim('"')
-                    streams[name] = (Episode.StreamLinks(name,listOf(Episode.Quality(m3u8Link,"Multi Quality",null)), mutableMapOf("referer" to "https://vidstream.pro/")))
+                streams[name] = (VizCloud("https://9anime.to/").getStreamLinks(name, embedLink))
+//                val token = Regex("(?<=window.skey = )'.*?'").find(
+//                    Jsoup.connect(embedLink).header("referer", host[0]).get().html()
+//                )?.value?.trim('\'') //token to get the m3u8
+//                    val m3u8Link = Json.decodeFromString<JsonObject>(Jsoup.connect("${embedLink.replace("/e/", "/info/")}&skey=$token")
+//                        .header("referer", host[0])
+//                        .ignoreContentType(true).get().body().text())["media"]!!.jsonObject["sources"]!!.jsonArray[0].jsonObject["file"].toString().trim('"')
+//                    streams[name] = (Episode.StreamLinks(name,listOf(Episode.Quality(m3u8Link,"Multi Quality",null)), mutableMapOf("referer" to "https://vidstream.pro/")))
             }
         }
         }catch (e:Exception){ toastString(e.toString()) }
