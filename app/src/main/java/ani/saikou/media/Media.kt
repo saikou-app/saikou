@@ -92,6 +92,7 @@ data class Media(
         this.userProgress = mediaList.progress
         this.userScore = mediaList.score?.toInt() ?: 0
         this.userStatus = mediaList.status.toString()
+        this.userUpdatedAt = mediaList.updatedAt?.toLong()
     }
 
     constructor(mediaEdge: MediaEdge) : this(mediaEdge.node!!) {

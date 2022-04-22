@@ -381,7 +381,7 @@ class AnilistQueries {
 
     fun getMediaLists(anime: Boolean, userId: Int): MutableMap<String, ArrayList<Media>> {
         val response =
-            executeQuery("""{ MediaListCollection(userId: $userId, type: ${if (anime) "ANIME" else "MANGA"}) { lists { name entries { status progress score(format:POINT_100) media { id idMal isAdult type status chapters episodes nextAiringEpisode {episode} bannerImage meanScore isFavourite coverImage{large} title {english romaji userPreferred } } } } user { mediaListOptions { rowOrder animeList { sectionOrder } mangaList { sectionOrder } } } } }""")
+            executeQuery("""{ MediaListCollection(userId: $userId, type: ${if (anime) "ANIME" else "MANGA"}) { lists { name entries { status progress score(format:POINT_100) updatedAt media { id idMal isAdult type status chapters episodes nextAiringEpisode {episode} bannerImage meanScore isFavourite coverImage{large} title {english romaji userPreferred } } } } user { mediaListOptions { rowOrder animeList { sectionOrder } mangaList { sectionOrder } } } } }""")
         val sorted = mutableMapOf<String, ArrayList<Media>>()
         val unsorted = mutableMapOf<String, ArrayList<Media>>()
         val all = arrayListOf<Media>()
@@ -430,7 +430,7 @@ class AnilistQueries {
             when (sort) {
                 "score"     -> sorted[i]?.sortWith { b, a -> compareValuesBy(a, b, { it.userScore }, { it.meanScore }) }
                 "title"     -> sorted[i]?.sortWith(compareBy { it.userPreferredName })
-                "updatedAt" -> sorted[i]?.sortWith(compareBy { it.userUpdatedAt })
+                "updatedAt" -> sorted[i]?.sortWith(compareByDescending { it.userUpdatedAt })
                 "id"        -> sorted[i]?.sortWith(compareBy { it.id })
             }
         }
