@@ -1,9 +1,13 @@
 package ani.saikou.media
 
 import ani.saikou.FuzzyDate
+import ani.saikou.anilist.api.MediaEdge
+import ani.saikou.anilist.api.MediaList
+import ani.saikou.anilist.api.MediaType
 import ani.saikou.anime.Anime
 import ani.saikou.manga.Manga
 import java.io.Serializable
+import ani.saikou.anilist.api.Media as ApiMedia
 
 data class Media(
     val anime: Anime? = null,
@@ -60,6 +64,39 @@ data class Media(
 
     var cameFromContinue: Boolean = false
 ) : Serializable {
+    constructor(apiMedia: ApiMedia) : this(
+        id = apiMedia.id!!,
+        idMAL = apiMedia.idMal,
+        popularity = apiMedia.popularity,
+        name = apiMedia.title!!.english.toString(),
+        nameRomaji = apiMedia.title!!.romaji.toString(),
+        userPreferredName = apiMedia.title!!.userPreferred.toString(),
+        cover = apiMedia.coverImage?.large,
+        banner = apiMedia.bannerImage,
+        status = apiMedia.status.toString(),
+        isFav = apiMedia.isFavourite!!,
+        isAdult = apiMedia.isAdult ?: false,
+        userProgress = apiMedia.mediaListEntry?.progress,
+        userScore = apiMedia.mediaListEntry?.score?.toInt() ?: 0,
+        userStatus = apiMedia.mediaListEntry?.status?.toString(),
+        meanScore = apiMedia.meanScore,
+        anime = if (apiMedia.type == MediaType.ANIME) Anime(
+            totalEpisodes = apiMedia.episodes,
+            nextAiringEpisode = apiMedia.nextAiringEpisode?.episode?.minus(1)
+        ) else null,
+        manga = if (apiMedia.type == MediaType.MANGA) Manga(totalChapters = apiMedia.chapters) else null,
+    )
+
+    constructor(mediaList: MediaList) : this(mediaList.media!!) {
+        this.userProgress = mediaList.progress
+        this.userScore = mediaList.score?.toInt() ?: 0
+        this.userStatus = mediaList.status.toString()
+    }
+
+    constructor(mediaEdge: MediaEdge) : this(mediaEdge.node!!) {
+        this.relation = mediaEdge.relationType.toString()
+    }
+
     fun getMainName() = if (name != "null") name else nameRomaji
     fun getMangaName() = if (countryOfOrigin != "JP") getMainName() else nameRomaji
 
