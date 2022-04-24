@@ -24,6 +24,8 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 
 class MediaDetailsViewModel : ViewModel() {
+    val scrolledToTop = MutableLiveData(true)
+
     fun saveSelected(id: Int, data: Selected, activity: Activity) {
         saveData("$id-select", data, activity)
     }

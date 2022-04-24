@@ -65,10 +65,10 @@ import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.material.slider.Slider
+import com.lagradost.nicehttp.ignoreAllSSLErrors
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.OkHttpClient
 import java.util.*
 import java.util.concurrent.*
 import kotlin.math.max
@@ -764,7 +764,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         val stream = episode.streamLinks[episode.selectedStream] ?: return
 
         val simpleCache = VideoCache.getInstance(this)
-        val httpClient = OkHttpClient().newBuilder().ignoreAllSSLErrors().apply {
+        val httpClient = okHttpClient.newBuilder().apply {
+            ignoreAllSSLErrors()
             followRedirects(true)
             followSslRedirects(true)
         }.build()

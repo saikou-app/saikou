@@ -9,21 +9,11 @@ import ani.saikou.anilist.api.User
 import ani.saikou.media.Character
 import ani.saikou.media.Media
 import ani.saikou.media.Studio
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.runBlocking
-import okhttp3.MultipartBody
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody
 import java.io.Serializable
 import java.net.UnknownHostException
-
-
-val httpClient = OkHttpClient()
-val mapper = jacksonObjectMapper()
 
 fun executeQuery(
     query: String,
@@ -33,28 +23,22 @@ fun executeQuery(
     show: Boolean = false
 ): Data? {
     try {
-        val formBody: RequestBody = MultipartBody.Builder()
-            .setType(MultipartBody.FORM)
-            .addFormDataPart("query", query)
-            .addFormDataPart("variables", variables)
-            .build()
-
-        val request = Request.Builder()
-            .url("https://graphql.anilist.co/")
-            .addHeader("Content-Type", "application/json")
-            .addHeader("Accept", "application/json")
-            .addHeader(
-                "user-agent",
-                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.75 Safari/537.36"
-            )
-            .post(formBody)
+        val data = mapOf(
+            "query" to query,
+            "variables" to variables
+        )
+        val headers = mutableMapOf(
+            "Content-Type" to "application/json",
+            "Accept" to "application/json",
+            "user-agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebkit/537.36 (KHTML, Like Gecko) Chrome/100.0.4896.75 Safari/537.36"
+        )
 
         if (Anilist.token != null || force) {
-            if (Anilist.token != null && useToken) request.header("Authorization", "Bearer ${Anilist.token}")
-            val json = httpClient.newCall(request.build()).execute().body?.string() ?: return null
-            if (show) toastString("JSON : $json")
+            if (Anilist.token != null && useToken) headers["Authorization"] = "Bearer ${Anilist.token}"
+            val json = httpClient.post("https://graphql.anilist.co/", headers, data = data)
+            if (show) toastString("Response : ${json.text}")
 
-            return mapper.readValue<Query>(json).data
+            return json.parsed<Query>().data
         }
     } catch (e: Exception) {
         if (e is UnknownHostException) toastString("Network error, please Retry.")
@@ -80,23 +64,18 @@ data class SearchResults(
 
 class AnilistQueries {
     fun getUserData(): Boolean {
-        return try {
-            val response =
-                executeQuery("""{Viewer {name options{ displayAdultContent } avatar{medium} bannerImage id statistics{anime{episodesWatched}manga{chaptersRead}}}}""")
-            val user = response?.Viewer ?: return false
+        val response =
+            executeQuery("""{Viewer {name options{ displayAdultContent } avatar{medium} bannerImage id statistics{anime{episodesWatched}manga{chaptersRead}}}}""")
+        val user = response?.Viewer ?: return false
 
-            Anilist.userid = user.id
-            Anilist.username = user.name
-            Anilist.bg = user.bannerImage
-            Anilist.avatar = user.avatar?.medium
-            Anilist.episodesWatched = user.statistics?.anime?.episodesWatched
-            Anilist.chapterRead = user.statistics?.manga?.chaptersRead
-            Anilist.adult = user.options?.displayAdultContent ?: false
-            true
-        } catch (e: Exception) {
-            logger(e)
-            false
-        }
+        Anilist.userid = user.id
+        Anilist.username = user.name
+        Anilist.bg = user.bannerImage
+        Anilist.avatar = user.avatar?.medium
+        Anilist.episodesWatched = user.statistics?.anime?.episodesWatched
+        Anilist.chapterRead = user.statistics?.manga?.chaptersRead
+        Anilist.adult = user.options?.displayAdultContent ?: false
+        return true
     }
 
     fun getMedia(id: Int, mal: Boolean = false): Media? {
@@ -117,7 +96,7 @@ class AnilistQueries {
                 var response = executeQuery(query, force = true)
                 if (response != null) {
                     fun parse() {
-                        val fetchedMedia = response?.Media?:return
+                        val fetchedMedia = response?.Media ?: return
 
                         media.source = fetchedMedia.source.toString()
                         media.countryOfOrigin = fetchedMedia.countryOfOrigin

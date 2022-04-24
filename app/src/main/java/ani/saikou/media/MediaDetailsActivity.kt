@@ -343,6 +343,7 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         val duration = (200 * uiSettings.animationSpeed).toLong()
         if (percentage >= percent && !isCollapsed) {
             isCollapsed = true
+            model.scrolledToTop.postValue(false)
             ObjectAnimator.ofFloat(binding.mediaTitle, "translationX", 0f).setDuration(duration).start()
             ObjectAnimator.ofFloat(binding.mediaAccessContainer, "translationX", screenWidth).setDuration(duration).start()
             ObjectAnimator.ofFloat(binding.mediaCover, "translationX", screenWidth).setDuration(duration).start()
@@ -352,6 +353,7 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
         }
         if (percentage <= percent && isCollapsed) {
             isCollapsed = false
+            model.scrolledToTop.postValue(true)
             ObjectAnimator.ofFloat(binding.mediaTitle, "translationX", -screenWidth).setDuration(duration).start()
             ObjectAnimator.ofFloat(binding.mediaAccessContainer, "translationX", 0f).setDuration(duration).start()
             ObjectAnimator.ofFloat(binding.mediaCover, "translationX", 0f).setDuration(duration).start()

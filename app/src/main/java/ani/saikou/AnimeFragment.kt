@@ -16,9 +16,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ani.saikou.anilist.Anilist
 import ani.saikou.anilist.AnilistAnimeViewModel
 import ani.saikou.anilist.SearchResults
+import ani.saikou.anilist.getUserId
 import ani.saikou.databinding.FragmentAnimeBinding
 import ani.saikou.media.MediaAdaptor
 import ani.saikou.media.ProgressAdapter
@@ -195,7 +195,7 @@ class AnimeFragment : Fragment() {
             }
         }
 
-        suspend fun load() = withContext(Dispatchers.Main) {
+        fun load() = scope.launch(Dispatchers.Main) {
             animePageAdapter.updateAvatar()
         }
 
@@ -204,9 +204,9 @@ class AnimeFragment : Fragment() {
             if (it) {
                 scope.launch {
                     withContext(Dispatchers.IO) {
-                        if (Anilist.userid == null)
-                            if (Anilist.query.getUserData()) load() else logger("Error loading data")
-                        else load()
+                        getUserId {
+                            load()
+                        }
                         model.loaded = true
                         model.loadTrending()
                         model.loadUpdated()

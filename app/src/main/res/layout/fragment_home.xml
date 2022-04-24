@@ -16,17 +16,17 @@
         <LinearLayout
             android:id="@+id/homeContainer"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
                 <com.flaviofaria.kenburnsview.KenBurnsView
                     android:id="@+id/homeUserBg"
                     android:layout_width="match_parent"
-                    android:layout_height="128dp"
+                    android:layout_height="216dp"
                     android:scaleType="centerCrop"
                     tools:ignore="ContentDescription"
                     tools:src="@tools:sample/backgrounds/scenic" />
@@ -34,238 +34,247 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_marginTop="-94dp"
                     android:src="@drawable/linear_gradient_bg"
                     tools:ignore="ContentDescription" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:orientation="horizontal"
-                    android:padding="32dp">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <FrameLayout
-                        android:layout_width="0dp"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:minHeight="64dp">
+                        android:layout_gravity="bottom"
+                        android:orientation="horizontal"
+                        android:padding="32dp">
 
-                        <LinearLayout
-                            android:id="@+id/homeUserDataContainer"
-                            android:layout_width="match_parent"
+                        <FrameLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical"
-                            android:visibility="gone"
-                            tools:visibility="visible">
-
-                            <TextView
-                                android:id="@+id/homeUserName"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginBottom="-4dp"
-                                android:fontFamily="@font/poppins_bold"
-                                android:gravity="center"
-                                android:text="@string/username"
-                                android:textSize="16sp" />
+                            android:layout_weight="1"
+                            android:minHeight="64dp">
 
                             <LinearLayout
+                                android:id="@+id/homeUserDataContainer"
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:visibility="gone"
+                                tools:visibility="visible">
 
                                 <TextView
+                                    android:id="@+id/homeUserName"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:alpha="0.58"
-                                    android:fontFamily="@font/poppins"
-                                    android:text="@string/episodes_watched"
-                                    android:textSize="12sp"
-                                    tools:ignore="TextContrastCheck" />
-
-                                <TextView
-                                    android:id="@+id/homeUserEpisodesWatched"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
+                                    android:layout_marginBottom="-4dp"
                                     android:fontFamily="@font/poppins_bold"
-                                    android:textColor="?attr/colorSecondaryVariant"
-                                    android:textSize="12sp" />
+                                    android:gravity="center"
+                                    android:text="@string/username"
+                                    android:textSize="16sp" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:alpha="0.58"
+                                        android:fontFamily="@font/poppins"
+                                        android:text="@string/episodes_watched"
+                                        android:textSize="12sp"
+                                        tools:ignore="TextContrastCheck,TooDeepLayout" />
+
+                                    <TextView
+                                        android:id="@+id/homeUserEpisodesWatched"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_bold"
+                                        android:textColor="?attr/colorSecondaryVariant"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:alpha="0.58"
+                                        android:fontFamily="@font/poppins"
+                                        android:text="@string/chapters_read"
+                                        android:textSize="12sp"
+                                        tools:ignore="TextContrastCheck" />
+
+                                    <TextView
+                                        android:id="@+id/homeUserChaptersRead"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:fontFamily="@font/poppins_bold"
+                                        android:textColor="?attr/colorSecondaryVariant"
+                                        android:textSize="12sp" />
+                                </LinearLayout>
+
                             </LinearLayout>
 
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="match_parent"
-                                android:orientation="horizontal">
+                            <ProgressBar
+                                android:id="@+id/homeUserDataProgressBar"
+                                style="?android:attr/progressBarStyleHorizontal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginEnd="16dp"
+                                android:indeterminate="true"
+                                tools:visibility="gone" />
 
-                                <TextView
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:alpha="0.58"
-                                    android:fontFamily="@font/poppins"
-                                    android:text="@string/chapters_read"
-                                    android:textSize="12sp"
-                                    tools:ignore="TextContrastCheck" />
+                        </FrameLayout>
 
-                                <TextView
-                                    android:id="@+id/homeUserChaptersRead"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:fontFamily="@font/poppins_bold"
-                                    android:textColor="?attr/colorSecondaryVariant"
-                                    android:textSize="12sp" />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                        <ProgressBar
-                            android:id="@+id/homeUserDataProgressBar"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginEnd="16dp"
-                            android:indeterminate="true"
-                            tools:visibility="gone" />
-
-                    </FrameLayout>
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/homeUserAvatarContainer"
-                        android:layout_width="52dp"
-                        android:layout_height="52dp"
-                        android:layout_marginTop="4dp"
-                        android:backgroundTint="@color/nav_bg_inv"
-                        app:cardCornerRadius="26dp">
-
-                        <com.google.android.material.imageview.ShapeableImageView
-                            android:id="@+id/homeUserAvatar"
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/homeUserAvatarContainer"
                             android:layout_width="52dp"
                             android:layout_height="52dp"
-                            android:scaleType="center"
-                            app:srcCompat="@drawable/ic_round_settings_24"
-                            tools:ignore="ContentDescription,ImageContrastCheck" />
+                            android:layout_marginTop="4dp"
+                            android:backgroundTint="@color/nav_bg_inv"
+                            app:cardCornerRadius="26dp">
 
-                    </com.google.android.material.card.MaterialCardView>
+                            <com.google.android.material.imageview.ShapeableImageView
+                                android:id="@+id/homeUserAvatar"
+                                android:layout_width="52dp"
+                                android:layout_height="52dp"
+                                android:scaleType="center"
+                                app:srcCompat="@drawable/ic_round_settings_24"
+                                tools:ignore="ContentDescription,ImageContrastCheck" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/homeListContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:paddingStart="24dp"
+                        android:paddingEnd="24dp">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/homeAnimeList"
+                            android:layout_width="match_parent"
+                            android:layout_height="72dp"
+                            android:layout_margin="8dp"
+                            android:visibility="invisible"
+                            app:cardCornerRadius="16dp"
+                            app:layout_constrainedWidth="true"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/homeMangaList"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintWidth_max="256dp"
+                            tools:visibility="visible">
+
+                            <ImageView
+                                android:id="@+id/homeAnimeListImage"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                tools:ignore="ContentDescription"
+                                tools:src="@tools:sample/backgrounds/scenic" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:alpha="0.6"
+                                android:background="@color/bg_black" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:text="@string/anime_list"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/bg_white"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="64dp"
+                                    android:layout_height="2dp"
+                                    android:layout_gravity="center"
+                                    android:background="?attr/colorPrimary" />
+                            </LinearLayout>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/homeMangaList"
+                            android:layout_width="match_parent"
+                            android:layout_height="72dp"
+                            android:layout_margin="8dp"
+                            android:layout_marginBottom="16dp"
+                            android:visibility="invisible"
+                            app:cardCornerRadius="16dp"
+                            app:layout_constrainedWidth="true"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/homeAnimeList"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintWidth_max="256dp"
+                            tools:visibility="visible">
+
+                            <ImageView
+                                android:id="@+id/homeMangaListImage"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:scaleType="centerCrop"
+                                tools:ignore="ContentDescription"
+                                tools:src="@tools:sample/backgrounds/scenic" />
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:alpha="0.6"
+                                android:background="@color/bg_black" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:fontFamily="@font/poppins_bold"
+                                    android:text="@string/manga_list"
+                                    android:textAllCaps="true"
+                                    android:textColor="@color/bg_white"
+                                    android:textSize="16sp" />
+
+                                <View
+                                    android:layout_width="64dp"
+                                    android:layout_height="2dp"
+                                    android:layout_gravity="center"
+                                    android:background="?attr/colorPrimary" />
+                            </LinearLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
 
                 </LinearLayout>
+
             </FrameLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/homeListContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clipToPadding="false"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/homeAnimeList"
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_margin="8dp"
-                    android:visibility="invisible"
-                    app:cardCornerRadius="16dp"
-                    app:layout_constrainedWidth="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/homeMangaList"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_max="256dp"
-                    tools:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/homeAnimeListImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        tools:ignore="ContentDescription"
-                        tools:src="@tools:sample/backgrounds/scenic" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:alpha="0.6"
-                        android:background="@color/bg_black" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/poppins_bold"
-                            android:text="@string/anime_list"
-                            android:textAllCaps="true"
-                            android:textColor="@color/bg_white"
-                            android:textSize="16sp" />
-
-                        <View
-                            android:layout_width="64dp"
-                            android:layout_height="2dp"
-                            android:layout_gravity="center"
-                            android:background="?attr/colorPrimary" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/homeMangaList"
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:layout_margin="8dp"
-                    android:layout_marginBottom="16dp"
-                    android:visibility="invisible"
-                    app:cardCornerRadius="16dp"
-                    app:layout_constrainedWidth="true"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/homeAnimeList"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintWidth_max="256dp"
-                    tools:visibility="visible">
-
-                    <ImageView
-                        android:id="@+id/homeMangaListImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        tools:ignore="ContentDescription"
-                        tools:src="@tools:sample/backgrounds/scenic" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:alpha="0.6"
-                        android:background="@color/bg_black" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/poppins_bold"
-                            android:text="@string/manga_list"
-                            android:textAllCaps="true"
-                            android:textColor="@color/bg_white"
-                            android:textSize="16sp" />
-
-                        <View
-                            android:layout_width="64dp"
-                            android:layout_height="2dp"
-                            android:layout_gravity="center"
-                            android:background="?attr/colorPrimary" />
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <LinearLayout
                 android:id="@+id/homeContinueWatchingContainer"

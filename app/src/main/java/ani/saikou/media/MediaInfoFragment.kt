@@ -57,6 +57,10 @@ class MediaInfoFragment : Fragment() {
         binding.mediaInfoContainer.visibility = if (loaded) View.VISIBLE else View.GONE
         binding.mediaInfoContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin += 128f.px + navBarHeight }
 
+        model.scrolledToTop.observe(viewLifecycleOwner){
+            if(it) binding.mediaInfoScroll.scrollTo(0,0)
+        }
+
         model.getMedia().observe(viewLifecycleOwner) { media ->
             if (media != null && !loaded) {
                 loaded = true

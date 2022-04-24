@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.anilist.Anilist
 import ani.saikou.anilist.AnilistHomeViewModel
+import ani.saikou.anilist.getUserId
 import ani.saikou.databinding.FragmentHomeBinding
 import ani.saikou.media.Media
 import ani.saikou.media.MediaAdaptor
@@ -272,9 +273,9 @@ class HomeFragment : Fragment() {
                     uiSettings = loadData<UserInterfaceSettings>("ui_settings") ?: UserInterfaceSettings()
                     withContext(Dispatchers.IO) {
                         //Get userData First
-                        if (Anilist.userid == null)
-                            if (Anilist.query.getUserData()) load() else logger("Error loading data")
-                        else load()
+                        getUserId{
+                            load()
+                        }
                         model.loaded = true
                         model.setListImages()
                         var empty = true

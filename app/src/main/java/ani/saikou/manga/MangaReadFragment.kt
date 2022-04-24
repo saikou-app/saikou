@@ -89,6 +89,11 @@ open class MangaReadFragment : Fragment() {
         }
 
         binding.animeSourceRecycler.layoutManager = gridLayoutManager
+
+        model.scrolledToTop.observe(viewLifecycleOwner){
+            if(it) binding.animeSourceRecycler.scrollToPosition(0)
+        }
+
         continueEp = model.continueMedia ?: false
         model.getMedia().observe(viewLifecycleOwner) {
             if (it != null) {

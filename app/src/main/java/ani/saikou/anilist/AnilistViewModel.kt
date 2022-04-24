@@ -4,6 +4,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ani.saikou.media.Media
+import ani.saikou.toastString
+
+
+fun getUserId(update: Runnable){
+    if (Anilist.userid == null) {
+        if (Anilist.query.getUserData())
+            update.run()
+        else
+            toastString("Error loading Data")
+    }
+    else update.run()
+}
 
 class AnilistHomeViewModel : ViewModel() {
     private val listImages: MutableLiveData<ArrayList<String?>> = MutableLiveData<ArrayList<String?>>(arrayListOf())
