@@ -102,16 +102,26 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
                                     val response = rawResponse.body?.string()
                                     if (response != null) {
                                         mapper.readValue<ApiSourceResponse>(response).links.forEach {
+                                            // It can be that two different actual sources share the same sourceName. As for why, only god knows
+                                            var serverName = source.sourceName
+                                            // (Hopefully) Avoid languages other than english when multiple urls are provided
+                                            if ("en" in it.resolutionStr) {
+                                                var num = 2
+                                                while (linkForVideos[serverName] != null) {
+                                                    serverName = "${source.sourceName} ($num)"
+                                                    num++
+                                                }
+                                            }
                                             // Who even designed this
                                             val directLinks = when {
                                                 it.src != null  -> directLinkify(
-                                                    source.sourceName,
+                                                    serverName,
                                                     it.src,
                                                     reportedSize,
                                                     reportedResolution
                                                 )
                                                 it.link != null -> directLinkify(
-                                                    source.sourceName,
+                                                    serverName,
                                                     it.link,
                                                     reportedSize,
                                                     reportedResolution
@@ -120,7 +130,7 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
                                             }
 
                                             if (directLinks != null) {
-                                                linkForVideos[source.sourceName] = directLinks
+                                                linkForVideos[serverName] = directLinks
                                             }
                                         }
                                     }
