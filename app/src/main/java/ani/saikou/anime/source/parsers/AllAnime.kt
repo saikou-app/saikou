@@ -99,8 +99,10 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
                                 // Sometimes provides relative links just because ¯\_(ツ)_/¯
                                 if (source.sourceUrl.toHttpUrlOrNull() == null) {
                                     val jsonUrl = """${apiHost}${source.sourceUrl.replace("clock", "clock.json").substring(1)}"""
-                                    val response =
-                                        httpClient.newCall(Request.Builder().url(jsonUrl).build()).execute().body?.string()
+                                    val rawResponse =
+                                        httpClient.newCall(Request.Builder().url(jsonUrl).build()).execute()
+                                    if (rawResponse.code > 400) return@launch
+                                    val response = rawResponse.body?.string()
                                     if (response != null) {
                                         mapper.readValue<ApiSourceResponse>(response).links.forEach {
                                             // Who even designed this
@@ -200,7 +202,7 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
             if (showId != null) {
                 val episodeInfos = getEpisodeInfos(showId)
                 val format = DecimalFormat("0")
-                episodeInfos?.forEach {
+                episodeInfos?.sortedBy { it.episodeIdNum }?.forEach {
                     val link = """${host}anime/$showId/episodes/${if (dub) "dub" else "sub"}/${it.episodeIdNum}"""
                     val epNum = format.format(it.episodeIdNum).toString()
                     responseArray[epNum] = Episode(epNum, it.notes, link = link, thumb = it.thumbnails?.get(0))
