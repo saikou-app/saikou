@@ -61,7 +61,11 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
         if (url.contains(".mp4")) {
             val qualities = arrayListOf<Episode.Quality>()
             qualities.add(Episode.Quality(url, "??", null))
-            return Episode.StreamLinks(server = name, qualities)
+            val headers = mutableMapOf<String, String>()
+            if ("king.stronganime" in url) {
+                headers.set("Referer", host)
+            }
+            return Episode.StreamLinks(server = name, qualities, headers)
         }
         return null
     }
