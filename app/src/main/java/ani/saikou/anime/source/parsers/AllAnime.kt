@@ -20,19 +20,12 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.JsonObjectBuilder
-import kotlinx.serialization.json.jsonObject
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.jsoup.Jsoup
 import java.lang.Exception
 import java.text.DecimalFormat
-import kotlin.math.E
 
 class AllAnime(private val dub: Boolean = false, override val name: String = "allanime.site") : AnimeParser() {
     private val host = "https://$name/"
@@ -41,14 +34,19 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
     private val mapper = jacksonObjectMapper()
     private val idRegex = Regex("${host}anime/(\\w+)")
 
-    private fun directLinkify(name: String, url: String, getSize: Boolean = true): Episode.StreamLinks? {
+    private fun directLinkify(
+        name: String,
+        url: String,
+        reportedSize: Double?,
+        reportedResolution: Int?
+    ): Episode.StreamLinks? {
         val domain = Regex("""(?<=^http[s]?://).+?(?=/)""").find(url)?.value ?: return null
         val extractor: Extractor? = when {
             "gogo" in domain    -> GogoCDN(apiHost)
             "goload" in domain  -> GogoCDN(apiHost)
             "sb" in domain      -> StreamSB()
-            "fplayer" in domain -> FPlayer(getSize)
-            "fembed" in domain  -> FPlayer(getSize)
+            "fplayer" in domain -> FPlayer(true)
+            "fembed" in domain  -> FPlayer(true)
             else                -> null
         }
         val a = extractor?.getStreamLinks(name, url)
@@ -60,10 +58,10 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
         }
         if (url.contains(".mp4")) {
             val qualities = arrayListOf<Episode.Quality>()
-            qualities.add(Episode.Quality(url, "??", null))
+            qualities.add(Episode.Quality(url, "${reportedResolution ?: "??"}p", reportedSize))
             val headers = mutableMapOf<String, String>()
             if ("king.stronganime" in url) {
-                headers.set("Referer", host)
+                headers["Referer"] = host
             }
             return Episode.StreamLinks(server = name, qualities, headers)
         }
@@ -71,7 +69,7 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
     }
 
     override fun getStream(episode: Episode, server: String): Episode {
-        val desiredServer = getStreams(episode).streamLinks.get(server)
+        val desiredServer = getStreams(episode).streamLinks[server]
         if (desiredServer != null) {
             episode.streamLinks[server] = desiredServer
         }
@@ -85,6 +83,12 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
                 episode.streamLinks = runBlocking {
                     val linkForVideos = mutableMapOf<String, Episode.StreamLinks?>()
                     withContext(Dispatchers.Default) {
+                        val epInfo = getEpisodeInfos(showId)
+                        val currentEp = epInfo?.find { it.episodeIdNum == episode.number.toFloat() }
+                        val reportedSize = currentEp.let { if (dub) it?.vidInforsdub?.vidSize else it?.vidInforssub?.vidSize }
+                            ?.div(1024F * 1024F)
+                        val reportedResolution =
+                            currentEp.let { if (dub) it?.vidInforsdub?.vidResolution else it?.vidInforssub?.vidResolution }
                         val variables =
                             """{"showId":"$showId","translationType":"${if (dub) "dub" else "sub"}","episodeString":"${episode.number}"}"""
                         graphqlQuery(
@@ -100,20 +104,20 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
                                     if (response != null) {
                                         mapper.readValue<ApiSourceResponse>(response).links.forEach {
                                             // Who even designed this
-                                            val directLinks = if (it.src != null) {
-                                                directLinkify(
+                                            val directLinks = when {
+                                                it.src != null  -> directLinkify(
                                                     source.sourceName,
                                                     it.src,
-                                                    false
+                                                    reportedSize,
+                                                    reportedResolution
                                                 )
-                                            } else if (it.link != null) {
-                                                directLinkify(
+                                                it.link != null -> directLinkify(
                                                     source.sourceName,
                                                     it.link,
-                                                    false
+                                                    reportedSize,
+                                                    reportedResolution
                                                 )
-                                            } else {
-                                                null
+                                                else            -> null
                                             }
 
                                             if (directLinks != null) {
@@ -122,11 +126,8 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
                                         }
                                     }
                                 }
-                                val directLinks = directLinkify(
-                                    source.sourceName,
-                                    source.sourceUrl,
-                                    false
-                                )
+                                val directLinks =
+                                    directLinkify(source.sourceName, source.sourceUrl, reportedSize, reportedResolution)
                                 if (directLinks != null) {
                                     linkForVideos[source.sourceName] = directLinks
                                 }
@@ -197,25 +198,14 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
             // Would rather query the API than parse the HTML of the site
             val showId = idRegex.find(slug)?.groupValues?.get(1)
             if (showId != null) {
-                val variables = """{"_id": "$showId"}"""
-                val show = graphqlQuery(variables, "bea0b50519809a797e72b9bd5131d453de6bd1841ea7e720765c5af143a0d6f0")?.data?.show
-                if (show != null) {
-                    val epCount = if (dub) show.lastEpisodeInfo.dub?.episodeString else show.lastEpisodeInfo.sub?.episodeString
-                    if (epCount != null) {
-                        val epVariables = """{"showId":"$showId","episodeNumStart":0,"episodeNumEnd":${epCount.toFloat()}}"""
-                        val episodeInfos = graphqlQuery(
-                            epVariables,
-                            "73d998d209d6d8de325db91ed8f65716dce2a1c5f4df7d304d952fa3f223c9e8"
-                        )?.data?.episodeInfos
-                        val format = DecimalFormat("0")
-                        episodeInfos?.forEach {
-                            val link = """${host}anime/$showId/episodes/${if (dub) "dub" else "sub"}/${it.episodeIdNum}"""
-                            val epNum = format.format(it.episodeIdNum).toString()
-                            responseArray[epNum] = Episode(epNum, it.notes, link = link, thumb = it.thumbnails?.get(0))
-                        }
-                    }
-
+                val episodeInfos = getEpisodeInfos(showId)
+                val format = DecimalFormat("0")
+                episodeInfos?.forEach {
+                    val link = """${host}anime/$showId/episodes/${if (dub) "dub" else "sub"}/${it.episodeIdNum}"""
+                    val epNum = format.format(it.episodeIdNum).toString()
+                    responseArray[epNum] = Episode(epNum, it.notes, link = link, thumb = it.thumbnails?.get(0))
                 }
+
             }
         } catch (e: Exception) {
             toastString(e.toString())
@@ -229,6 +219,22 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
             .addQueryParameter("extensions", extensions).build()
         val response = httpClient.newCall(Request.Builder().url(graphqlUrl).build()).execute().body?.string() ?: return null
         return mapper.readValue<Query>(response)
+    }
+
+    private fun getEpisodeInfos(showId: String): List<EpisodeInfo>? {
+        val variables = """{"_id": "$showId"}"""
+        val show = graphqlQuery(variables, "bea0b50519809a797e72b9bd5131d453de6bd1841ea7e720765c5af143a0d6f0")?.data?.show
+        if (show != null) {
+            val epCount = if (dub) show.lastEpisodeInfo.dub?.episodeString else show.lastEpisodeInfo.sub?.episodeString
+            if (epCount != null) {
+                val epVariables = """{"showId":"$showId","episodeNumStart":0,"episodeNumEnd":${epCount.toFloat()}}"""
+                return graphqlQuery(
+                    epVariables,
+                    "73d998d209d6d8de325db91ed8f65716dce2a1c5f4df7d304d952fa3f223c9e8"
+                )?.data?.episodeInfos
+            }
+        }
+        return null
     }
 }
 
@@ -290,7 +296,16 @@ data class EpisodeInfo(
     val episodeIdNum: Float,
     val notes: String?,
     //val notes: String,
-    val thumbnails: List<String>?
+    val thumbnails: List<String>?,
+    val vidInforssub: VidInfo?,
+    val vidInforsdub: VidInfo?,
+)
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+data class VidInfo(
+    // val vidPath
+    val vidResolution: Int?,
+    val vidSize: Double?,
 )
 
 @JsonIgnoreProperties(ignoreUnknown = true)
