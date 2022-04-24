@@ -7,6 +7,7 @@ import ani.saikou.anime.source.Extractor
 import ani.saikou.anime.source.extractors.FPlayer
 import ani.saikou.anime.source.extractors.GogoCDN
 import ani.saikou.anime.source.extractors.StreamSB
+import ani.saikou.httpClient
 import ani.saikou.loadData
 import ani.saikou.logger
 import ani.saikou.media.Media
@@ -22,15 +23,12 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
 import java.lang.Exception
 import java.text.DecimalFormat
 
 class AllAnime(private val dub: Boolean = false, override val name: String = "allanime.site") : AnimeParser() {
     private val host = "https://$name/"
     private val apiHost = "https://blog.allanimenews.com/"
-    private val httpClient = OkHttpClient()
     private val mapper = jacksonObjectMapper()
     private val idRegex = Regex("${host}anime/(\\w+)")
 
@@ -99,8 +97,7 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
                                 // Sometimes provides relative links just because ¯\_(ツ)_/¯
                                 if (source.sourceUrl.toHttpUrlOrNull() == null) {
                                     val jsonUrl = """${apiHost}${source.sourceUrl.replace("clock", "clock.json").substring(1)}"""
-                                    val rawResponse =
-                                        httpClient.newCall(Request.Builder().url(jsonUrl).build()).execute()
+                                    val rawResponse = httpClient.get(jsonUrl)
                                     if (rawResponse.code > 400) return@launch
                                     val response = rawResponse.body?.string()
                                     if (response != null) {
@@ -219,8 +216,12 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
         val extensions = """{"persistedQuery":{"version":1,"sha256Hash":"$persistHash"}}"""
         val graphqlUrl = (host + "graphql").toHttpUrl().newBuilder().addQueryParameter("variables", variables)
             .addQueryParameter("extensions", extensions).build()
-        val response = httpClient.newCall(Request.Builder().url(graphqlUrl).build()).execute().body?.string() ?: return null
-        return mapper.readValue<Query>(response)
+        return try {
+            httpClient.get(graphqlUrl.toString()).parsed()
+        } catch (e: Exception) {
+            toastString(e.toString())
+            null
+        }
     }
 
     private fun getEpisodeInfos(showId: String): List<EpisodeInfo>? {
