@@ -40,7 +40,10 @@ class AllAnime(private val dub: Boolean = false, override val name: String = "al
             else                -> null
         }
         val a = extractor?.getStreamLinks(name, url)
-        if (a != null && a.quality.isNotEmpty()) return a
+        if (a != null && a.quality.isNotEmpty()) {
+            val filtered = a.quality.filter { it.size == null || it.size > 1.0 }
+            return Episode.StreamLinks(a.server, filtered, a.headers, a.subtitles)
+        }
         return null
     }
 
