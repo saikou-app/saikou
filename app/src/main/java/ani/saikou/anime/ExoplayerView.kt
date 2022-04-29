@@ -46,6 +46,7 @@ import ani.saikou.anime.source.HAnimeSources
 import ani.saikou.databinding.ActivityExoplayerBinding
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
+import ani.saikou.others.logError
 import ani.saikou.settings.PlayerSettings
 import ani.saikou.settings.UserInterfaceSettings
 import com.bumptech.glide.Glide
@@ -771,6 +772,9 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
         }.build()
         val dataSourceFactory = DataSource.Factory {
             val dataSource: HttpDataSource = OkHttpDataSource.Factory(httpClient).createDataSource()
+            defaultHeaders.forEach{
+                dataSource.setRequestProperty(it.key,it.value)
+            }
             if (stream.headers != null)
                 stream.headers.forEach {
                     dataSource.setRequestProperty(it.key, it.value)
@@ -1193,7 +1197,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 enterPictureInPictureMode()
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
     }
 

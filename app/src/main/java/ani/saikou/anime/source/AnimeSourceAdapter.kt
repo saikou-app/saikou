@@ -14,7 +14,7 @@ class AnimeSourceAdapter(
     fragment: SourceSearchDialogFragment,
     scope: CoroutineScope
 ) : SourceAdapter(sources, fragment, scope) {
-    override fun onItemClick(source: Source) {
+    override suspend fun onItemClick(source: Source) {
         model.overrideEpisodes(i, source, id)
     }
 }

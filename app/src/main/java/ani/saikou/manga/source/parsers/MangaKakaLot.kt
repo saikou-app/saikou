@@ -1,22 +1,22 @@
 package ani.saikou.manga.source.parsers
 
+import ani.saikou.httpClient
 import ani.saikou.loadData
 import ani.saikou.logger
 import ani.saikou.manga.MangaChapter
 import ani.saikou.manga.source.MangaParser
 import ani.saikou.media.Media
 import ani.saikou.media.Source
+import ani.saikou.others.logError
 import ani.saikou.saveData
-import ani.saikou.toastString
-import org.jsoup.Jsoup
 
 class MangaKakaLot(override val name: String = "MangaKakaLot") : MangaParser() {
     private val host = "https://mangakakalot.com"
 
-    override fun getLinkChapters(link: String): MutableMap<String, MangaChapter> {
+    override suspend fun getLinkChapters(link: String): MutableMap<String, MangaChapter> {
         val arr = mutableMapOf<String, MangaChapter>()
         try {
-            Jsoup.connect(link).get()
+            httpClient.get(link).document
                 .select(if (link.contains("readmanganato.com")) ".row-content-chapter > .a-h" else ".chapter-list > .row > span")
                 .reversed().forEach {
                 val chap = Regex("((?<=Chapter )[0-9.]+)([\\s:]+)?(.+)?").find(it.select("a").text())?.destructured
@@ -29,25 +29,25 @@ class MangaKakaLot(override val name: String = "MangaKakaLot") : MangaParser() {
                 }
             }
         } catch (e: Exception) {
-            toastString("$e")
+            logError(e)
         }
         return arr
     }
 
-    override fun getChapter(chapter: MangaChapter): MangaChapter {
+    override suspend fun getChapter(chapter: MangaChapter): MangaChapter {
         chapter.images = arrayListOf()
         try {
-            Jsoup.connect(chapter.link!!).get().select(".container-chapter-reader > img").forEach {
+            httpClient.get(chapter.link!!).document.select(".container-chapter-reader > img").forEach {
                 chapter.images!!.add(it.attr("src"))
             }
             chapter.headers = mutableMapOf("referer" to host)
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return chapter
     }
 
-    override fun getChapters(media: Media): MutableMap<String, MangaChapter> {
+    override suspend fun getChapters(media: Media): MutableMap<String, MangaChapter> {
         var source: Source? = loadData("mangakakalot_${media.id}")
         if (source == null) {
             setTextListener("Searching : ${media.getMangaName()}")
@@ -65,10 +65,10 @@ class MangaKakaLot(override val name: String = "MangaKakaLot") : MangaParser() {
         return mutableMapOf()
     }
 
-    override fun search(string: String): ArrayList<Source> {
+    override suspend fun search(string: String): ArrayList<Source> {
         val response = arrayListOf<Source>()
         try {
-            Jsoup.connect("$host/search/story/${string.replace(" ", "_").replace(Regex("\\W"), "")}").get().select(".story_item")
+            httpClient.get("$host/search/story/${string.replace(" ", "_").replace(Regex("\\W"), "")}").document.select(".story_item")
                 .forEach {
                     if (it.select(".story_name > a").text() != "") {
                         response.add(
@@ -82,7 +82,7 @@ class MangaKakaLot(override val name: String = "MangaKakaLot") : MangaParser() {
                     }
                 }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return response
     }

@@ -29,6 +29,7 @@ import ani.saikou.settings.UserInterfaceSettings
 import ani.saikou.user.ListActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import kotlin.math.max
 import kotlin.math.min
@@ -251,11 +252,11 @@ class HomeFragment : Fragment() {
         }
 
         val array = arrayOf(
-            Runnable { model.setAnimeContinue() },
-            Runnable { model.setAnimeFav() },
-            Runnable { model.setMangaContinue() },
-            Runnable { model.setMangaFav() },
-            Runnable { model.setRecommendation() }
+            Runnable { runBlocking { model.setAnimeContinue() } },
+            Runnable { runBlocking { model.setAnimeFav() } },
+            Runnable { runBlocking { model.setMangaContinue() } },
+            Runnable { runBlocking { model.setMangaFav() } },
+            Runnable { runBlocking { model.setRecommendation() } }
         )
 
         val containers = arrayOf(
@@ -273,7 +274,7 @@ class HomeFragment : Fragment() {
                     uiSettings = loadData<UserInterfaceSettings>("ui_settings") ?: UserInterfaceSettings()
                     withContext(Dispatchers.IO) {
                         //Get userData First
-                        getUserId{
+                        getUserId {
                             load()
                         }
                         model.loaded = true

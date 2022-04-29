@@ -18,21 +18,15 @@ import okhttp3.Request
 import java.io.File
 
 object AppUpdater {
-    fun check(activity: Activity) {
+    suspend fun check(activity: Activity) {
         try {
             val version =
                 if (!BuildConfig.DEBUG)
-                    OkHttpClient().newCall(
-                        Request.Builder().url("https://raw.githubusercontent.com/saikou-app/mal-id-filler-list/main/stable.txt")
-                            .build()
-                    ).execute().body?.string()?.replace("\n", "") ?: return
+                    httpClient.get("https://raw.githubusercontent.com/saikou-app/mal-id-filler-list/main/stable.txt").text.replace("\n", "")
                 else {
-                    OkHttpClient().newCall(
-                        Request.Builder()
-                            .url("https://raw.githubusercontent.com/saikou-app/saikou/main/app/build.gradle")
-                            .build()
-                    ).execute().body?.string()?.substringAfter("versionName \"")?.substringBefore('"') ?: return
+                    httpClient.get("https://raw.githubusercontent.com/saikou-app/saikou/main/app/build.gradle").text.substringAfter("versionName \"").substringBefore('"')
                 }
+            logger("Git Version : $version")
             val dontShow = loadData("dont_ask_for_update_$version") ?: false
             if (compareVersion(version) && !dontShow && !activity.isDestroyed) activity.runOnUiThread {
                 AlertDialog.Builder(activity, R.style.DialogTheme)
@@ -60,7 +54,7 @@ object AppUpdater {
                                             }
                                         }
                                     } catch (e: Exception) {
-                                        toastString(e.toString())
+                                        logError(e)
                                     }
                                 }
                             } else openLinkInBrowser("https://discord.com/channels/902174389351620629/946852010198728704")
@@ -71,7 +65,7 @@ object AppUpdater {
                     }.show()
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
     }
 
@@ -102,7 +96,7 @@ object AppUpdater {
         val id = try {
             downloadManager.enqueue(request)
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
             -1
         }
         if (id == -1L) return true
@@ -132,7 +126,7 @@ object AppUpdater {
                             }
                         }
                     } catch (e: Exception) {
-                        toastString(e.toString())
+                        logError(e)
                     }
                 }
             }, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE)
@@ -157,7 +151,7 @@ object AppUpdater {
                 context.startActivity(installIntent)
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
     }
 }

@@ -44,7 +44,7 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.mediaListContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> { bottomMargin += navBarHeight }
 
-        val scope = viewLifecycleOwner.lifecycleScope
+        val scope = requireActivity().lifecycleScope
         val imm = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         model.getMedia().observe(viewLifecycleOwner) {
             media = it

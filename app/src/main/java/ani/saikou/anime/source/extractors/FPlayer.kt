@@ -3,46 +3,33 @@ package ani.saikou.anime.source.extractors
 import ani.saikou.anime.Episode
 import ani.saikou.anime.source.Extractor
 import ani.saikou.getSize
-import ani.saikou.toastString
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import org.jsoup.Jsoup
+import ani.saikou.httpClient
+import ani.saikou.others.asyncEach
+import ani.saikou.others.logError
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
 
 class FPlayer(private val getSize: Boolean) : Extractor() {
-    override fun getStreamLinks(name: String, url: String): Episode.StreamLinks {
+    override suspend fun getStreamLinks(name: String, url: String): Episode.StreamLinks {
         val apiLink = url.replace("/v/", "/api/source/")
         val tempQuality = mutableListOf<Episode.Quality>()
         try {
-            val jsonResponse = Json.decodeFromString<JsonObject>(
-                Jsoup.connect(apiLink).ignoreContentType(true)
-                    .header("referer", url)
-                    .post().body().text()
-            )
+            val json = httpClient.post(apiLink, referer = url).parsed<Json>()
 
-            if (jsonResponse["success"].toString() == "true") {
-                val a = arrayListOf<Deferred<*>>()
-                runBlocking {
-                    jsonResponse.jsonObject["data"]!!.jsonArray.forEach {
-                        a.add(async {
-                            tempQuality.add(
-                                Episode.Quality(
-                                    it.jsonObject["file"].toString().trim('"'),
-                                    it.jsonObject["label"].toString().trim('"'),
-                                    if (getSize) getSize(it.jsonObject["file"].toString().trim('"')) else null
-                                )
-                            )
-                        })
-                    }
+            if (json.success) {
+                json.data?.asyncEach {
+                    tempQuality.add(
+                        Episode.Quality(
+                            it.file,
+                            it.label,
+                            if (getSize) getSize(it.file) else null
+                        )
+                    )
                 }
             }
-        } catch (e: Exception) {
-            toastString(e.toString())
+        }
+        catch (e: MismatchedInputException) {}
+        catch (e: Exception) {
+            logError(e)
         }
         return Episode.StreamLinks(
             name,
@@ -51,4 +38,14 @@ class FPlayer(private val getSize: Boolean) : Extractor() {
         )
     }
 
+
+    private data class Data(
+        val file: String,
+        val label: String
+    )
+
+    private data class Json(
+        val success: Boolean,
+        val data: List<Data>?
+    )
 }

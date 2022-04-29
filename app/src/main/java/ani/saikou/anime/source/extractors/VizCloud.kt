@@ -5,9 +5,9 @@ import ani.saikou.anime.Episode
 import ani.saikou.anime.source.Extractor
 import ani.saikou.httpClient
 
-class VizCloud(val referer: String) : Extractor() {
+class VizCloud(private val referer: String) : Extractor() {
 
-    override fun getStreamLinks(name: String, url: String): Episode.StreamLinks {
+    override suspend fun getStreamLinks(name: String, url: String): Episode.StreamLinks {
         val embedded = httpClient.get(url, referer = referer).document
         val skey = embedded.selectFirst("script:containsData(window.skey = )")!!.data().substringAfter("window.skey = \'")
             .substringBefore("\'")

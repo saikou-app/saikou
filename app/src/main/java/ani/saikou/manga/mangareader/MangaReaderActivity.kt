@@ -23,6 +23,7 @@ import ani.saikou.manga.source.HMangaSources
 import ani.saikou.manga.source.MangaSources
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
+import ani.saikou.others.logError
 import ani.saikou.settings.ReaderSettings
 import ani.saikou.settings.UserInterfaceSettings
 import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
@@ -62,7 +63,6 @@ class MangaReaderActivity : AppCompatActivity() {
             if (displayCutout != null) {
                 if (displayCutout.boundingRects.size > 0) {
                     notchHeight = min(displayCutout.boundingRects[0].width(), displayCutout.boundingRects[0].height())
-                    println("notch : $notchHeight")
                     checkNotch()
                 }
             }
@@ -209,7 +209,7 @@ class MangaReaderActivity : AppCompatActivity() {
             try {
                 (intent.getSerializableExtra("media") as? Media) ?: return
             } catch (e: Exception) {
-                toastString(e.toString())
+                logError(e)
                 return
             }
         else model.getMedia().value ?: return

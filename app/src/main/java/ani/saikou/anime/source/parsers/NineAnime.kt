@@ -4,23 +4,25 @@ package ani.saikou.anime.source.parsers
 import ani.saikou.*
 import ani.saikou.anime.Episode
 import ani.saikou.anime.source.AnimeParser
+import ani.saikou.anime.source.extractors.StreamTape
 import ani.saikou.anime.source.extractors.VizCloud
 import ani.saikou.media.Media
 import ani.saikou.media.Source
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
+import ani.saikou.others.MalSyncBackup
+import ani.saikou.others.logError
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.lagradost.nicehttp.Requests
 import org.jsoup.Jsoup
 
 class NineAnime(private val dub: Boolean = false, override val name: String = "9Anime.me") : AnimeParser() {
 
-    override fun getStream(episode: Episode, server: String): Episode {
+    override suspend fun getStream(episode: Episode, server: String): Episode {
         val streams = mutableMapOf<String, Episode.StreamLinks?>()
         try {
             val body = httpClient.get(episode.link!!).parsed<Response>().html
             val document = Jsoup.parse(body)
             val rawJson = document.select(".episodes li a").select(".active").attr("data-sources")
-            val dataSources = Json.decodeFromString<JsonObject>(rawJson)
+            val dataSources = Requests.mapper.readValue<Map<String, String>>(rawJson)
             document.select(".tabs span").forEach {
                 val name = it.text()
                 if (name == server) {
@@ -29,25 +31,26 @@ class NineAnime(private val dub: Boolean = false, override val name: String = "9
                     when (server) {
                         "Vidstream" -> streams[server] = (VizCloud("${host()}/").getStreamLinks(name, realLink))
                         "MyCloud"   -> streams[server] = (VizCloud("${host()}/").getStreamLinks(name, realLink))
+                        "Streamtape" -> streams[server] = StreamTape().getStreamLinks(name,realLink)
                     }
                     episode.streamLinks = streams
                     return episode
                 }
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         episode.streamLinks = streams
         return episode
     }
 
-    override fun getStreams(episode: Episode): Episode {
+    override suspend fun getStreams(episode: Episode): Episode {
         val streams = mutableMapOf<String, Episode.StreamLinks?>()
-//        try {
+        try {
             val body = httpClient.get(episode.link!!).parsed<Response>().html
             val document = Jsoup.parse(body)
             val rawJson = document.select(".episodes li a").select(".active").attr("data-sources")
-            val dataSources = Json.decodeFromString<JsonObject>(rawJson)
+            val dataSources = Requests.mapper.readValue<Map<String, String>>(rawJson)
             document.select(".tabs span").forEach {
                 val name = it.text()
                 val encodedStreamUrl = getEpisodeLinks(dataSources[it.attr("data-id")].toString()).url
@@ -55,20 +58,21 @@ class NineAnime(private val dub: Boolean = false, override val name: String = "9
                 when (name) {
                     "Vidstream" -> streams[name] = (VizCloud("${host()}/").getStreamLinks(name, realLink))
                     "MyCloud"   -> streams[name] = (VizCloud("${host()}/").getStreamLinks(name, realLink))
+                    "Streamtape" -> streams[name] = StreamTape().getStreamLinks(name,realLink)
                 }
-
             }
-//        } catch (e: Exception) {
-//            toastString(e.toString())
-//        }
+        } catch (e: Exception) {
+            logError(e)
+        }
         episode.streamLinks = streams
         return episode
     }
 
 
-    override fun getEpisodes(media: Media): MutableMap<String, Episode> {
+    override suspend fun getEpisodes(media: Media): MutableMap<String, Episode> {
         try {
             var slug: Source? = loadData("9anime${if (dub) "dub" else ""}_${media.id}")
+            slug = slug ?: MalSyncBackup.get(media.id, "9anime", dub)
             if (slug == null) {
                 var it = media.nameMAL ?: media.name
                 setTextListener("Searching for $it")
@@ -92,49 +96,48 @@ class NineAnime(private val dub: Boolean = false, override val name: String = "9
             }
             if (slug != null) return getSlugEpisodes(slug.link)
         } catch (e: Exception) {
-            toastString("$e")
+            logError(e)
         }
         return mutableMapOf()
     }
 
-    override fun search(string: String): ArrayList<Source> {
+    override suspend fun search(string: String): ArrayList<Source> {
         val responseArray = arrayListOf<Source>()
         val vrf = getVrf(string)
-        //        try {
-        httpClient.get(
-            "${host()}/filter?language%5B%5D=${
-                if (dub) "dubbed" else "subbed"
-            }&keyword=${encode(string)}&vrf=${encode(vrf)}&page=1"
-        ).document.select("ul.anime-list li").forEach {
+        try {
+            httpClient.get(
+                "${host()}/filter?language%5B%5D=${
+                    if (dub) "dubbed" else "subbed"
+                }&keyword=${encode(string)}&vrf=${encode(vrf)}&page=1"
+            ).document.select("ul.anime-list li").forEach {
 
-            val link = it.select("a.name").attr("href")
-            val title = it.select("a.name").text()
-            val cover = it.select("a.poster img").attr("src")
-            responseArray.add(Source(link, title, cover))
+                val link = it.select("a.name").attr("href")
+                val title = it.select("a.name").text()
+                val cover = it.select("a.poster img").attr("src")
+                responseArray.add(Source(link, title, cover))
+            }
+        } catch (e: Exception) {
+            logError(e)
         }
-        //        } catch (e: Exception) {
-        //            toastString(e.toString())
-        //        }
         return responseArray
     }
 
     data class Response(val html: String)
 
-    override fun getSlugEpisodes(slug: String): MutableMap<String, Episode> {
+    override suspend fun getSlugEpisodes(slug: String): MutableMap<String, Episode> {
         val responseArray = mutableMapOf<String, Episode>()
         val animeId = slug.substringAfterLast(".")
         val vrf = encode(getVrf(animeId))
         try {
             val body = httpClient.get("${host()}/ajax/anime/servers?id=$animeId&vrf=$vrf").parsed<Response>()
-            val html = Jsoup.parse(body.html)
-            val replacedHtml = fixEncoding(html.toString())
-            Jsoup.parse(replacedHtml).body().select("ul.episodes li a").forEach {
+            Jsoup.parse(body.html).body().select("ul.episodes li a").forEach {
                 val num = it.attr("data-base")
-                responseArray[num] =
-                    Episode(number = num, link = "${host()}/ajax/anime/servers?id=$animeId&vrf=$vrf&episode=$num")
+                val text = it.text()
+                responseArray[text] =
+                    Episode(number = text, link = "${host()}/ajax/anime/servers?id=$animeId&vrf=$vrf&episode=$num")
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return responseArray
     }
@@ -146,20 +149,20 @@ class NineAnime(private val dub: Boolean = false, override val name: String = "9
 
     data class Links(val url: String)
 
-    private fun getEpisodeLinks(source: String): Links {
+    private suspend fun getEpisodeLinks(source: String): Links {
         return httpClient.get("${host()}/ajax/anime/episode?id=${source.replace("\"", "")}").parsed()
     }
 
     companion object {
+        private const val defaultHost = "9anime.pl"
         private var host: String? = null
-        fun host(): String {
-            val liveHost =
-                if (host != null)
-                    host ?: "9anime.pl"
-                else
-                    httpClient.get("https://raw.githubusercontent.com/saikou-app/mal-id-filler-list/main/nine.txt")
-                        .text.replace("\n", "")
-            return "https://$liveHost"
+        suspend fun host(): String {
+            host =
+                if (host != null) host ?: defaultHost
+                else {
+                    httpClient.get("https://raw.githubusercontent.com/saikou-app/mal-id-filler-list/main/nine.txt").text.replace("\n","")
+                }
+            return "https://$host"
         }
     }
 
@@ -167,7 +170,6 @@ class NineAnime(private val dub: Boolean = false, override val name: String = "9
     //https://github.com/jmir1/aniyomi-extensions/blob/master/src/en/nineanime/src/eu/kanade/tachiyomi/animeextension/en/nineanime/NineAnime.kt
 
     private val key = "0wMrYU+ixjJ4QdzgfN2HlyIVAt3sBOZnCT9Lm7uFDovkb/EaKpRWhqXS5168ePcG"
-
 
     private fun getVrf(id: String): String {
         val reversed = ue(encode(id) + "0000000").slice(0..5).reversed()
@@ -178,17 +180,6 @@ class NineAnime(private val dub: Boolean = false, override val name: String = "9
         val i = url.slice(0..5)
         val n = url.slice(6..url.lastIndex)
         return decode(je(i, ze(n)))
-    }
-
-    private fun fixEncoding(encodedHtml: String): String {
-        return encodedHtml
-            .replace("\\&quot;", "\"")
-            .replace("\"\"", "\"")
-            .replace("\n", "")
-            .replace(" \" ", " ")
-            .replace("\\n", "")
-            .replace("\"\"", "\"")
-            .replace("\\\"", "\"")
     }
 
 

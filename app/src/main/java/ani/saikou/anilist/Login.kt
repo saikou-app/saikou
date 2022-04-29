@@ -5,8 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import ani.saikou.logger
+import ani.saikou.others.logError
 import ani.saikou.startMainActivity
-import ani.saikou.toastString
 
 class Login : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -20,7 +20,7 @@ class Login : AppCompatActivity() {
                 it.write(Anilist.token!!.toByteArray())
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         startMainActivity(this)
     }

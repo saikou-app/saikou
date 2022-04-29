@@ -1,75 +1,58 @@
 package ani.saikou.manga.source.parsers
 
+import ani.saikou.httpClient
 import ani.saikou.loadData
 import ani.saikou.logger
 import ani.saikou.manga.MangaChapter
 import ani.saikou.manga.source.MangaParser
 import ani.saikou.media.Media
 import ani.saikou.media.Source
+import ani.saikou.others.asyncEach
+import ani.saikou.others.logError
 import ani.saikou.saveData
-import ani.saikou.toastString
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import org.jsoup.Jsoup
-import kotlin.math.roundToInt
 
 class MangaDex(override val name: String = "mangadex.org") : MangaParser() {
     private val host = "https://api.mangadex.org"
-    private val limit = 100
-    override fun getLinkChapters(link: String): MutableMap<String, MangaChapter> {
+    private val limit = 15
+    override suspend fun getLinkChapters(link: String): MutableMap<String, MangaChapter> {
         setTextListener("Getting Chapters...")
         val arr = mutableMapOf<String, MangaChapter>()
         try {
-            val totalChapters = Regex("(?<=\"total\":)\\d+").find(
-                Jsoup.connect("$host/manga/$link/feed?limit=0").ignoreContentType(true).get().text()
-            )!!.value.toInt()
+            val totalChapters = httpClient.get("$host/manga/$link/feed?limit=0").parsed<MangaResponse>().total?:return mutableMapOf()
             setTextListener("Parsing Chapters...")
-            (0..totalChapters step 200).reversed().forEach { index ->
-                val jsonResponse =
-                    Jsoup.connect("$host/manga/$link/feed?limit=200&order[volume]=desc&order[chapter]=desc&offset=$index")
-                        .ignoreContentType(true).get().text()
-                Json.decodeFromString<JsonObject>(jsonResponse)["data"]!!.jsonArray.reversed().forEach {
-                    if (it.jsonObject["attributes"]!!.jsonObject["translatedLanguage"].toString() == "\"en\"") {
-                        val chapter = it.jsonObject["attributes"]!!.jsonObject["chapter"].toString().trim('"')
-                        val title = it.jsonObject["attributes"]!!.jsonObject["title"].toString().trim('"')
-                        val id = it.jsonObject["id"].toString().trim('"')
+            (0..totalChapters step 200).reversed().toList().asyncEach{ index ->
+                httpClient.get("$host/manga/$link/feed?limit=200&order[volume]=desc&order[chapter]=desc&offset=$index").parsed<MangaResponse>().data?.reversed()?.forEach {
+                    if (it.attributes!!.translatedLanguage == "en") {
+                        val chapter = (it.attributes.chapter?:return@forEach).toString()
+                        val title = it.attributes.title?:return@forEach
+                        val id = it.id?:return@forEach
                         arr[chapter] = MangaChapter(chapter, title, id)
                     }
                 }
-                var a = (index.toFloat() / totalChapters * 100)
-                try {
-                    a = a.roundToInt().toFloat()
-                } catch (e: Exception) {
-                }
-                setTextListener("Chapter Parsing : ${100 - a}%...")
             }
+            arr.toSortedMap()
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return arr
     }
 
-    override fun getChapter(chapter: MangaChapter): MangaChapter {
+    override suspend fun getChapter(chapter: MangaChapter): MangaChapter {
         try {
-            val json = Json.decodeFromString<JsonObject>(
-                Jsoup.connect("$host/at-home/server/${chapter.link}").ignoreContentType(true).get().text()
-            )
-            val images = arrayListOf<String>()
-            val hash = json.jsonObject["chapter"]!!.jsonObject["hash"].toString().trim('"')
-            for (page in json.jsonObject["chapter"]!!.jsonObject["data"]!!.jsonArray) {
-                images.add("https://uploads.mangadex.org/data/${hash}/${page.toString().trim('"')}")
+            httpClient.get("$host/at-home/server/${chapter.link}").parsed<ChapterResponse>().chapter?.apply {
+                val images = arrayListOf<String>()
+                for (page in data?:return@apply) {
+                    images.add("https://uploads.mangadex.org/data/${hash?:return@apply}/${page}")
+                }
+                chapter.images = images
             }
-            chapter.images = images
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return chapter
     }
 
-    override fun getChapters(media: Media): MutableMap<String, MangaChapter> {
+    override suspend fun getChapters(media: Media): MutableMap<String, MangaChapter> {
         var source: Source? = loadData("mangadex_${media.id}")
         if (source == null) {
             setTextListener("Searching : ${media.getMangaName()}")
@@ -90,21 +73,19 @@ class MangaDex(override val name: String = "mangadex.org") : MangaParser() {
         return mutableMapOf()
     }
 
-    override fun search(string: String): ArrayList<Source> {
+    override suspend fun search(string: String): ArrayList<Source> {
         val arr = arrayListOf<Source>()
         try {
-            val jsonResponse = Jsoup.connect("$host/manga?limit=$limit&title=$string&order[relevance]=desc&includes[]=cover_art")
-                .ignoreContentType(true).get().text()
-            Json.decodeFromString<JsonObject>(jsonResponse)["data"]!!.jsonArray.forEach {
-                val id = it.jsonObject["id"].toString().trim('"') // id
-                val title = it.jsonObject["attributes"]!!.jsonObject["title"]!!.jsonObject["en"].toString().trim('"') // en title
-                val coverName =
-                    Regex("(?<=\"fileName\":\").+?(?=\")").find(it.jsonObject["relationships"]!!.jsonArray.toString())?.value // cover image
-                val coverURL = "https://uploads.mangadex.org/covers/$id/$coverName.256.jpg"
+            val json = httpClient.get("$host/manga?limit=$limit&title=$string&order[relevance]=desc&includes[]=cover_art").parsed<SearchResponse>()
+            json.data?.forEach {
+                val id = it.id?:return@forEach
+                val title = it.attributes?.title?.en?:return@forEach
+                val coverName = it.relationships?.find { i-> i.type=="cover_art" }?.attributes?.fileName
+                val coverURL = if(coverName!=null) "https://uploads.mangadex.org/covers/$id/$coverName.256.jpg" else ""
                 arr.add(Source(id, title, coverURL))
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return arr
     }
@@ -112,5 +93,66 @@ class MangaDex(override val name: String = "mangadex.org") : MangaParser() {
     override fun saveSource(source: Source, id: Int, selected: Boolean) {
         super.saveSource(source, id, selected)
         saveData("mangadex_$id", source)
+    }
+
+    data class SearchResponse (
+        val result: String? = null,
+        val data: List<Datum>? = null,
+        val total: Long? = null
+    ) {
+        data class Datum(
+            val id: String? = null,
+            val attributes: DatumAttributes? = null,
+            val relationships: List<Relationship>? = null
+        )
+
+        data class DatumAttributes(
+            val title: Title? = null
+        )
+
+        data class Title(
+            val en: String? = null
+        )
+
+        data class Relationship(
+            val id: String? = null,
+            val type: String? = null,
+            val attributes: RelationshipAttributes? = null
+        )
+
+        data class RelationshipAttributes(
+            val fileName: String? = null
+        )
+    }
+
+    private data class MangaResponse (
+        val result: String? = null,
+        val data: List<Datum>? = null,
+        val total: Long? = null
+    )
+    {
+        data class Datum (
+            val id: String? = null,
+            val attributes: Attributes? = null
+        )
+
+        data class Attributes (
+            val volume: Any? = null,
+            val chapter: Any? = null,
+            val title: String? = null,
+            val translatedLanguage: String? = null
+        )
+    }
+
+    private data class ChapterResponse (
+        val result: String? = null,
+        val baseURL: String? = null,
+        val chapter: Chapter? = null
+    ) {
+        data class Chapter (
+            val hash : String? = null,
+            val data: List<String>? = null,
+            val dataSaver: List<String>? = null
+        )
     }
 }

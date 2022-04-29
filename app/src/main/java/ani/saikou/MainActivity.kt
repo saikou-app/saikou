@@ -23,10 +23,8 @@ import ani.saikou.anilist.Anilist
 import ani.saikou.anilist.AnilistHomeViewModel
 import ani.saikou.databinding.ActivityMainBinding
 import ani.saikou.media.MediaDetailsActivity
-import ani.saikou.others.AppUpdater
 import ani.saikou.others.DisableFirebase
 import ani.saikou.settings.UserInterfaceSettings
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -139,10 +137,8 @@ class MainActivity : AppCompatActivity() {
             }
             //Load Data
             if (!load) {
-                Anilist.getSavedToken(this)
                 scope.launch(Dispatchers.IO) {
-                    AppUpdater.check(this@MainActivity)
-                    model.genres.postValue(Anilist.query.getGenresAndTags(this@MainActivity))
+                    model.loadMain(this@MainActivity)
                 }
                 load = true
             }
@@ -157,9 +153,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         this.doubleBackToExitPressedOnce = true
-        val snackBar = Snackbar.make(binding.root, "Please click BACK again to exit", Snackbar.LENGTH_LONG)
-        snackBar.view.translationY = -navBarHeight.dp - if (binding.navbar.scaleX == 1f) binding.navbar.height - 2f else 0f
-        snackBar.show()
+        toastString("Please perform BACK again to Exit")
 
         Handler(Looper.getMainLooper()).postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
     }

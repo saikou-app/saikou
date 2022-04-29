@@ -1,42 +1,45 @@
 package ani.saikou.manga.source.parsers
 
 import ani.saikou.*
+import ani.saikou.anime.source.parsers.Zoro
 import ani.saikou.manga.MangaChapter
 import ani.saikou.manga.source.MangaParser
 import ani.saikou.media.Media
 import ani.saikou.media.Source
+import ani.saikou.others.logError
 import org.jsoup.Jsoup
 import java.net.URLEncoder
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class MangaReaderTo(override val name: String = "MangaReader") : MangaParser() {
     private val host = "https://mangareader.to"
     private val transformation = MangaReaderToTransformation()
 
-    override fun getLinkChapters(link: String): MutableMap<String, MangaChapter> {
+    override suspend fun getLinkChapters(link: String): MutableMap<String, MangaChapter> {
         val responseArray = mutableMapOf<String, MangaChapter>()
         try {
-            Jsoup.connect(link).get().select("#en-chapters > .chapter-item > a").reversed().forEach {
+            httpClient.get(link).document.select("#en-chapters > .chapter-item > a").reversed().forEach {
                 it.attr("title").apply {
                     val chap = findBetween("Chapter ", ":")!!
                     val title = subSequence(indexOf(":") + 1, length).toString()
-                    responseArray[chap] = MangaChapter(chap, link = it.attr("abs:href"), title = title)
+                    responseArray[chap] = MangaChapter(chap, link = host+it.attr("href"), title = title)
                 }
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return responseArray
 
     }
 
-    override fun getChapter(chapter: MangaChapter): MangaChapter {
+    override suspend fun getChapter(chapter: MangaChapter): MangaChapter {
         chapter.images = arrayListOf()
         try {
-            val id = Jsoup.connect(chapter.link!!).get().select("#wrapper").attr("data-reading-id")
+            val id = httpClient.get(chapter.link!!).document.select("#wrapper").attr("data-reading-id")
             val res =
-                Jsoup.connect("$host/ajax/image/list/chap/$id?mode=vertical&quality=high&hozPageSize=1").ignoreContentType(true)
-                    .execute().body().replace("\\n", "\n").replace("\\\"", "\"")
-            val element = Jsoup.parse(res.findBetween("""{"status":true,"html":"""", """"}""") ?: return chapter)
+                httpClient.get("$host/ajax/image/list/chap/$id?mode=vertical&quality=high&hozPageSize=1")
+                    .parsed<Zoro.HtmlResponse>().html ?: return chapter
+            val element = Jsoup.parse(res)
             var a = element.select(".iv-card.shuffled")
             chapter.transformation = transformation
             if (a.isEmpty()) {
@@ -48,12 +51,12 @@ class MangaReaderTo(override val name: String = "MangaReader") : MangaParser() {
             }
 
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return chapter
     }
 
-    override fun getChapters(media: Media): MutableMap<String, MangaChapter> {
+    override suspend fun getChapters(media: Media): MutableMap<String, MangaChapter> {
         var source: Source? = loadData("mangareader_${media.id}")
         if (source == null) {
             setTextListener("Searching : ${media.getMainName()}")
@@ -71,21 +74,19 @@ class MangaReaderTo(override val name: String = "MangaReader") : MangaParser() {
         return mutableMapOf()
     }
 
-    override fun search(string: String): ArrayList<Source> {
+    override suspend fun search(string: String): ArrayList<Source> {
         val responseArray = arrayListOf<Source>()
         try {
             val url = URLEncoder.encode(string, "utf-8")
-            val res = Jsoup.connect("$host/ajax/manga/search/suggest?keyword=$url").ignoreContentType(true).execute().body()
-                .replace("\\n", "\n").replace("\\\"", "\"")
-            val element = Jsoup.parse(res.findBetween("""{"status":true,"html":"""", """"}""") ?: return responseArray)
-            element.select("a:not(.nav-bottom)").forEach {
+            val res = httpClient.get("$host/ajax/manga/search/suggest?keyword=$url").parsed<Zoro.HtmlResponse>().html ?: return responseArray
+            Jsoup.parse(res).select("a:not(.nav-bottom)").forEach {
                 val link = host + it.attr("href")
                 val title = it.select(".manga-name").text()
                 val cover = it.select(".manga-poster-img").attr("src")
                 responseArray.add(Source(link, title, cover))
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return responseArray
     }

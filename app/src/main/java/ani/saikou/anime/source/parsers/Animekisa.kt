@@ -6,18 +6,19 @@ import ani.saikou.anime.source.AnimeParser
 import ani.saikou.anime.source.extractors.VizCloud
 import ani.saikou.media.Media
 import ani.saikou.media.Source
-import org.jsoup.Jsoup
+import ani.saikou.others.logError
 import java.net.URLEncoder
 
+@Suppress("BlockingMethodInNonBlockingContext")
 class Animekisa(private val dub: Boolean = false, override val name: String = "animekisa.in") :
     AnimeParser() {
 
     private val host = "https://animekisa.in/"
 
-    override fun getStream(episode: Episode, server: String): Episode {
+    override suspend fun getStream(episode: Episode, server: String): Episode {
         val streams = mutableMapOf<String, Episode.StreamLinks?>()
         try {
-            Jsoup.connect(episode.link!!).get().select("#servers-list ul.nav li a").forEach { servers ->
+            httpClient.get(episode.link!!).document.select("#servers-list ul.nav li a").forEach { servers ->
                 val embedLink = servers.attr("data-embed") // embed link of servers
                 val name = servers.select("span").text()
                 if (name == server) {
@@ -25,28 +26,28 @@ class Animekisa(private val dub: Boolean = false, override val name: String = "a
                 }
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         episode.streamLinks = streams
         return episode
     }
 
-    override fun getStreams(episode: Episode): Episode {
+    override suspend fun getStreams(episode: Episode): Episode {
         val streams = mutableMapOf<String, Episode.StreamLinks?>()
         try {
-            Jsoup.connect(episode.link!!).get().select("#servers-list ul.nav li a").forEach { servers ->
+            httpClient.get(episode.link!!).document.select("#servers-list ul.nav li a").forEach { servers ->
                 val embedLink = servers.attr("data-embed") // embed link of servers
                 val name = servers.select("span").text()
                 streams[name] = (VizCloud(host).getStreamLinks(name, embedLink))
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         episode.streamLinks = streams
         return episode
     }
 
-    override fun getEpisodes(media: Media): MutableMap<String, Episode> {
+    override suspend fun getEpisodes(media: Media): MutableMap<String, Episode> {
         var slug: Source? = loadData("animekisa_in${if (dub) "dub" else ""}_${media.id}")
         if (slug == null) {
             val it = media.nameMAL ?: media.name
@@ -68,7 +69,7 @@ class Animekisa(private val dub: Boolean = false, override val name: String = "a
         return mutableMapOf()
     }
 
-    override fun search(string: String): ArrayList<Source> {
+    override suspend fun search(string: String): ArrayList<Source> {
         //THIS IS LIKE THE WORST SEARCH ENGINE OF A WEBSITE
         var url = URLEncoder.encode(string, "utf-8")
         if (string.startsWith("$!")) {
@@ -78,7 +79,7 @@ class Animekisa(private val dub: Boolean = false, override val name: String = "a
 
         val responseArray = arrayListOf<Source>()
         try {
-            Jsoup.connect("${host[0]}filter?keyword=$url").get()
+            httpClient.get("${host}filter?keyword=$url").document
                 .select("#main-wrapper .film_list-wrap > .flw-item .film-poster").forEach {
                     val link = it.select("a").attr("href")
                     val title = it.select("img").attr("title")
@@ -86,15 +87,15 @@ class Animekisa(private val dub: Boolean = false, override val name: String = "a
                     responseArray.add(Source(link, title, cover))
                 }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return responseArray
     }
 
-    override fun getSlugEpisodes(slug: String): MutableMap<String, Episode> {
+    override suspend fun getSlugEpisodes(slug: String): MutableMap<String, Episode> {
         val responseArray = mutableMapOf<String, Episode>()
         try {
-            val pageBody = Jsoup.connect(slug).get().body()
+            val pageBody = httpClient.get(slug).document
             pageBody.select(".tab-pane > ul.nav").forEach {
                 it.select("li>a").forEach { i ->
                     val num = i.text().trim()
@@ -103,7 +104,7 @@ class Animekisa(private val dub: Boolean = false, override val name: String = "a
             }
             logger("Response Episodes : $responseArray")
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return responseArray
     }

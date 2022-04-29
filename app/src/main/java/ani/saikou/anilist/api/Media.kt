@@ -341,7 +341,7 @@ data class MediaTag(
     var id: Int?,
 
     // The name of the tag
-    var name: String?,
+    var name: String,
 
     // A general description of the tag
     var description: String?,

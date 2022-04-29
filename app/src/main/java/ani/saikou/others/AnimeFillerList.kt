@@ -1,26 +1,21 @@
 package ani.saikou.others
 
 import ani.saikou.anime.Episode
+import ani.saikou.httpClient
 import ani.saikou.logger
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.jsonArray
-import kotlinx.serialization.json.jsonObject
-import org.jsoup.Jsoup
+import com.fasterxml.jackson.annotation.JsonProperty
 
 object AnimeFillerList {
-    fun getFillers(malId: Int): MutableMap<String, Episode>? {
+    suspend fun getFillers(malId: Int): MutableMap<String, Episode>? {
         try {
             val map = mutableMapOf<String, Episode>()
-            val json = Jsoup.connect("https://raw.githubusercontent.com/saikou-app/mal-id-filler-list/main/fillers/$malId.json")
-                .ignoreHttpErrors(true).ignoreContentType(true).get().body().text()
-            if (json != "404: Not Found") Json.decodeFromString<JsonObject>(json)["episodes"]!!.jsonArray.forEach {
-                val num = it.jsonObject["number"].toString().trim('"')
+            val json = httpClient.get("https://raw.githubusercontent.com/saikou-app/mal-id-filler-list/main/fillers/$malId.json")
+            if (json.text != "404: Not Found") json.parsed<AnimeFillerListValue>().episodes?.forEach {
+                val num = it.number.toString()
                 map[num] = Episode(
                     num,
-                    it.jsonObject["title"].toString().trim('"'),
-                    filler = it.jsonObject["filler-bool"].toString() == "true"
+                    it.title,
+                    filler = it.fillerBool == true
                 )
             }
             return map
@@ -29,4 +24,24 @@ object AnimeFillerList {
         }
         return null
     }
+    data class AnimeFillerListValue (
+        @JsonProperty("MAL-id")
+        val malID: Int? = null,
+
+        @JsonProperty("Anilist-id")
+        val anilistID: Int? = null,
+
+        val episodes: List<AFLEpisode>? = null
+    )
+
+    data class AFLEpisode (
+        val number: Int? = null,
+        val title: String? = null,
+        val desc: String? = null,
+        val filler: String? = null,
+        @JsonProperty("filler-bool") val fillerBool : Boolean?=null,
+        val airDate: String? = null
+    )
 }
+
+

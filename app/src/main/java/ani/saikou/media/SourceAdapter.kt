@@ -31,7 +31,7 @@ abstract class SourceAdapter(
 
     override fun getItemCount(): Int = sources.size
 
-    abstract fun onItemClick(source: Source)
+    abstract suspend fun onItemClick(source: Source)
 
     inner class SourceViewHolder(val binding: ItemCharacterBinding) : RecyclerView.ViewHolder(binding.root) {
         init {

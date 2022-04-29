@@ -4,14 +4,14 @@ import ani.saikou.anilist.api.FuzzyDate
 
 class AnilistMutations {
 
-    fun toggleFav(anime: Boolean = true, id: Int) {
+    suspend fun toggleFav(anime: Boolean = true, id: Int) {
         val query =
             """mutation (${"$"}animeId: Int,${"$"}mangaId:Int) { ToggleFavourite(animeId:${"$"}animeId,mangaId:${"$"}mangaId){ anime { edges { id } } manga { edges { id } } } }"""
         val variables = if (anime) """{"animeId":"$id"}""" else """{"mangaId":"$id"}"""
         executeQuery(query, variables)
     }
 
-    fun editList(
+    suspend fun editList(
         mediaID: Int,
         progress: Int? = null,
         score: Int? = null,
@@ -35,7 +35,7 @@ class AnilistMutations {
         executeQuery(query, variables)
     }
 
-    fun deleteList(listId: Int) {
+    suspend fun deleteList(listId: Int) {
         val query = "mutation(${"$"}id:Int){DeleteMediaListEntry(id:${"$"}id){deleted}}"
         val variables = """{"id":"$listId"}"""
         executeQuery(query, variables)

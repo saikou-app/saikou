@@ -7,27 +7,26 @@ import ani.saikou.anime.source.AnimeParser
 import ani.saikou.anime.source.extractors.FPlayer
 import ani.saikou.media.Media
 import ani.saikou.media.Source
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import org.jsoup.Jsoup
+import ani.saikou.others.asyncEach
+import ani.saikou.others.logError
 
 class HentaiFF(override val name: String = "HentaiFF") : AnimeParser() {
 
     private val host = "https://hentaiff.com"
 
-    private fun getCdnViewLink(name: String, link: String): Episode.StreamLinks? {
+    private suspend fun getCdnViewLink(name: String, link: String): Episode.StreamLinks? {
         return try {
-            val a = Jsoup.connect(link).get().select("source").attr("abs:src")
+            val a = httpClient.get(link).document.select("source").attr("abs:src")
             Episode.StreamLinks(name, arrayListOf(Episode.Quality(a, "Multi Quality", null)), null)
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
             null
         }
     }
 
-    override fun getStream(episode: Episode, server: String): Episode {
+    override suspend fun getStream(episode: Episode, server: String): Episode {
         try {
-            Jsoup.connect(episode.link!!).get().select("select.mirror>option").forEach {
+            httpClient.get(episode.link!!).document.select("select.mirror>option").forEach {
                 val base64 = it.attr("value")
                 val link = String(Base64.decode(base64, Base64.DEFAULT)).findBetween("src=\"", "\" ")
                 if (!link.isNullOrEmpty() && server == it.text()) {
@@ -40,36 +39,32 @@ class HentaiFF(override val name: String = "HentaiFF") : AnimeParser() {
                 }
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return episode
     }
 
-    override fun getStreams(episode: Episode): Episode {
+    override suspend fun getStreams(episode: Episode): Episode {
         try {
-            runBlocking {
-                Jsoup.connect(episode.link!!).get().select("select.mirror>option").forEach {
-                    val base64 = it.attr("value")
-                    val link = String(Base64.decode(base64, Base64.DEFAULT)).substringAfter("src=\"").substringBefore('"')
-                    if (link.isNotEmpty()) {
-                        launch {
-                            val a = when {
-                                link.contains("amhentai") -> FPlayer(true).getStreamLinks(it.text(), link)
-                                link.contains("cdnview")  -> getCdnViewLink(it.text(), link)
-                                else                      -> null
-                            }
-                            if (a != null) episode.streamLinks[it.text()] = a
-                        }
+            httpClient.get(episode.link!!).document.select("select.mirror>option").asyncEach {
+                val base64 = it.attr("value")
+                val link = String(Base64.decode(base64, Base64.DEFAULT)).substringAfter("src=\"").substringBefore('"')
+                if (link.isNotEmpty()) {
+                    val a = when {
+                        link.contains("amhentai") -> FPlayer(true).getStreamLinks(it.text(), link)
+                        link.contains("cdnview")  -> getCdnViewLink(it.text(), link)
+                        else                      -> null
                     }
+                    if (a != null) episode.streamLinks[it.text()] = a
                 }
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return episode
     }
 
-    override fun getEpisodes(media: Media): MutableMap<String, Episode> {
+    override suspend fun getEpisodes(media: Media): MutableMap<String, Episode> {
         var slug: Source? = loadData("hentaiff_${media.id}")
         if (slug == null) {
             val it = media.nameMAL ?: media.name
@@ -89,10 +84,10 @@ class HentaiFF(override val name: String = "HentaiFF") : AnimeParser() {
         return mutableMapOf()
     }
 
-    override fun search(string: String): ArrayList<Source> {
+    override suspend fun search(string: String): ArrayList<Source> {
         val responseArray = arrayListOf<Source>()
         try {
-            Jsoup.connect("${host}/?s=$string").get().body()
+            httpClient.get("${host}/?s=$string").document.body()
                 .select(".bs>.bsx>a").forEach {
                     val link = it.attr("href").toString()
                     val title = it.attr("title")
@@ -100,15 +95,15 @@ class HentaiFF(override val name: String = "HentaiFF") : AnimeParser() {
                     responseArray.add(Source(link, title, cover))
                 }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return responseArray
     }
 
-    override fun getSlugEpisodes(slug: String): MutableMap<String, Episode> {
+    override suspend fun getSlugEpisodes(slug: String): MutableMap<String, Episode> {
         val responseArray = mutableMapOf<String, Episode>()
         try {
-            val pageBody = Jsoup.connect(slug).get().body()
+            val pageBody = httpClient.get(slug).document.body()
             val notRaw = arrayListOf<Episode>()
             val raw = arrayListOf<Episode>()
             pageBody.select("div.eplister>ul>li>a").reversed().forEach { i ->
@@ -122,7 +117,7 @@ class HentaiFF(override val name: String = "HentaiFF") : AnimeParser() {
             notRaw.map { responseArray[it.number] = it }
             logger("Response Episodes : $responseArray")
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return responseArray
     }

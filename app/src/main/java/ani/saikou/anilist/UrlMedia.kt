@@ -5,8 +5,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import ani.saikou.loadIsMAL
 import ani.saikou.loadMedia
+import ani.saikou.others.logError
 import ani.saikou.startMainActivity
-import ani.saikou.toastString
 
 class UrlMedia : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,7 +16,7 @@ class UrlMedia : AppCompatActivity() {
         try {
             if (data?.pathSegments?.get(1) != null) loadMedia = data.pathSegments?.get(1)?.toIntOrNull()
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         startMainActivity(this)
     }

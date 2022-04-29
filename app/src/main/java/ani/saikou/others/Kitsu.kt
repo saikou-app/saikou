@@ -1,84 +1,129 @@
 package ani.saikou.others
 
 import ani.saikou.anime.Episode
+import ani.saikou.httpClient
 import ani.saikou.logger
 import ani.saikou.media.Media
-import ani.saikou.toastString
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.*
-import org.jsoup.Connection.Method
-import org.jsoup.Jsoup
+import com.fasterxml.jackson.annotation.JsonProperty
 
 object Kitsu {
-    private fun getKitsuData(query: String): String {
-        return Jsoup.connect("https://kitsu.io/api/graphql")
-            .header("Content-Type", "application/json")
-            .header("Accept", "application/json")
-            .header("Connection", "keep-alive")
-            .header("DNT", "1")
-            .header("Origin", "https://kitsu.io")
-            .ignoreContentType(true)
-            .ignoreHttpErrors(true)
-            .requestBody(query)
-            .method(Method.POST).execute().body()
+    private suspend fun getKitsuData(query: String): KitsuResponse {
+        val headers = mapOf(
+            "Content-Type" to "application/json",
+            "Accept" to "application/json",
+            "Connection" to "keep-alive",
+            "DNT" to "1",
+            "Origin" to "https://kitsu.io"
+        )
+        val json = httpClient.post("https://kitsu.io/api/graphql",headers, data = mapOf("query" to query))
+        return json.parsed()
     }
 
-    fun getKitsuEpisodesDetails(media: Media): MutableMap<String, Episode>? {
+    suspend fun getKitsuEpisodesDetails(media: Media): MutableMap<String, Episode>? {
         val print = false
         logger("Kitsu : title=${media.getMangaName()}", print)
         try {
             val query =
-                """{"query":"query{searchAnimeByTitle(first:5,title:\"${media.getMangaName()}\"){nodes{id season startDate titles{localized}episodes(first:2000){nodes{number titles{canonical}description thumbnail{original{url}}}}}}}"}"""
+                """query{searchAnimeByTitle(first:5,title:"${media.getMangaName()}"){nodes{id season startDate titles{localized}episodes(first:2000){nodes{number titles{canonical}description thumbnail{original{url}}}}}}}"""
             val result = getKitsuData(query)
             logger("Kitsu : result=$result", print)
             var arr: MutableMap<String, Episode>?
-            val json = Json.decodeFromString<JsonObject>(result)
-            if (json.containsKey("data")) {
-                val node: JsonElement? = json.jsonObject["data"]!!.jsonObject["searchAnimeByTitle"]!!.jsonObject["nodes"]
-                if (node != null) {
-                    if (!node.jsonArray.isEmpty()) {
-                        logger("Kitsu : Not Empty", print)
-                        node.jsonArray.forEach { j ->
-                            logger(j.jsonObject["season"].toString().trim('"'), print)
-                            if (j.jsonObject["season"].toString()
-                                    .trim('"') == media.anime!!.season && j.jsonObject["startDate"].toString().trim('"')
-                                    .split('-')[0] == media.anime.seasonYear.toString()
-                            ) {
-                                val episodes: JsonElement? = j.jsonObject["episodes"]!!.jsonObject["nodes"]
-                                logger("Kitsu : episodes=$episodes", print)
-                                arr = mutableMapOf()
-                                episodes?.jsonArray?.forEach {
-                                    logger("Kitsu : forEach=$it", print)
-                                    if (it != JsonNull) {
-                                        val i = it.jsonObject["number"]?.toString()?.replace("\"", "")!!
-                                        var name: String? = null
-                                        if (it.jsonObject["titles"]!!.jsonObject["canonical"] != JsonNull) {
-                                            name =
-                                                it.jsonObject["titles"]!!.jsonObject["canonical"]?.toString()?.replace("\"", "")
-                                            if (name == "null") {
-                                                name = null
-                                            }
-                                        }
-                                        arr!![i] = Episode(
-                                            number = it.jsonObject["number"]?.toString()?.replace("\"", "")!!,
-                                            title = name,
-                                            desc = if (it.jsonObject["description"]!!.jsonObject["en"] != JsonNull) it.jsonObject["description"]!!.jsonObject["en"]?.toString()
-                                                ?.replace("\"", "")?.replace("\\n", "\n") else null,
-                                            thumb = if (it.jsonObject["thumbnail"] != JsonNull) it.jsonObject["thumbnail"]!!.jsonObject["original"]!!.jsonObject["url"]?.toString()
-                                                ?.replace("\"", "") else null,
-                                        )
-                                        logger("Kitsu : arr[$i] = ${arr!![i]}", print)
-                                    }
-                                }
-                                return arr
+            if(result.data!=null){
+                result.data.searchAnimeByTitle?.nodes?.forEach{
+                    logger(it.season, print)
+                    if (
+                        it.season == media.anime!!.season &&
+                        (it.startDate?:return@forEach).split('-')[0] == media.anime.seasonYear.toString()
+                    ) {
+                        val episodes = it.episodes?.nodes?:return@forEach
+                        logger("Kitsu : episodes=$episodes", print)
+                        arr = mutableMapOf()
+                        episodes.forEach { ep ->
+                            logger("Kitsu : forEach=$it", print)
+                            if (ep!=null) {
+                                val num = ep.number.toString()
+                                arr!![num] = Episode(
+                                    number = num,
+                                    title = ep.titles?.canonical,
+                                    desc = ep.description?.en,
+                                    thumb = ep.thumbnail?.original?.url,
+                                )
+                                logger("Kitsu : arr[$num] = ${arr!![num]}", print)
                             }
                         }
+                        return arr
                     }
                 }
             }
         } catch (e: Exception) {
-            toastString(e.toString())
+            logError(e)
         }
         return null
     }
+
+    private data class KitsuResponse (
+        val data: Data? = null
+    ){
+        data class Data (
+            val searchAnimeByTitle: SearchAnimeByTitle? = null
+        )
+
+        data class SearchAnimeByTitle (
+            val nodes: List<NodeElement>? = null
+        )
+
+        data class NodeElement (
+            val id: String? = null,
+            val titles: FluffyTitles? = null,
+            val season: String? = null,
+            val startDate: String? = null,
+            val posterImage: PosterImage? = null,
+            val episodes: Episodes? = null
+        )
+
+        data class Episodes (
+            val nodes: List<EpisodesNode?>? = null
+        )
+
+        data class EpisodesNode (
+            val number: Long? = null,
+            val titles: PurpleTitles? = null,
+            val description: Description? = null,
+            val thumbnail: PosterImage? = null
+        )
+
+        data class Description (
+            val en: String? = null
+        )
+
+        data class PosterImage (
+            val original: Original? = null
+        )
+
+        data class Original (
+            val url: String? = null
+        )
+
+        data class PurpleTitles (
+            val canonical: String? = null
+        )
+
+        data class FluffyTitles (
+            val localized: Localized? = null
+        )
+
+        data class Localized (
+            val en: String? = null,
+
+            @JsonProperty("en_jp")
+            val enJp: String? = null,
+
+            @JsonProperty("ja_jp")
+            val jaJp: String? = null,
+
+            @JsonProperty("en_us")
+            val enUs: String? = null
+        )
+    }
+
 }

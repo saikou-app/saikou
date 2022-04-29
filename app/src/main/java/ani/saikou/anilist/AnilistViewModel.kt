@@ -1,14 +1,16 @@
 package ani.saikou.anilist
 
+import android.app.Activity
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import ani.saikou.media.Media
+import ani.saikou.others.AppUpdater
 import ani.saikou.toastString
 
 
-fun getUserId(update: Runnable){
-    if (Anilist.userid == null) {
+suspend fun getUserId(update: Runnable){
+    if (Anilist.userid == null && Anilist.token!=null) {
         if (Anilist.query.getUserData())
             update.run()
         else
@@ -20,27 +22,33 @@ fun getUserId(update: Runnable){
 class AnilistHomeViewModel : ViewModel() {
     private val listImages: MutableLiveData<ArrayList<String?>> = MutableLiveData<ArrayList<String?>>(arrayListOf())
     fun getListImages(): LiveData<ArrayList<String?>> = listImages
-    fun setListImages() = listImages.postValue(Anilist.query.getBannerImages())
+    suspend fun setListImages() = listImages.postValue(Anilist.query.getBannerImages())
 
     private val animeContinue: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getAnimeContinue(): LiveData<ArrayList<Media>> = animeContinue
-    fun setAnimeContinue() = animeContinue.postValue(Anilist.query.continueMedia("ANIME"))
+    suspend fun setAnimeContinue() = animeContinue.postValue(Anilist.query.continueMedia("ANIME"))
 
     private val animeFav: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getAnimeFav(): LiveData<ArrayList<Media>> = animeFav
-    fun setAnimeFav() = animeFav.postValue(Anilist.query.favMedia(true))
+    suspend fun setAnimeFav() = animeFav.postValue(Anilist.query.favMedia(true))
 
     private val mangaContinue: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getMangaContinue(): LiveData<ArrayList<Media>> = mangaContinue
-    fun setMangaContinue() = mangaContinue.postValue(Anilist.query.continueMedia("MANGA"))
+    suspend fun setMangaContinue() = mangaContinue.postValue(Anilist.query.continueMedia("MANGA"))
 
     private val mangaFav: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getMangaFav(): LiveData<ArrayList<Media>> = mangaFav
-    fun setMangaFav() = mangaFav.postValue(Anilist.query.favMedia(false))
+    suspend fun setMangaFav() = mangaFav.postValue(Anilist.query.favMedia(false))
 
     private val recommendation: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getRecommendation(): LiveData<ArrayList<Media>> = recommendation
-    fun setRecommendation() = recommendation.postValue(Anilist.query.recommendations())
+    suspend fun setRecommendation() = recommendation.postValue(Anilist.query.recommendations())
+
+    suspend fun loadMain(context: Activity) {
+        Anilist.getSavedToken(context)
+        AppUpdater.check(context)
+        genres.postValue(Anilist.query.getGenresAndTags(context))
+    }
 
     val empty = MutableLiveData<Boolean>(null)
 
@@ -55,18 +63,18 @@ class AnilistAnimeViewModel : ViewModel() {
     private val type = "ANIME"
     private val trending: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getTrending(): LiveData<ArrayList<Media>> = trending
-    fun loadTrending() = trending.postValue(Anilist.query.search(type, perPage = 10, sort = "Trending", hd = true)?.results)
+    suspend fun loadTrending() = trending.postValue(Anilist.query.search(type, perPage = 10, sort = "Trending", hd = true)?.results)
 
     private val updated: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getUpdated(): LiveData<ArrayList<Media>> = updated
-    fun loadUpdated() = updated.postValue(Anilist.query.recentlyUpdated())
+    suspend fun loadUpdated() = updated.postValue(Anilist.query.recentlyUpdated())
 
     private val animePopular = MutableLiveData<SearchResults?>(null)
     fun getPopular(): LiveData<SearchResults?> = animePopular
-    fun loadPopular(type: String, search_val: String? = null, genres: ArrayList<String>? = null, sort: String = "Popular") =
+    suspend fun loadPopular(type: String, search_val: String? = null, genres: ArrayList<String>? = null, sort: String = "Popular") =
         animePopular.postValue(Anilist.query.search(type, search = search_val, sort = sort, genres = genres))
 
-    fun loadNextPage(r: SearchResults) = animePopular.postValue(
+    suspend fun loadNextPage(r: SearchResults) = animePopular.postValue(
         Anilist.query.search(
             r.type,
             r.page + 1,
@@ -91,19 +99,19 @@ class AnilistMangaViewModel : ViewModel() {
     private val type = "MANGA"
     private val trending: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getTrending(): LiveData<ArrayList<Media>> = trending
-    fun loadTrending() = trending.postValue(Anilist.query.search(type, perPage = 10, sort = "Trending", hd = true)?.results)
+    suspend fun loadTrending() = trending.postValue(Anilist.query.search(type, perPage = 10, sort = "Trending", hd = true)?.results)
 
     private val updated: MutableLiveData<ArrayList<Media>> = MutableLiveData<ArrayList<Media>>(null)
     fun getTrendingNovel(): LiveData<ArrayList<Media>> = updated
-    fun loadTrendingNovel() =
+    suspend fun loadTrendingNovel() =
         updated.postValue(Anilist.query.search(type, perPage = 10, sort = "Trending", format = "NOVEL")?.results)
 
     private val mangaPopular = MutableLiveData<SearchResults?>(null)
     fun getPopular(): LiveData<SearchResults?> = mangaPopular
-    fun loadPopular(type: String, search_val: String? = null, genres: ArrayList<String>? = null, sort: String? = "Popular") =
+    suspend fun loadPopular(type: String, search_val: String? = null, genres: ArrayList<String>? = null, sort: String? = "Popular") =
         mangaPopular.postValue(Anilist.query.search(type, search = search_val, sort = sort, genres = genres))
 
-    fun loadNextPage(r: SearchResults) = mangaPopular.postValue(
+    suspend fun loadNextPage(r: SearchResults) = mangaPopular.postValue(
         Anilist.query.search(
             r.type,
             r.page + 1,
@@ -128,7 +136,7 @@ class AnilistSearch : ViewModel() {
     private val search: MutableLiveData<SearchResults?> = MutableLiveData<SearchResults?>(null)
 
     fun getSearch(): LiveData<SearchResults?> = search
-    fun loadSearch(
+    suspend fun loadSearch(
         type: String,
         search_val: String? = null,
         genres: ArrayList<String>? = null,
@@ -148,7 +156,7 @@ class AnilistSearch : ViewModel() {
         )
     )
 
-    fun loadNextPage(r: SearchResults) = search.postValue(
+    suspend fun loadNextPage(r: SearchResults) = search.postValue(
         Anilist.query.search(
             r.type,
             r.page + 1,
@@ -168,7 +176,7 @@ class GenresViewModel : ViewModel() {
     var genres: MutableMap<String, String>? = null
     var done = false
     var doneListener: (() -> Unit)? = null
-    fun loadGenres(genre: ArrayList<String>, listener: (Pair<String, String>) -> Unit) {
+    suspend fun loadGenres(genre: ArrayList<String>, listener: (Pair<String, String>) -> Unit) {
         if (genres == null) {
             genres = mutableMapOf()
             Anilist.query.getGenres(genre) {

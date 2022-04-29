@@ -9,11 +9,11 @@ abstract class AnimeParser {
     open val saveStreams = true
     var text = ""
     var textListener: ((String) -> Unit)? = null
-    abstract fun getStream(episode: Episode, server: String): Episode
-    abstract fun getStreams(episode: Episode): Episode
-    abstract fun getEpisodes(media: Media): MutableMap<String, Episode>
-    abstract fun search(string: String): ArrayList<Source>
-    abstract fun getSlugEpisodes(slug: String): MutableMap<String, Episode>
+    abstract suspend fun getStream(episode: Episode, server: String): Episode
+    abstract suspend fun getStreams(episode: Episode): Episode
+    abstract suspend fun getEpisodes(media: Media): MutableMap<String, Episode>
+    abstract suspend fun search(string: String): ArrayList<Source>
+    abstract suspend fun getSlugEpisodes(slug: String): MutableMap<String, Episode>
     open fun saveSource(source: Source, id: Int, selected: Boolean = true) {
         setTextListener("${if (selected) "Selected" else "Found"} : ${source.name}")
     }
