@@ -10,13 +10,15 @@ object AnimeSources : WatchSources() {
         ::Gogo,
         ::Zoro,
         ::Tenshi,
-        ::AnimeKisa
+        ::AnimeKisa,
+        ::AllAnime
     )
     override val names: List<String> = listOf(
         "9Anime",
         "Gogo",
         "Zoro",
         "Tenshi",
-        "AnimeKisa"
+        "AnimeKisa",
+        "AllAnime"
     )
 }

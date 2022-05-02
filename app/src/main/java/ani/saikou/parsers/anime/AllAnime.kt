@@ -15,6 +15,8 @@ import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.text.DecimalFormat
 
+private val mapper = jacksonObjectMapper()
+
 class AllAnime : AnimeParser() {
     override val name = "AllAnime"
     override val saveName = "all_anime"
@@ -22,8 +24,9 @@ class AllAnime : AnimeParser() {
     override val isDubAvailableSeparately = true
 
     private val apiHost = "https://blog.allanimenews.com/"
-    private val idRegex = Regex("${hostUrl}anime/(\\w+)")
+    private val idRegex = Regex("${hostUrl}/anime/(\\w+)")
     private val epNumRegex = Regex("/[sd]ub/(\\d+)")
+
 
 
     override suspend fun loadEpisodes(animeLink: String): List<Episode> {
@@ -34,7 +37,7 @@ class AllAnime : AnimeParser() {
                 val episodeInfos = getEpisodeInfos(showId)
                 val format = DecimalFormat("0")
                 episodeInfos?.sortedBy { it.episodeIdNum }?.forEach { epInfo ->
-                    val link = """${hostUrl}anime/$showId/episodes/${if (selectDub) "dub" else "sub"}/${epInfo.episodeIdNum}"""
+                    val link = """${hostUrl}/anime/$showId/episodes/${if (selectDub) "dub" else "sub"}/${epInfo.episodeIdNum}"""
                     val epNum = format.format(epInfo.episodeIdNum).toString()
                     responseArray.add(Episode(epNum, link = link, epInfo.notes, epInfo.thumbnails?.get(0)?.let { FileUrl(it) }))
                 }
@@ -47,8 +50,8 @@ class AllAnime : AnimeParser() {
     override suspend fun loadVideoServers(episodeLink: String): List<VideoServer> {
         val showId = idRegex.find(episodeLink)?.groupValues?.get(1)
         val videoServers = mutableListOf<VideoServer>()
-        val episodeNum = 0
-        if (showId != null) {
+        val episodeNum = epNumRegex.find(episodeLink)?.groupValues?.get(1)
+        if (showId != null && episodeNum != null) {
             tryWithSuspend {
                 val variables =
                     """{"showId":"$showId","translationType":"${if (selectDub) "dub" else "sub"}","episodeString":"$episodeNum"}"""
@@ -102,8 +105,10 @@ class AllAnime : AnimeParser() {
                 graphqlQuery(variables, "9343797cc3d9e3f444e2d3b7db9a84d759b816a4d84512ea72d079f85bb96e98")?.data?.shows?.edges
             if (!edges.isNullOrEmpty()) {
                 for (show in edges) {
-                    val link = hostUrl + "anime/" + show.id
-                    val otherNames = listOf(show.englishName, show.nativeName)
+                    val link = """${hostUrl}/anime/${show.id}"""
+                    val otherNames = mutableListOf<String>()
+                    show.englishName?.let { otherNames.add(it) }
+                    show.nativeName?.let { otherNames.add(it) }
                     responseArray.add(
                         ShowResponse(
                             show.name,
@@ -121,7 +126,7 @@ class AllAnime : AnimeParser() {
 
     private suspend fun graphqlQuery(variables: String, persistHash: String): Query? {
         val extensions = """{"persistedQuery":{"version":1,"sha256Hash":"$persistHash"}}"""
-        val graphqlUrl = (hostUrl + "graphql").toHttpUrl().newBuilder().addQueryParameter("variables", variables)
+        val graphqlUrl = ("$hostUrl/graphql").toHttpUrl().newBuilder().addQueryParameter("variables", variables)
             .addQueryParameter("extensions", extensions).build()
         return tryWithSuspend {
             client.get(graphqlUrl.toString()).parsed()
@@ -145,7 +150,7 @@ class AllAnime : AnimeParser() {
     }
 
     private class AllAnimeExtractor(override val server: VideoServer) : VideoExtractor() {
-        private val mapper = jacksonObjectMapper()
+        private val languageRegex = Regex("vo_a_hls_(\\w+-\\w+)")
 
         override suspend fun extract(): VideoContainer {
             val url = server.embed.url
@@ -155,8 +160,13 @@ class AllAnime : AnimeParser() {
                 val response = rawResponse.body?.string()
                 if (response != null) {
                     mapper.readValue<ApiSourceResponse>(response).links.forEach {
-                        (it.src ?: it.link)?.let { url ->
-                            linkList.add(url)
+                        // Avoid languages other than english when multiple urls are provided
+                        val matchesLanguagePattern = languageRegex.find(it.resolutionStr)
+                        val language = matchesLanguagePattern?.groupValues?.get(1)
+                        if (matchesLanguagePattern == null || language?.contains("en") == true) {
+                            (it.src ?: it.link)?.let { fileUrl ->
+                                linkList.add(fileUrl)
+                            }
                         }
                     }
                 }
@@ -172,14 +182,17 @@ class AllAnime : AnimeParser() {
             val headers = mutableMapOf<String, String>()
             links.forEach {
                 val fileUrl = FileUrl(it, headers)
-                if (it.contains(".m3u8")) {
-                    videos.add(Video(null, true, fileUrl, getSize(fileUrl)))
-                }
-                if (it.contains(".mp4")) {
-                    if ("king.stronganime" in it) {
-                        headers["Referer"] = "https://allanime.site"
+                val urlPath = Uri.parse(it).path
+                if (urlPath != null) {
+                    if (urlPath.endsWith(".m3u8")) {
+                        videos.add(Video(null, true, fileUrl, getSize(fileUrl)))
                     }
-                    videos.add(Video(null, false, fileUrl, getSize(fileUrl)))
+                    if (urlPath.endsWith(".mp4")) {
+                        if ("king.stronganime" in it) {
+                            headers["Referer"] = "https://allanime.site"
+                        }
+                        videos.add(Video(null, false, fileUrl, getSize(fileUrl)))
+                    }
                 }
             }
             return videos
@@ -212,8 +225,8 @@ data class Show(
     @JsonProperty("_id")
     val id: String,
     val name: String,
-    val englishName: String,
-    val nativeName: String,
+    val englishName: String?,
+    val nativeName: String?,
     val thumbnail: String,
     val availableEpisodes: AvailableEpisodes,
     // Actually just raw unspecified json
