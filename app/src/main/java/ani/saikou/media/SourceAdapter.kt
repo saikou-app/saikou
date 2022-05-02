@@ -6,12 +6,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.databinding.ItemCharacterBinding
 import ani.saikou.loadImage
+import ani.saikou.parsers.ShowResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 abstract class SourceAdapter(
-    private val sources: ArrayList<Source>,
+    private val sources: List<ShowResponse>,
     private val dialogFragment: SourceSearchDialogFragment,
     private val scope: CoroutineScope
 ) : RecyclerView.Adapter<SourceAdapter.SourceViewHolder>() {
@@ -24,14 +25,14 @@ abstract class SourceAdapter(
     override fun onBindViewHolder(holder: SourceViewHolder, position: Int) {
         val binding = holder.binding
         val character = sources[position]
-        binding.itemCompactImage.loadImage(character.cover, 200, character.headers)
+        binding.itemCompactImage.loadImage(character.coverUrl, 200)
         binding.itemCompactTitle.isSelected = true
         binding.itemCompactTitle.text = character.name
     }
 
     override fun getItemCount(): Int = sources.size
 
-    abstract suspend fun onItemClick(source: Source)
+    abstract suspend fun onItemClick(source: ShowResponse)
 
     inner class SourceViewHolder(val binding: ItemCharacterBinding) : RecyclerView.ViewHolder(binding.root) {
         init {

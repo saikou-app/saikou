@@ -13,9 +13,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import ani.saikou.BottomSheetDialogFragment
-import ani.saikou.anime.source.AnimeSourceAdapter
-import ani.saikou.anime.source.AnimeSources
-import ani.saikou.anime.source.HAnimeSources
+import ani.saikou.anime.AnimeSourceAdapter
+import ani.saikou.parsers.AnimeSources
+import ani.saikou.parsers.HAnimeSources
 import ani.saikou.databinding.BottomSheetSourceSearchBinding
 import ani.saikou.manga.source.MangaSourceAdapter
 import ani.saikou.manga.source.MangaSources
@@ -57,14 +57,14 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment() {
 
                 i = media!!.selected!!.source
                 if (media!!.anime != null) {
-                    val source = (if (!media!!.isAdult) AnimeSources else HAnimeSources)[i!!]!!
+                    val source = (if (!media!!.isAdult) AnimeSources else HAnimeSources)[i!!]
                     binding.searchSourceTitle.text = source.name
                     binding.searchBarText.setText(media!!.mangaName)
                     fun search() {
                         binding.searchBarText.clearFocus()
                         imm.hideSoftInputFromWindow(binding.searchBarText.windowToken, 0)
                         scope.launch {
-                            model.sources.postValue(withContext(Dispatchers.IO) { source.search(binding.searchBarText.text.toString()) })
+                            model.responses.postValue(withContext(Dispatchers.IO) { source.search(binding.searchBarText.text.toString()) })
                         }
                     }
                     binding.searchBarText.setOnEditorActionListener { _, actionId, _ ->
@@ -88,7 +88,10 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment() {
                         binding.searchBarText.clearFocus()
                         imm.hideSoftInputFromWindow(binding.searchBarText.windowToken, 0)
                         scope.launch {
-                            model.sources.postValue(withContext(Dispatchers.IO) { source.search(binding.searchBarText.text.toString()) })
+                            model.responses.postValue(
+                                withContext(Dispatchers.IO) {
+                                    source.search(binding.searchBarText.text.toString())
+                                })
                         }
                     }
                     binding.searchBarText.setOnEditorActionListener { _, actionId, _ ->
@@ -104,7 +107,7 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment() {
                     if (!searched) search()
                 }
                 searched = true
-                model.sources.observe(viewLifecycleOwner) { j ->
+                model.responses.observe(viewLifecycleOwner) { j ->
                     if (j != null) {
                         binding.searchRecyclerView.visibility = View.VISIBLE
                         binding.searchProgress.visibility = View.GONE
@@ -127,7 +130,7 @@ class SourceSearchDialogFragment : BottomSheetDialogFragment() {
     }
 
     override fun dismiss() {
-        model.sources.value = null
+        model.responses.value = null
         super.dismiss()
     }
 }

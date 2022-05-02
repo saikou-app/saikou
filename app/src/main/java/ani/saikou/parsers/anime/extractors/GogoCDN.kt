@@ -2,11 +2,11 @@ package ani.saikou.parsers.anime.extractors
 
 import android.net.Uri
 import android.util.Base64
-import ani.saikou.asyncMap
-import ani.saikou.client
-import ani.saikou.findBetween
-import ani.saikou.getSize
-import ani.saikou.parsers.*
+import ani.saikou.*
+import ani.saikou.parsers.Video
+import ani.saikou.parsers.VideoContainer
+import ani.saikou.parsers.VideoExtractor
+import ani.saikou.parsers.VideoServer
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lagradost.nicehttp.Requests

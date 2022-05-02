@@ -1,7 +1,11 @@
 package ani.saikou.parsers.manga
 
+import ani.saikou.FileUrl
 import ani.saikou.client
-import ani.saikou.parsers.*
+import ani.saikou.parsers.MangaChapter
+import ani.saikou.parsers.MangaImage
+import ani.saikou.parsers.MangaParser
+import ani.saikou.parsers.ShowResponse
 
 class MangaKakalot : MangaParser() {
 

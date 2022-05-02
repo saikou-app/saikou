@@ -1,7 +1,7 @@
 package ani.saikou.anime
 
-import ani.saikou.anime.source.HAnimeSources
-import ani.saikou.anime.source.WatchSources
+import ani.saikou.parsers.HAnimeSources
+import ani.saikou.parsers.WatchSources
 
 class HWatchFragment : AnimeWatchFragment() {
     override val watchSources: WatchSources = HAnimeSources

@@ -1,5 +1,6 @@
 package ani.saikou.parsers
 
+import ani.saikou.FileUrl
 import ani.saikou.asyncMap
 import ani.saikou.loadData
 import ani.saikou.others.MalSyncBackup
@@ -59,11 +60,11 @@ abstract class AnimeParser : BaseParser() {
      *
      * Doesn't need to be overridden, if the parser is following the norm.
      * **/
-    open suspend fun loadVideoServers(episodeUrl: String, callback: (VideoExtractor) -> Unit) {
+    open suspend fun loadByVideoServers(episodeUrl: String, callback: (VideoExtractor) -> Unit) {
         loadVideoServers(episodeUrl).asyncMap {
             tryForNetwork {
                 getVideoExtractor(it)?.apply {
-                    extract()
+                    load()
                     callback.invoke(this)
                 }
             }
@@ -80,7 +81,7 @@ abstract class AnimeParser : BaseParser() {
             loadVideoServers(episodeUrl).apply {
                 find { it.name == serverName }?.also {
                     return@tryForNetwork getVideoExtractor(it)?.apply {
-                        extract()
+                        load()
                     }
                 }
             }

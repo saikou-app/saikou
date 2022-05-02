@@ -1,5 +1,6 @@
 package ani.saikou.parsers
 
+import ani.saikou.FileUrl
 import ani.saikou.media.Media
 import com.bumptech.glide.load.Transformation
 import java.io.File

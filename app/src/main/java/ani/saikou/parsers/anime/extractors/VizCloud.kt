@@ -1,8 +1,12 @@
 package ani.saikou.parsers.anime.extractors
 
 import android.net.Uri
+import ani.saikou.FileUrl
 import ani.saikou.client
-import ani.saikou.parsers.*
+import ani.saikou.parsers.Video
+import ani.saikou.parsers.VideoContainer
+import ani.saikou.parsers.VideoExtractor
+import ani.saikou.parsers.VideoServer
 
 class VizCloud(override val server: VideoServer) : VideoExtractor() {
 
@@ -27,7 +31,7 @@ class VizCloud(override val server: VideoServer) : VideoExtractor() {
 
         return VideoContainer(response.media.sources.map {
             val file = FileUrl(it.file, mapOf("referer" to "https://${Uri.parse(url).host}/"))
-            Video(null, false, file, null, it.label)
+            Video(null, true, file, null, it.label)
         })
     }
 }

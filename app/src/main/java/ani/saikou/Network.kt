@@ -7,6 +7,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import java.io.IOException
+import java.io.Serializable
+import kotlin.reflect.KFunction
 
 val defaultHeaders = mapOf(
     "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36"
@@ -52,6 +54,28 @@ suspend fun <T> tryForNetwork(call: suspend () -> T) : T?{
     }
     catch (e: IOException) {
         logError(e)
+        e.printStackTrace()
         null
+    }
+}
+
+/**
+ * A url, which can also have headers
+ * **/
+data class FileUrl(
+    val url: String,
+    val headers: Map<String, String> = mapOf()
+) : Serializable
+
+//Credits to leg
+data class Lazier<T>(
+    val lClass : KFunction<T>
+){
+    val get = lazy { lClass.call() }
+}
+
+fun <T> lazyList(vararg objects: KFunction<T>): List<Lazier<T>> {
+    return objects.map {
+        Lazier(it)
     }
 }

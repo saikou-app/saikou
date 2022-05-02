@@ -1,6 +1,7 @@
 package ani.saikou.parsers.anime
 
 import android.net.Uri
+import ani.saikou.FileUrl
 import ani.saikou.client
 import ani.saikou.parsers.*
 import ani.saikou.parsers.anime.extractors.FPlayer

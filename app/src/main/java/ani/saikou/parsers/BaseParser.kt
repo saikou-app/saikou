@@ -1,5 +1,6 @@
 package ani.saikou.parsers
 
+import ani.saikou.FileUrl
 import ani.saikou.loadData
 import ani.saikou.media.Media
 import ani.saikou.saveData
@@ -7,6 +8,7 @@ import java.io.Serializable
 import java.net.URLEncoder
 
 abstract class BaseParser {
+
     /**
      * Name that will be shown in Source Selection
      * **/
@@ -110,7 +112,10 @@ data class ShowResponse(
     val name: String,
     val link: String,
     val coverUrl: FileUrl,
+
+    //would be Useful for custom search, ig
     val otherNames: List<String> = listOf(),
+    //Total number of Episodes/Chapters in the show.
     val total: Int? = null,
 ) : Serializable {
     constructor(name: String, link: String, coverUrl: String, otherNames: List<String> = listOf(), total: Int? = null)
@@ -123,10 +128,4 @@ data class ShowResponse(
             : this(name, link, FileUrl(coverUrl))
 }
 
-/**
- * A url, which can also have headers
- * **/
-data class FileUrl(
-    val url: String,
-    val headers: Map<String, String> = mapOf()
-) : Serializable
+

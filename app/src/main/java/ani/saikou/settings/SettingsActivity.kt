@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.setPadding
 import androidx.core.view.updateLayoutParams
 import ani.saikou.*
-import ani.saikou.anime.source.AnimeSources
+import ani.saikou.parsers.AnimeSources
 import ani.saikou.databinding.ActivitySettingsBinding
 import ani.saikou.manga.source.MangaSources
 

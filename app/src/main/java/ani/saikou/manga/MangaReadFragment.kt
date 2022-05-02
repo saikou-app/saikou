@@ -170,7 +170,7 @@ open class MangaReadFragment : Fragment() {
         reload()
         val selected = model.loadSelected(media)
         selected.source = i
-        selected.stream = null
+        selected.server = null
         model.saveSelected(media.id, selected, requireActivity())
         media.selected = selected
         return mangaReadSources[i]!!

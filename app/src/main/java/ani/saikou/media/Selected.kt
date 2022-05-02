@@ -7,8 +7,7 @@ data class Selected(
     var recyclerStyle: Int? = null,
     var recyclerReversed: Boolean = false,
     var source: Int = 0,
-    var stream: String? = null,
-    var quality: Int = 0,
-    //    var positions: MutableMap<String,Long>?=null,
+    var server: String? = null,
+    var video: Int = 0,
     var chip: Int = 0,
 ) : Serializable

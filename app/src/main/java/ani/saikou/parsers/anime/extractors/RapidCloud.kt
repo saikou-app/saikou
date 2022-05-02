@@ -2,17 +2,16 @@ package ani.saikou.parsers.anime.extractors
 
 import android.net.Uri
 import android.util.Base64
+import ani.saikou.FileUrl
 import ani.saikou.client
 import ani.saikou.findBetween
 import ani.saikou.okHttpClient
 import ani.saikou.parsers.*
+import ani.saikou.parsers.anime.extractors.RapidCloud.SocketHandler.webSocket
 import okhttp3.*
 import java.util.concurrent.*
 
 class RapidCloud(override val server: VideoServer) : VideoExtractor() {
-
-    private var hasStarted = false
-    private var webSocket: WebSocket?=null
 
     override suspend fun extract(): VideoContainer {
         val videos = mutableListOf<Video>()
@@ -21,10 +20,12 @@ class RapidCloud(override val server: VideoServer) : VideoExtractor() {
         val embed = server.embed
 
         val soup = client.get(embed.url, embed.headers).text.replace("\n", "")
+
         val key = soup.findBetween("var recaptchaSiteKey = '", "',")
         val number = soup.findBetween("recaptchaNumber = '", "';")
 
         val sId = wss(okHttpClient)
+
         if (key != null && number != null && sId != null) {
             captcha(embed.url, key)?.apply {
 
@@ -84,8 +85,9 @@ class RapidCloud(override val server: VideoServer) : VideoExtractor() {
                         sId = text.findBetween("40{\"sid\":\"", "\"}")
                         latch.countDown()
                     }
-                    text == "2"           -> if(hasStarted) webSocket.send("3")
+                    text == "2"           -> webSocket.send("3")
                 }
+                println("web : $text")
             }
         }
         webSocket = client.newWebSocket(
@@ -96,13 +98,8 @@ class RapidCloud(override val server: VideoServer) : VideoExtractor() {
         return sId
     }
 
-    override suspend fun onVideoPlayed(video: Video) {
-        hasStarted = true
-        webSocket?.send("3")
-    }
-
-    override suspend fun onVideoStopped(video: Video) {
-        webSocket?.close(69,"Just got Saikou-ed")
+    override fun onVideoStopped(video: Video?) {
+        webSocket?.close(4969,"Just got Saikou-ed")
     }
 
     private data class SourceResponse (
@@ -116,5 +113,7 @@ class RapidCloud(override val server: VideoServer) : VideoExtractor() {
             val kind:  String? = null
         )
     }
-
+    object SocketHandler {
+        var webSocket: WebSocket? = null
+    }
 }

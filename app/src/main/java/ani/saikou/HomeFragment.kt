@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.animation.LayoutAnimationController
 import androidx.core.content.ContextCompat
 import androidx.core.view.updateLayoutParams
+import androidx.core.view.updatePadding
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.LiveData
@@ -101,6 +102,7 @@ class HomeFragment : Fragment() {
             bottomMargin = navBarHeight
         }
         binding.homeUserBg.updateLayoutParams { height += statusBarHeight }
+        binding.homeTopContainer.updatePadding(top = statusBarHeight)
 
         var reached = false
         val duration = (uiSettings.animationSpeed * 200).toLong()

@@ -13,17 +13,14 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.GridLayoutManager
-import ani.saikou.anime.source.AnimeParser
-import ani.saikou.anime.source.AnimeSources
-import ani.saikou.anime.source.HAnimeSources
-import ani.saikou.anime.source.WatchSources
+import ani.saikou.*
+import ani.saikou.parsers.AnimeSources
+import ani.saikou.parsers.HAnimeSources
+import ani.saikou.parsers.WatchSources
 import ani.saikou.databinding.FragmentAnimeWatchBinding
-import ani.saikou.dp
-import ani.saikou.loadData
 import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
-import ani.saikou.navBarHeight
-import ani.saikou.saveData
+import ani.saikou.parsers.AnimeParser
 import ani.saikou.settings.PlayerSettings
 import ani.saikou.settings.UserInterfaceSettings
 import kotlinx.coroutines.Dispatchers
@@ -117,7 +114,7 @@ open class AnimeWatchFragment : Fragment() {
                 binding.mediaInfoProgressBar.visibility = progress
 
                 if (!loaded) {
-                    model.watchAnimeWatchSources = if (media.isAdult) HAnimeSources else AnimeSources
+                    model.watchSources = if (media.isAdult) HAnimeSources else AnimeSources
 
                     headerAdapter = AnimeWatchAdapter(it, this, watchSources)
                     episodeAdapter = EpisodeAdapter(style ?: uiSettings.animeDefaultView, media, this)
@@ -154,7 +151,7 @@ open class AnimeWatchFragment : Fragment() {
                                 episode.desc = media.anime!!.kitsuEpisodes!![i]?.desc
                                 episode.title = media.anime!!.kitsuEpisodes!![i]?.title
                                 episode.thumb =
-                                    media.anime!!.kitsuEpisodes!![i]?.thumb ?: media.cover
+                                    media.anime!!.kitsuEpisodes!![i]?.thumb ?: FileUrl(media.cover?:"")
                             }
                         }
                     }
@@ -206,10 +203,10 @@ open class AnimeWatchFragment : Fragment() {
         reload()
         val selected = model.loadSelected(media)
         selected.source = i
-        selected.stream = null
+        selected.server = null
         model.saveSelected(media.id, selected, requireActivity())
         media.selected = selected
-        return watchSources[i]!!
+        return watchSources[i]
     }
 
     fun loadEpisodes(i: Int) {
@@ -260,7 +257,7 @@ open class AnimeWatchFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        watchSources.flushLive()
+        watchSources.flushText()
         super.onDestroy()
     }
 

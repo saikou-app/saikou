@@ -11,7 +11,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import ani.saikou.*
-import ani.saikou.anime.source.WatchSources
+import ani.saikou.parsers.WatchSources
 import ani.saikou.databinding.ItemAnimeWatchBinding
 import ani.saikou.databinding.ItemChipBinding
 import ani.saikou.media.Media
@@ -49,16 +49,16 @@ class AnimeWatchAdapter(
 
         //Source Selection
         binding.animeSource.setText(watchSources.names[media.selected!!.source])
-        watchSources[media.selected!!.source]!!.apply {
-            binding.animeSourceTitle.text = text
-            textListener = { MainScope().launch { binding.animeSourceTitle.text = it } }
+        watchSources[media.selected!!.source].apply {
+            binding.animeSourceTitle.text = showUserText
+            showUserTextListener = { MainScope().launch { binding.animeSourceTitle.text = it } }
         }
         binding.animeSource.setAdapter(ArrayAdapter(fragment.requireContext(), R.layout.item_dropdown, watchSources.names))
         binding.animeSourceTitle.isSelected = true
         binding.animeSource.setOnItemClickListener { _, _, i, _ ->
             fragment.onSourceChange(i).apply {
-                binding.animeSourceTitle.text = text
-                textListener = { MainScope().launch { binding.animeSourceTitle.text = it } }
+                binding.animeSourceTitle.text = showUserText
+                showUserTextListener = { MainScope().launch { binding.animeSourceTitle.text = it } }
             }
             fragment.loadEpisodes(i)
         }
@@ -176,7 +176,7 @@ class AnimeWatchAdapter(
                         }
                     }
                     val ep = media.anime.episodes!![continueEp]!!
-                    binding.itemEpisodeImage.loadImage(ep.thumb ?: media.banner ?: media.cover)
+                    binding.itemEpisodeImage.loadImage(ep.thumb?:FileUrl(media.banner?:media.cover?:""),0)
                     if (ep.filler) binding.itemEpisodeFillerView.visibility = View.VISIBLE
                     binding.animeSourceContinueText.text =
                         "Continue : Episode ${ep.number}${if (ep.filler) " - Filler" else ""}${if (ep.title != null) "\n${ep.title}" else ""}"

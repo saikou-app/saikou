@@ -1,5 +1,6 @@
 package ani.saikou.parsers.anime
 
+import ani.saikou.FileUrl
 import ani.saikou.client
 import ani.saikou.getSize
 import ani.saikou.parsers.*
@@ -24,10 +25,10 @@ open class Tenshi : AnimeParser() {
             map[num] = (Episode(num, "$animeLink/$num"))
         }
         htmlResponse.select(".episode-loop>li").forEach {
-            val num = it.select("episode-slug")[0].text().replace("Episode ", "")
+            val num = it.select(".episode-slug")[0].text().replace("Episode ", "")
             val link = "$animeLink/$num"
-            val title = it.select("episode-title")[0].text()
-            val thumb = it.select("img")[0].attr("href")
+            val title = it.select(".episode-title")[0].text()
+            val thumb = it.select("img")[0].attr("src")
             val desc = it.select("a[data-content]").attr("data-content")
             map[num] = Episode(num, link, title, FileUrl(thumb, mapOf(cookieHeader)), desc)
         }

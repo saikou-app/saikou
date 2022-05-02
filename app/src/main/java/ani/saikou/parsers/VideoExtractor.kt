@@ -1,5 +1,6 @@
 package ani.saikou.parsers
 
+import ani.saikou.FileUrl
 import java.io.Serializable
 
 /**
@@ -24,7 +25,7 @@ abstract class VideoExtractor : Serializable {
      *
      * & returns itself with the data loaded
      * **/
-    open suspend fun load(embed: FileUrl): VideoExtractor {
+    open suspend fun load(): VideoExtractor {
         extract().also {
             videos = it.videos
             subtitles = it.subtitles
@@ -37,12 +38,12 @@ abstract class VideoExtractor : Serializable {
      *
      * Useful for Extractor that require Polling
      * **/
-    open suspend fun onVideoPlayed(video: Video) {}
+    open fun onVideoPlayed(video: Video?) {}
 
     /**
      * Called when a particular video has been stopped playing
      **/
-    open suspend fun onVideoStopped(video: Video) {}
+    open fun onVideoStopped(video: Video?) {}
 }
 
 /**
@@ -97,7 +98,7 @@ data class Video(
      *
      * no need to set it on M3U8 links
      * **/
-    val size: Long? = null,
+    val size: Double? = null,
 
     /**
      * In case, you want to show some extra notes to the User
@@ -107,10 +108,10 @@ data class Video(
     val extraNote: String? = null,
 ) : Serializable {
 
-    constructor(quality: Int? = null, isM3U8: Boolean, url: String, size: Long?, extraNote: String? = null)
+    constructor(quality: Int? = null, isM3U8: Boolean, url: String, size: Double?, extraNote: String? = null)
             : this(quality, isM3U8, FileUrl(url), size, extraNote)
 
-    constructor(quality: Int? = null, isM3U8: Boolean, url: String, size: Long?)
+    constructor(quality: Int? = null, isM3U8: Boolean, url: String, size: Double?)
             : this(quality, isM3U8, FileUrl(url), size)
 
     constructor(quality: Int? = null, isM3U8: Boolean, url: String)

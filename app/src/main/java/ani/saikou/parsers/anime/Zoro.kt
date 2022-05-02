@@ -1,6 +1,7 @@
 package ani.saikou.parsers.anime
 
 import android.net.Uri
+import ani.saikou.FileUrl
 import ani.saikou.asyncMap
 import ani.saikou.client
 import ani.saikou.parsers.*
@@ -31,6 +32,8 @@ class Zoro : AnimeParser() {
         }
     }
 
+    private val embedHeaders = mapOf("referer" to "$hostUrl/")
+
     override suspend fun loadVideoServers(episodeLink: String): List<VideoServer> {
         val res = client.get("$hostUrl/ajax/v2/episode/servers?episodeId=$episodeLink").parsed<HtmlResponse>()
         val element = Jsoup.parse(res.html ?: return emptyList())
@@ -38,7 +41,7 @@ class Zoro : AnimeParser() {
         return element.select("div.server-item").asyncMap {
             val serverName = "${it.attr("data-type").uppercase()} - ${it.text()}"
             val link = client.get("$hostUrl/ajax/v2/episode/sources?id=${it.attr("data-id")}").parsed<SourceResponse>().link
-            VideoServer(serverName, FileUrl(link))
+            VideoServer(serverName, FileUrl(link,embedHeaders))
         }
     }
 
@@ -67,7 +70,7 @@ class Zoro : AnimeParser() {
             val link = it.select("a").attr("data-id")
             val title = it.select("a").attr("title")
             val cover = it.select("img").attr("data-src")
-            ShowResponse(link, title, FileUrl(cover))
+            ShowResponse(title, link, FileUrl(cover))
         }
     }
 

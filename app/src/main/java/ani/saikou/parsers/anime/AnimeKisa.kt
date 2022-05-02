@@ -1,5 +1,6 @@
 package ani.saikou.parsers.anime
 
+import ani.saikou.FileUrl
 import ani.saikou.client
 import ani.saikou.media.Media
 import ani.saikou.parsers.*
@@ -25,9 +26,12 @@ class AnimeKisa : AnimeParser() {
         return list
     }
 
+    private val embedHeaders = mapOf("referer" to "$hostUrl/")
+
     override suspend fun loadVideoServers(episodeLink: String): List<VideoServer> {
         return client.get(episodeLink).document.select("#servers-list ul.nav li a").map { servers ->
-            VideoServer(servers.select("span").text(), servers.attr("data-embed"))
+            val url = FileUrl(servers.attr("data-embed"), embedHeaders)
+            VideoServer(servers.select("span").text(), url)
         }
     }
 
@@ -54,10 +58,11 @@ class AnimeKisa : AnimeParser() {
             setUserText("Selected : ${response.name}")
         } else {
             setUserText("Searching : ${mediaObj.mainName}")
-            val query = "$! | &language%5B%5D=${if (selectDub) "dubbed" else "subbed"}&year%5B%5D=${mediaObj.anime?.seasonYear?:""}&sort=default&season%5B%5D=${mediaObj.anime?.season?.lowercase()?:""}&type%5B%5D=${mediaObj.typeMAL?.lowercase()?:""}"
+            val query =
+                "$! | &language%5B%5D=${if (selectDub) "dubbed" else "subbed"}&year%5B%5D=${mediaObj.anime?.seasonYear ?: ""}&sort=default&season%5B%5D=${mediaObj.anime?.season?.lowercase() ?: ""}&type%5B%5D=${mediaObj.typeMAL?.lowercase() ?: ""}"
             val responses = search(query).toMutableList()
             responses.sortByTitle(mediaObj.mainName)
-            response =  if (responses.isNotEmpty()) responses[0] else null
+            response = if (responses.isNotEmpty()) responses[0] else null
         }
         saveShowResponse(mediaObj.id, response)
         return response

@@ -27,7 +27,7 @@ class Haho : Tenshi() {
                 client.get(url, headers).document.select("video#player>source").forEach {
                     val uri = it.attr("src")
                     if (uri.isNotEmpty())
-                        list.add(Video(it.attr("title").toIntOrNull()?:0,false,uri, getSize(uri)))
+                        list.add(Video(it.attr("title").replace("p","").toIntOrNull(),false,uri, getSize(uri)))
                 }
                 return VideoContainer(list)
             }

@@ -1,6 +1,6 @@
 package ani.saikou.parsers.anime
 
-import ani.saikou.asyncMap
+import ani.saikou.FileUrl
 import ani.saikou.client
 import ani.saikou.parsers.*
 import ani.saikou.parsers.anime.extractors.StreamTape
@@ -43,16 +43,18 @@ class NineAnime : AnimeParser() {
         }
     }
 
+    private val embedHeaders = mapOf("referer" to "$hostUrl/")
+
     override suspend fun loadVideoServers(episodeLink: String): List<VideoServer> {
         val body = client.get(episodeLink).parsed<Response>().html
         val document = Jsoup.parse(body)
         val rawJson = document.select(".episodes li a").select(".active").attr("data-sources")
         val dataSources = Requests.mapper.readValue<Map<String, String>>(rawJson)
 
-        return document.select(".tabs span").asyncMap {
+        return document.select(".tabs span").map {
             val name = it.text()
             val encodedStreamUrl = getEpisodeLinks(dataSources[it.attr("data-id")].toString()).url
-            val realLink = getLink(encodedStreamUrl)
+            val realLink = FileUrl(getLink(encodedStreamUrl), embedHeaders)
             VideoServer(name, realLink)
         }
     }

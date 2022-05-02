@@ -1,5 +1,6 @@
 package ani.saikou.others
 
+import ani.saikou.FileUrl
 import ani.saikou.anime.Episode
 import ani.saikou.client
 import ani.saikou.logError
@@ -47,7 +48,7 @@ object Kitsu {
                                     number = num,
                                     title = ep.titles?.canonical,
                                     desc = ep.description?.en,
-                                    thumb = ep.thumbnail?.original?.url,
+                                    thumb = FileUrl(ep.thumbnail?.original?.url?:""),
                                 )
                                 logger("Kitsu : arr[$num] = ${arr!![num]}", print)
                             }

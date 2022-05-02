@@ -44,7 +44,6 @@ import ani.saikou.anilist.api.FuzzyDate
 import ani.saikou.anime.Episode
 import ani.saikou.databinding.ItemCountDownBinding
 import ani.saikou.media.Media
-import ani.saikou.parsers.FileUrl
 import ani.saikou.parsers.ShowResponse
 import ani.saikou.settings.UserInterfaceSettings
 import com.bumptech.glide.Glide
@@ -227,7 +226,7 @@ fun isOnline(context: Context): Boolean {
                         logger("Device on VPN")
                         true
                     }
-                    else -> false
+                    else                                                              -> false
                 }
             } else false
         } else true
@@ -441,11 +440,17 @@ fun String.findBetween(a: String, b: String): String? {
     return if (end != -1) this.subSequence(start, end).removePrefix(a).removeSuffix(b).toString() else null
 }
 
-fun ImageView.loadImage(url: String?, size: Int = 0, headers: MutableMap<String, String>? = null) {
+fun ImageView.loadImage(url: String?, size: Int = 0) {
     if (!url.isNullOrEmpty()) {
+        loadImage(FileUrl(url),size)
+    }
+}
+
+fun ImageView.loadImage(file: FileUrl, size: Int = 0) {
+    if (file.url.isNotEmpty()) {
         tryWith {
-            val glideUrl = GlideUrl(url) { headers ?: mutableMapOf() }
-            Glide.with(this).load(glideUrl).transition(withCrossFade()).override(size).into(this)
+            val glideUrl = GlideUrl(file.url) { file.headers }
+            Glide.with(this.context).load(glideUrl).transition(withCrossFade()).override(size).into(this)
         }
     }
 }
@@ -473,13 +478,13 @@ fun View.setSafeOnClickListener(onSafeClick: (View) -> Unit) {
     setOnClickListener(safeClickListener)
 }
 
-suspend fun getSize(file: FileUrl): Long? {
+suspend fun getSize(file: FileUrl): Double? {
     return tryForNetwork {
-        client.head(file.url, file.headers, timeout = 1000).size
+        client.head(file.url, file.headers, timeout = 1000).size?.toDouble()?.div(1024*1024)
     }
 }
 
-suspend fun getSize(file: String): Long? {
+suspend fun getSize(file: String): Double? {
     return getSize(FileUrl(file))
 }
 
@@ -614,19 +619,19 @@ fun openLinkInBrowser(link: String?) {
 
 fun download(activity: Activity, episode: Episode, animeTitle: String) {
     val manager = activity.getSystemService(AppCompatActivity.DOWNLOAD_SERVICE) as DownloadManager
-    val stream = episode.streamLinks[episode.selectedStream] ?: return
-    val uri =
-        if (stream.quality.size > episode.selectedQuality) Uri.parse(stream.quality[episode.selectedQuality].url) else return
+    val extractor = episode.extractors?.find { it.server.name == episode.selectedServer } ?: return
+    val video =
+        if (extractor.videos.size > episode.selectedVideo) extractor.videos[episode.selectedVideo] else return
     val regex = "[\\\\/:*?\"<>|]".toRegex()
     val aTitle = animeTitle.replace(regex, "")
-    val request: DownloadManager.Request = DownloadManager.Request(uri)
+    val request: DownloadManager.Request = DownloadManager.Request(Uri.parse(video.url.url))
 
-    stream.headers?.forEach {
+    video.url.headers.forEach {
         request.addRequestHeader(it.key, it.value)
     }
 
     val title = "Episode ${episode.number}${if (episode.title != null) " - ${episode.title}" else ""}".replace(regex, "")
-
+    val name = "$title${if (video.size != null) "(${video.size}p)" else ""}.mp4"
     CoroutineScope(Dispatchers.IO).launch {
         try {
             request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
@@ -636,13 +641,13 @@ fun download(activity: Activity, episode: Episode, animeTitle: String) {
                 val parentDirectory = arrayOfFiles[1].toString() + "/Anime/${aTitle}/"
                 val direct = File(parentDirectory)
                 if (!direct.exists()) direct.mkdirs()
-                request.setDestinationUri(Uri.fromFile(File("$parentDirectory$title (${stream.quality[episode.selectedQuality].quality}).mp4")))
+                request.setDestinationUri(Uri.fromFile(File("$parentDirectory$name")))
             } else {
                 val direct = File(Environment.DIRECTORY_DOWNLOADS + "/Saikou/Anime/${aTitle}/")
                 if (!direct.exists()) direct.mkdirs()
                 request.setDestinationInExternalPublicDir(
                     Environment.DIRECTORY_DOWNLOADS,
-                    "/Saikou/Anime/${aTitle}/$title (${stream.quality[episode.selectedQuality].quality}).mp4"
+                    "/Saikou/Anime/${aTitle}/$name"
                 )
             }
             request.setTitle("$title:$aTitle")
