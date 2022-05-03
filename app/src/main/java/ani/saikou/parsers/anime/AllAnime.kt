@@ -11,11 +11,10 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.lagradost.nicehttp.Requests.Companion.mapper
 import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import java.text.DecimalFormat
-
-private val mapper = jacksonObjectMapper()
 
 class AllAnime : AnimeParser() {
     override val name = "AllAnime"
