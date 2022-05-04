@@ -46,7 +46,7 @@ Saikou is crafted based on simplistic yet state-of-the-art elegance. It is an [A
 | [Zoro](https://zoro.to)            | WORKING | NO        |
 | [9Anime](https://animekisa.in) 😮  | WORKING | NO        |
 | [Tenshi](https://tenshi.moe)       | WORKING | YES       |
-| [Twist](https://twist.moe)         | WORKING | YES       |
+| [AllAnime](https://allanime.site)         | WORKING | YES       |
 
 
 * **Available Manga sources:-**
