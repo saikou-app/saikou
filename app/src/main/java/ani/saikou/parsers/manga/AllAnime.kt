@@ -70,6 +70,7 @@ class AllAnime : MangaParser() {
                     val otherNames = mutableListOf<String>()
                     show.englishName?.let { otherNames.add(it) }
                     show.nativeName?.let { otherNames.add(it) }
+                    show.altNames?.forEach { otherNames.add(it) }
                     responseArray.add(
                         ShowResponse(
                             show.name,
@@ -134,7 +135,8 @@ class AllAnime : MangaParser() {
             val nativeName: String?,
             val thumbnail: String,
             val availableChapters: AvailableChapters,
-            val lastChapterInfo: LastChapterInfos
+            val lastChapterInfo: LastChapterInfos,
+            val altNames: List<String>?
         )
 
         data class LastChapterInfos(

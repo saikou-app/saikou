@@ -104,6 +104,7 @@ class AllAnime : AnimeParser() {
                     val otherNames = mutableListOf<String>()
                     show.englishName?.let { otherNames.add(it) }
                     show.nativeName?.let { otherNames.add(it) }
+                    show.altNames?.forEach { otherNames.add(it) }
                     responseArray.add(
                         ShowResponse(
                             show.name,
@@ -224,7 +225,8 @@ class AllAnime : AnimeParser() {
             val thumbnail: String,
             val availableEpisodes: AvailableEpisodes,
             // Actually just raw unspecified json
-            val lastEpisodeInfo: LastEpisodeInfos
+            val lastEpisodeInfo: LastEpisodeInfos,
+            val altNames: List<String>?
         )
 
         data class AvailableEpisodes(
