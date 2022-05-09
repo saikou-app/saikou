@@ -15,7 +15,16 @@ class NHentai : MangaParser() {
     }
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
-        TODO("Not yet implemented")
+        val id   = chapterLink.substringAfter("g/")
+        val json = client.get("$hostUrl/api/gallery/$id").parsed<MangaImageResponse>()
+        val ext  = ext(json.images.pages[0].t)
+        val imageArr = arrayListOf<MangaImage>()
+        for (page in 1 until (json.images.pages.size - 1)) {
+            imageArr.add(
+                MangaImage(url = "https://i.nhentai.net/galleries/${json.media_id}/$page}.$ext")
+            )
+        }
+        return imageArr
     }
 
     override suspend fun search(query: String): List<ShowResponse> {
@@ -25,7 +34,7 @@ class NHentai : MangaParser() {
             responseArr.add(
                 ShowResponse(
                     name = i.title.pretty,
-                    link = "https://nhentai.net/galleries/${i.id}",
+                    link = "https://nhentai.net/g/${i.id}",
                     coverUrl = "https://t.nhentai.net/galleries/${i.media_id}/cover.jpg",
                 )
             )
@@ -34,32 +43,44 @@ class NHentai : MangaParser() {
     }
 
 
+    // convert to proper extension from API
+    private fun ext(t: String): String {
+        return when (t) {
+            "j" -> "jpg"
+            "p" -> "png"
+            "g" -> "gif"
+            else -> "jpg" // unreachable anyways
+        }
+    }
+
     private data class SearchResponse(
         val result: List<Result>,
-        val num_pages: Int,
-        val per_page: Int
     ) {
         data class Result(
             val id: Int,
             val media_id: Int,
             val title: Title,
-            val images: Pages,
-            val upload_date: Int
         ) {
              data class Title(
                 val english: String,
                 val japanese: String,
                 val pretty: String
             )
-            data class Pages(
-                val pages: List<Page>
-            ) {
-                data class Page(
-                    val t: String,
-                    val w: Int,
-                    val h: Int
-                )
-            }
+        }
+    }
+
+    private data class MangaImageResponse(
+        val media_id: Int,
+        val images: Pages
+    ) {
+        data class Pages(
+            val pages: List<Page>
+        ) {
+            data class Page(
+                val t: String, // extension (.jpg, .png)
+                val w: Int,    // width
+                val h: Int     // height
+            )
         }
     }
 }
