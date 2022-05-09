@@ -21,7 +21,7 @@ class NHentai : MangaParser() {
     override suspend fun search(query: String): List<ShowResponse> {
         val responseArr = arrayListOf<ShowResponse>()
         val json = client.get("$hostUrl/api/galleries/search?query=${encode(query)}").parsed<SearchResponse>()
-        for (i in json.results) {
+        for (i in json.result) {
             responseArr.add(
                 ShowResponse(
                     name = i.title.pretty,
@@ -31,12 +31,11 @@ class NHentai : MangaParser() {
             )
         }
         return responseArr
-
     }
 
 
     private data class SearchResponse(
-        val results: List<Result>,
+        val result: List<Result>,
         val num_pages: Int,
         val per_page: Int
     ) {
