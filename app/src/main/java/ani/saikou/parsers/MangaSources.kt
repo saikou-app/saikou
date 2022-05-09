@@ -12,7 +12,8 @@ object MangaSources : MangaReadSources() {
         ::MangaPill,
         ::MangaDex,
         ::MangaReaderTo,
-        ::AllAnime
+        ::AllAnime,
+        ::NHentai,
     )
     override val names: List<String> = listOf(
         "MangaKakalot",
@@ -21,7 +22,8 @@ object MangaSources : MangaReadSources() {
         "MangaPill",
         "MangaDex",
         "MangaReaderTo",
-        "AllAnime"
+        "AllAnime",
+        "NHentai",
     )
 }
 
