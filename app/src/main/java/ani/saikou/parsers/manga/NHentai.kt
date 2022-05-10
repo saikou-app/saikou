@@ -11,12 +11,21 @@ class NHentai : MangaParser() {
     override val isNSFW   = true
 
     override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
-        TODO("Not yet implemented")
+        val id   = mangaLink.substringAfter("g/")
+        val json = client.get("$hostUrl/api/gallery/$id").parsed<MangaResponse>()
+        // There's really no "chapter(s)" in nhentai afaik. So here it's being returned as if it's the first chapter.
+        return arrayListOf(
+            MangaChapter(
+                number = "1",
+                link = "https://nhentai.net/g/$id",
+                title = json.title.pretty
+            )
+        )
     }
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
         val id   = chapterLink.substringAfter("g/")
-        val json = client.get("$hostUrl/api/gallery/$id").parsed<MangaImageResponse>()
+        val json = client.get("$hostUrl/api/gallery/$id").parsed<MangaResponse>()
         val ext  = ext(json.images.pages[0].t)
         val imageArr = arrayListOf<MangaImage>()
         for (page in 1 until (json.images.pages.size - 1)) {
@@ -69,15 +78,15 @@ class NHentai : MangaParser() {
         }
     }
 
-    private data class MangaImageResponse(
+    private data class MangaResponse(
         val media_id: Int,
+        val title: Title,
         val images: Pages
     ) {
-        data class Pages(
-            val pages: List<Page>
-        ) {
+        data class Title(val pretty: String)
+        data class Pages(val pages: List<Page>) {
             data class Page(
-                val t: String, // extension (.jpg, .png)
+                val t: String, // extension
                 val w: Int,    // width
                 val h: Int     // height
             )
