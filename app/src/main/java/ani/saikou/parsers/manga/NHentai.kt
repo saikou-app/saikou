@@ -17,8 +17,8 @@ class NHentai : MangaParser() {
         return arrayListOf(
             MangaChapter(
                 number = "1",
-                link = "https://nhentai.net/g/$id",
-                title = json.title.pretty
+                link   = "https://nhentai.net/g/$id",
+                title  = json.title.pretty
             )
         )
     }
@@ -29,8 +29,9 @@ class NHentai : MangaParser() {
         val ext  = ext(json.images.pages[0].t)
         val imageArr = arrayListOf<MangaImage>()
         for (page in 1 until (json.images.pages.size - 1)) {
+            val url = "https://i.nhentai.net/galleries/${json.media_id}/$page.$ext"
             imageArr.add(
-                MangaImage(url = "https://i.nhentai.net/galleries/${json.media_id}/$page}.$ext")
+                MangaImage(url = url)
             )
         }
         return imageArr
