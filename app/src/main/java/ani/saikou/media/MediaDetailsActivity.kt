@@ -29,7 +29,6 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import ani.saikou.*
 import ani.saikou.anilist.Anilist
 import ani.saikou.anime.AnimeWatchFragment
-import ani.saikou.anime.HWatchFragment
 import ani.saikou.databinding.ActivityMediaBinding
 import ani.saikou.manga.MangaReadFragment
 import ani.saikou.settings.UserInterfaceSettings
@@ -233,10 +232,10 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
 
         tabLayout.menu.clear()
         if (media.anime != null) {
-            viewPager.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, true, adult)
+            viewPager.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, true)
             tabLayout.inflateMenu(R.menu.anime_menu_detail)
         } else if (media.manga != null) {
-            viewPager.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, false, adult)
+            viewPager.adapter = ViewPagerAdapter(supportFragmentManager, lifecycle, false)
             tabLayout.inflateMenu(R.menu.manga_menu_detail)
             anime = false
         }
@@ -306,8 +305,7 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
     private class ViewPagerAdapter(
         fragmentManager: FragmentManager,
         lifecycle: Lifecycle,
-        private val anime: Boolean,
-        private val adult: Boolean
+        private val anime: Boolean
     ) :
         FragmentStateAdapter(fragmentManager, lifecycle) {
 
@@ -317,7 +315,7 @@ class MediaDetailsActivity : AppCompatActivity(), AppBarLayout.OnOffsetChangedLi
             if (anime) {
                 when (position) {
                     0 -> return MediaInfoFragment()
-                    1 -> return if (!adult) AnimeWatchFragment() else HWatchFragment()
+                    1 -> return AnimeWatchFragment()
                 }
             } else {
                 when (position) {

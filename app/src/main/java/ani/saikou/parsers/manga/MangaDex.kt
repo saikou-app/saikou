@@ -16,7 +16,7 @@ class MangaDex : MangaParser() {
     val host = "https://api.mangadex.org"
 
     override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
-
+        val old = showUserText
         setUserText("Getting Chapters...")
         val list = mutableListOf<MangaChapter>()
 
@@ -39,10 +39,12 @@ class MangaDex : MangaParser() {
             }
         }
         list.sortBy { it.number.toFloatOrNull() }
+        setUserText(old)
         return list
     }
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
+        println("$host/at-home/server/${chapterLink}")
         val res = client.get("$host/at-home/server/${chapterLink}").parsed<ChapterResponse>().chapter
         return res?.data?.map {
             MangaImage("https://uploads.mangadex.org/data/${res.hash}/${it}")

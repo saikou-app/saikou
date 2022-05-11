@@ -30,7 +30,7 @@ class AllAnime : AnimeParser() {
             val showId = idRegex.find(animeLink)?.groupValues?.get(1)
             if (showId != null) {
                 val episodeInfos = getEpisodeInfos(showId)
-                val format = DecimalFormat("0")
+                val format = DecimalFormat("#####.#####")
                 episodeInfos?.sortedBy { it.episodeIdNum }?.forEach { epInfo ->
                     val link = """${hostUrl}/anime/$showId/episodes/${if (selectDub) "dub" else "sub"}/${epInfo.episodeIdNum}"""
                     val epNum = format.format(epInfo.episodeIdNum).toString()

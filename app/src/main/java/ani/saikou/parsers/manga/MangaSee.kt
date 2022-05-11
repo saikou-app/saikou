@@ -22,7 +22,7 @@ class MangaSee : MangaParser() {
         val json = client.get("$hostUrl/manga/$mangaLink").document.select("script")
             .lastOrNull()?.toString()?.findBetween("vm.Chapters = ", ";")?: return emptyList()
 
-        return mapper.readValue<List<MangaResponse>>(json).map {
+        return mapper.readValue<List<MangaResponse>>(json).reversed().map {
             val chap = it.chapter
             val num = chapChop(chap, 3)
             val link = hostUrl + "/read-online/$mangaLink-chapter-" + chapChop(chap, 1) + chapChop(chap, 2) + chapChop(chap, 0) + ".html"

@@ -13,12 +13,13 @@ data class Episode(
     var filler: Boolean = false,
     var selectedServer: String? = null,
     var selectedVideo: Int = 0,
-    var extractors: List<VideoExtractor>?=null,
-    var extractorCallback: ((VideoExtractor) -> Unit)?=null,
+    var extractors: MutableList<VideoExtractor>?=null,
+    @Transient var extractorCallback: ((VideoExtractor) -> Unit)?=null,
     var allStreams: Boolean = false,
     var watched: Long? = null,
     var maxLength: Long? = null,
     val extra: Any?=null,
+
 ) : Serializable
 
 

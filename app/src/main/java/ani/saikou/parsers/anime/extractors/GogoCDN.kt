@@ -87,31 +87,32 @@ class GogoCDN(override val server: VideoServer) : VideoExtractor() {
                 }
             }
         }
-
         return VideoContainer(list)
     }
 
-    private fun cryptoHandler(string: String, key: String, iv: String, encrypt: Boolean = true): String? {
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-        return if (!encrypt) {
-            cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(key.toByteArray(), "AES"), IvParameterSpec(iv.toByteArray()))
-            String(cipher.doFinal(Base64.decode(string, Base64.NO_WRAP)))
-        } else {
-            cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key.toByteArray(), "AES"), IvParameterSpec(iv.toByteArray()))
-            Base64.encodeToString(cipher.doFinal(string.toByteArray()), Base64.NO_WRAP)
-        }
-    }
-
     companion object {
+
+        private val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+
         private var keysAndIv: Keys =
             Keys("37911490979715163134003223491201", "54674138327930866480207815084989", "3134003223491201")
-    }
 
-    private data class Keys(
-        val key: String,
-        val secondKey: String,
-        val iv: String
-    )
+        private fun cryptoHandler(string: String, key: String, iv: String, encrypt: Boolean = true): String? {
+            return if (!encrypt) {
+                cipher.init(Cipher.DECRYPT_MODE, SecretKeySpec(key.toByteArray(), "AES"), IvParameterSpec(iv.toByteArray()))
+                String(cipher.doFinal(Base64.decode(string, Base64.NO_WRAP)))
+            } else {
+                cipher.init(Cipher.ENCRYPT_MODE, SecretKeySpec(key.toByteArray(), "AES"), IvParameterSpec(iv.toByteArray()))
+                Base64.encodeToString(cipher.doFinal(string.toByteArray()), Base64.NO_WRAP)
+            }
+        }
+
+        private data class Keys(
+            val key: String,
+            val secondKey: String,
+            val iv: String
+        )
+    }
 
     private data class SourceResponse(
         val source: List<Source>? = null,

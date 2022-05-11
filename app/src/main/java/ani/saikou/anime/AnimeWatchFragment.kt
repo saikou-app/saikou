@@ -20,7 +20,6 @@ import ani.saikou.media.MediaDetailsViewModel
 import ani.saikou.parsers.AnimeParser
 import ani.saikou.parsers.AnimeSources
 import ani.saikou.parsers.HAnimeSources
-import ani.saikou.parsers.WatchSources
 import ani.saikou.settings.PlayerSettings
 import ani.saikou.settings.UserInterfaceSettings
 import kotlinx.coroutines.Dispatchers
@@ -31,8 +30,7 @@ import kotlin.math.ceil
 import kotlin.math.max
 import kotlin.math.roundToInt
 
-open class AnimeWatchFragment : Fragment() {
-    open val watchSources: WatchSources = AnimeSources
+class AnimeWatchFragment : Fragment() {
     private var _binding: FragmentAnimeWatchBinding? = null
     private val binding get() = _binding!!
     private val model: MediaDetailsViewModel by activityViewModels()
@@ -116,7 +114,7 @@ open class AnimeWatchFragment : Fragment() {
                 if (!loaded) {
                     model.watchSources = if (media.isAdult) HAnimeSources else AnimeSources
 
-                    headerAdapter = AnimeWatchAdapter(it, this, watchSources)
+                    headerAdapter = AnimeWatchAdapter(it, this, model.watchSources)
                     episodeAdapter = EpisodeAdapter(style ?: uiSettings.animeDefaultView, media, this)
 
                     binding.animeSourceRecycler.adapter = ConcatAdapter(headerAdapter, episodeAdapter)
@@ -202,16 +200,17 @@ open class AnimeWatchFragment : Fragment() {
         media.anime?.episodes = null
         reload()
         val selected = model.loadSelected(media)
+        model.watchSources[selected.source].showUserTextListener = null
         selected.source = i
         selected.server = null
         model.saveSelected(media.id, selected, requireActivity())
         media.selected = selected
-        return watchSources[i]
+        return model.watchSources[i]
     }
 
     fun onDubClicked(checked:Boolean){
         val selected = model.loadSelected(media)
-        watchSources[selected.source].selectDub = checked
+        model.watchSources[selected.source].selectDub = checked
         selected.preferDub = checked
         model.saveSelected(media.id, selected, requireActivity())
         media.selected = selected
@@ -266,7 +265,7 @@ open class AnimeWatchFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        watchSources.flushText()
+        model.watchSources.flushText()
         super.onDestroy()
     }
 

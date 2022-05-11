@@ -21,7 +21,6 @@ import ani.saikou.media.Media
 import ani.saikou.media.MediaDetailsViewModel
 import ani.saikou.parsers.HMangaSources
 import ani.saikou.parsers.MangaParser
-import ani.saikou.parsers.MangaReadSources
 import ani.saikou.parsers.MangaSources
 import ani.saikou.settings.UserInterfaceSettings
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +30,6 @@ import kotlin.math.max
 import kotlin.math.roundToInt
 
 open class MangaReadFragment : Fragment() {
-    open val mangaReadSources: MangaReadSources = MangaSources
     private var _binding: FragmentAnimeWatchBinding? = null
     private val binding get() = _binding!!
     private val model: MediaDetailsViewModel by activityViewModels()
@@ -107,9 +105,9 @@ open class MangaReadFragment : Fragment() {
                     reverse = media.selected!!.recyclerReversed
 
                     if (!loaded) {
-                        model.readMangaReadSources = if (media.isAdult) HMangaSources else MangaSources
+                        model.mangaReadSources = if (media.isAdult) HMangaSources else MangaSources
 
-                        headerAdapter = MangaReadAdapter(it, this, mangaReadSources)
+                        headerAdapter = MangaReadAdapter(it, this, model.mangaReadSources)
                         chapterAdapter = MangaChapterAdapter(style ?: uiSettings.mangaDefaultView, media, this)
 
                         binding.animeSourceRecycler.adapter = ConcatAdapter(headerAdapter, chapterAdapter)
@@ -169,11 +167,12 @@ open class MangaReadFragment : Fragment() {
         media.manga?.chapters = null
         reload()
         val selected = model.loadSelected(media)
+        model.mangaReadSources[selected.source].showUserTextListener = null
         selected.source = i
         selected.server = null
         model.saveSelected(media.id, selected, requireActivity())
         media.selected = selected
-        return mangaReadSources[i]
+        return model.mangaReadSources[i]
     }
 
     fun loadChapters(i: Int) {
@@ -227,7 +226,7 @@ open class MangaReadFragment : Fragment() {
     }
 
     override fun onDestroy() {
-        mangaReadSources.flushText()
+        model.mangaReadSources.flushText()
         super.onDestroy()
     }
 

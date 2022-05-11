@@ -216,8 +216,8 @@ class MangaReaderActivity : AppCompatActivity() {
         chapters = media.manga?.chapters ?: return
         chapter = chapters[media.manga!!.selectedChapter] ?: return
 
-        model.readMangaReadSources = if (media.isAdult) HMangaSources else MangaSources
-        binding.mangaReaderSource.text = model.readMangaReadSources.names[media.selected!!.source]
+        model.mangaReadSources = if (media.isAdult) HMangaSources else MangaSources
+        binding.mangaReaderSource.text = model.mangaReadSources.names[media.selected!!.source]
 
         binding.mangaReaderTitle.text = media.userPreferredName
 

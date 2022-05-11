@@ -23,7 +23,7 @@ class AllAnime : MangaParser() {
             val showId = idRegex.find(mangaLink)?.groupValues?.get(1)
             if (showId != null) {
                 val episodeInfos = getEpisodeInfos(showId)
-                val format = DecimalFormat("0")
+                val format = DecimalFormat("#####.#####")
                 episodeInfos?.sortedBy { it.episodeIdNum }?.forEach { epInfo ->
                     val link = """${hostUrl}/manga/$showId/chapters/sub/${epInfo.episodeIdNum}"""
                     val epNum = format.format(epInfo.episodeIdNum).toString()
@@ -65,7 +65,6 @@ class AllAnime : MangaParser() {
                 graphqlQuery(variables, "d35cd021d782eb55310250ea818269622b4b94742c25f8af778562317966ac88")?.data?.mangas?.edges
             if (!edges.isNullOrEmpty()) {
                 for (show in edges) {
-                    print(show)
                     val link = """${hostUrl}/manga/${show.id}"""
                     val otherNames = mutableListOf<String>()
                     show.englishName?.let { otherNames.add(it) }
@@ -91,7 +90,6 @@ class AllAnime : MangaParser() {
         val extensions = """{"persistedQuery":{"version":1,"sha256Hash":"$persistHash"}}"""
         val graphqlUrl = ("$hostUrl/graphql").toHttpUrl().newBuilder().addQueryParameter("variables", variables)
             .addQueryParameter("extensions", extensions).build()
-        println(graphqlUrl.toString())
         return tryWithSuspend {
             client.get(graphqlUrl.toString()).parsed()
         }
@@ -101,8 +99,7 @@ class AllAnime : MangaParser() {
         val variables = """{"_id": "$showId"}"""
         val manga = graphqlQuery(variables, "f60064134ecbaf89350a8aae1441dbffc86cf561a193a3bb8db4bb5a9989b9ad")?.data?.manga
         if (manga != null) {
-            val epCount = manga.lastChapterInfo.sub?.chapterString
-            println(epCount)
+            val epCount = manga.lastChapterInfo?.sub?.chapterString
             if (epCount != null) {
                 val epVariables = """{"showId":"manga@$showId","episodeNumStart":0,"episodeNumEnd":${epCount.toFloat()}}"""
                 return graphqlQuery(
@@ -135,7 +132,7 @@ class AllAnime : MangaParser() {
             val nativeName: String?,
             val thumbnail: String,
             val availableChapters: AvailableChapters,
-            val lastChapterInfo: LastChapterInfos,
+            val lastChapterInfo: LastChapterInfos?,
             val altNames: List<String>?
         )
 
