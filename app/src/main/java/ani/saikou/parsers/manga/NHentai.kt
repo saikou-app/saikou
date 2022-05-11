@@ -53,7 +53,7 @@ class NHentai : MangaParser() {
                 )
             )
             return responseArr
-        }
+        }else{
         val json = client.get("$hostUrl/api/galleries/search?query=${encode(query)}").parsed<SearchResponse>()
         for (i in json.result) {
             responseArr.add(
@@ -65,6 +65,7 @@ class NHentai : MangaParser() {
             )
         }
         return responseArr
+    }
     }
 
 
