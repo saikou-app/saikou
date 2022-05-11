@@ -1,5 +1,6 @@
 package ani.saikou.parsers.manga
 
+import androidx.core.text.isDigitsOnly
 import ani.saikou.client
 import ani.saikou.parsers.*
 
@@ -39,6 +40,20 @@ class NHentai : MangaParser() {
 
     override suspend fun search(query: String): List<ShowResponse> {
         val responseArr = arrayListOf<ShowResponse>()
+        if(query.contains("#") || query.isDigitsOnly()) {
+            val id = query.replace("#","")
+            val document = client.get("https://nhentai.net/g/$id").document
+            val coverUrl = document.select("body div#content div#bigcontainer.container div#cover a img.lazyload").attr("data-src")
+            val tittle = document.select("div#content div#bigcontainer.container div#info-block div#info h1.title span.pretty").text()
+            responseArr.add(
+                ShowResponse(
+                    name = tittle,
+                    link = "https://nhentai.net/g/$id",
+                    coverUrl = coverUrl,
+                )
+            )
+            return responseArr
+        }
         val json = client.get("$hostUrl/api/galleries/search?query=${encode(query)}").parsed<SearchResponse>()
         for (i in json.result) {
             responseArr.add(
