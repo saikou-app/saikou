@@ -34,7 +34,7 @@ class AllAnime : AnimeParser() {
                 episodeInfos?.sortedBy { it.episodeIdNum }?.forEach { epInfo ->
                     val link = """${hostUrl}/anime/$showId/episodes/${if (selectDub) "dub" else "sub"}/${epInfo.episodeIdNum}"""
                     val epNum = format.format(epInfo.episodeIdNum).toString()
-                    responseArray.add(Episode(epNum, link = link, epInfo.notes, epInfo.thumbnails?.get(0)?.let { FileUrl(it) }))
+                    responseArray.add(Episode(epNum, link = link, epInfo.notes, epInfo.thumbnails?.let { if (it.isNotEmpty()) FileUrl(it[0]) else null }))
                 }
 
             }
