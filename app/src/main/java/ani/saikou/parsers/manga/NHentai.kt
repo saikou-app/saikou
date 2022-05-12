@@ -16,7 +16,7 @@ class NHentai : MangaParser() {
 
     override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
         val id = mangaLink.substringAfter("g/")
-        val json = client.get("$hostUrl/api/gallery/$id").parsed<MangaResponse>()
+        val json = client.get("https://nhentai.net/api/gallery/$id").parsed<MangaResponse>()
         // There's really no "chapter(s)" in nhentai afaik. So here it's being returned as if it's the first chapter.
         return listOf(
             MangaChapter(
@@ -29,7 +29,7 @@ class NHentai : MangaParser() {
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
         val id = chapterLink.substringAfter("g/")
-        val json = client.get("$hostUrl/api/gallery/$id").parsed<MangaResponse>()
+        val json = client.get("https://nhentai.net/api/gallery/$id").parsed<MangaResponse>()
         val ext = ext(json.images.pages[0].t)
         return (1 until (json.images.pages.size - 1)).map {
             MangaImage("https://i.nhentai.net/galleries/${json.media_id}/$it.$ext")
@@ -50,7 +50,8 @@ class NHentai : MangaParser() {
                 )
             )
         } else {
-            val json = client.get("$hostUrl/api/galleries/search?query=${encode(query)}").parsed<SearchResponse>()
+            val finalQuery = "$query language:english"
+            val json = client.get("https://nhentai.net/api/galleries/search?query=${encode(finalQuery)}").parsed<SearchResponse>()
             json.result.map {
                 ShowResponse(
                     name = it.title.pretty,
