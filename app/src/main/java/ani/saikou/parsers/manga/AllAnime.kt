@@ -90,8 +90,10 @@ class AllAnime : MangaParser() {
         val extensions = """{"persistedQuery":{"version":1,"sha256Hash":"$persistHash"}}"""
         val graphqlUrl = ("$hostUrl/graphql").toHttpUrl().newBuilder().addQueryParameter("variables", variables)
             .addQueryParameter("extensions", extensions).build()
+        val headers = mutableMapOf<String, String>()
+        headers["Host"] = "allanime.site"
         return tryWithSuspend {
-            client.get(graphqlUrl.toString()).parsed()
+            client.get(graphqlUrl.toString(), headers).parsed()
         }
     }
 
