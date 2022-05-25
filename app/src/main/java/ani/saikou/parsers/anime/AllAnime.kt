@@ -34,7 +34,8 @@ class AllAnime : AnimeParser() {
                 episodeInfos?.sortedBy { it.episodeIdNum }?.forEach { epInfo ->
                     val link = """${hostUrl}/anime/$showId/episodes/${if (selectDub) "dub" else "sub"}/${epInfo.episodeIdNum}"""
                     val epNum = format.format(epInfo.episodeIdNum).toString()
-                    responseArray.add(Episode(epNum, link = link, epInfo.notes, epInfo.thumbnails?.let { if (it.isNotEmpty()) FileUrl(it[0]) else null }))
+                    val thumbnail = epInfo.thumbnails?.let { if (it.isNotEmpty()) FileUrl(it[0]) else null }
+                    responseArray.add(Episode(epNum, link = link, epInfo.notes, thumbnail))
                 }
 
             }
@@ -105,6 +106,10 @@ class AllAnime : AnimeParser() {
                     show.englishName?.let { otherNames.add(it) }
                     show.nativeName?.let { otherNames.add(it) }
                     show.altNames?.forEach { otherNames.add(it) }
+                    if (show.thumbnail == null) {
+                        toastString(""""Could not get thumbnail for ${show.id}""")
+                        continue
+                    }
                     responseArray.add(
                         ShowResponse(
                             show.name,
@@ -132,17 +137,15 @@ class AllAnime : AnimeParser() {
     }
 
     private suspend fun getEpisodeInfos(showId: String): List<EpisodeInfo>? {
-        val variables = """{"_id": "$showId"}"""
-        val show = graphqlQuery(variables, "bea0b50519809a797e72b9bd5131d453de6bd1841ea7e720765c5af143a0d6f0")?.data?.show
+        val variables = """{"ids": ["$showId"]}"""
+        val show = graphqlQuery(variables, "73492472c6af978c1ab89f7a177f8471a7cae41dadb95bcb9099d5e5caa2a8f9")?.data?.showsWithIds?.getOrNull(0)
         if (show != null) {
-            val epCount = if (selectDub) show.lastEpisodeInfo.dub?.episodeString else show.lastEpisodeInfo.sub?.episodeString
-            if (epCount != null) {
-                val epVariables = """{"showId":"$showId","episodeNumStart":0,"episodeNumEnd":${epCount.toFloat()}}"""
-                return graphqlQuery(
-                    epVariables,
-                    "73d998d209d6d8de325db91ed8f65716dce2a1c5f4df7d304d952fa3f223c9e8"
-                )?.data?.episodeInfos
-            }
+            val epCount = if (selectDub) show.availableEpisodes.dub else show.availableEpisodes.sub
+            val epVariables = """{"showId":"$showId","episodeNumStart":0,"episodeNumEnd":${epCount}}"""
+            return graphqlQuery(
+                epVariables,
+                "73d998d209d6d8de325db91ed8f65716dce2a1c5f4df7d304d952fa3f223c9e8"
+            )?.data?.episodeInfos
         }
         return null
     }
@@ -210,6 +213,7 @@ class AllAnime : AnimeParser() {
         data class Data(
             val shows: ShowsConnection?,
             val show: Show?,
+            val showsWithIds: List<Show>?,
             val episodeInfos: List<EpisodeInfo>?,
             val episode: AllAnimeEpisode?,
         )
@@ -224,10 +228,8 @@ class AllAnime : AnimeParser() {
             val name: String,
             val englishName: String?,
             val nativeName: String?,
-            val thumbnail: String,
+            val thumbnail: String?,
             val availableEpisodes: AvailableEpisodes,
-            // Actually just raw unspecified json
-            val lastEpisodeInfo: LastEpisodeInfos,
             val altNames: List<String>?
         )
 

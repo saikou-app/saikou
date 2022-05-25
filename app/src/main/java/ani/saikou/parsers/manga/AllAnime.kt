@@ -101,14 +101,12 @@ class AllAnime : MangaParser() {
         val variables = """{"_id": "$showId"}"""
         val manga = graphqlQuery(variables, "f60064134ecbaf89350a8aae1441dbffc86cf561a193a3bb8db4bb5a9989b9ad")?.data?.manga
         if (manga != null) {
-            val epCount = manga.lastChapterInfo?.sub?.chapterString
-            if (epCount != null) {
-                val epVariables = """{"showId":"manga@$showId","episodeNumStart":0,"episodeNumEnd":${epCount.toFloat()}}"""
-                return graphqlQuery(
-                    epVariables,
-                    "73d998d209d6d8de325db91ed8f65716dce2a1c5f4df7d304d952fa3f223c9e8"
-                )?.data?.episodeInfos
-            }
+            val epCount = manga.availableChapters.sub
+            val epVariables = """{"showId":"manga@$showId","episodeNumStart":0,"episodeNumEnd":${epCount.toFloat()}}"""
+            return graphqlQuery(
+                epVariables,
+                "73d998d209d6d8de325db91ed8f65716dce2a1c5f4df7d304d952fa3f223c9e8"
+            )?.data?.episodeInfos
         }
         return null
     }
@@ -134,18 +132,7 @@ class AllAnime : MangaParser() {
             val nativeName: String?,
             val thumbnail: String,
             val availableChapters: AvailableChapters,
-            val lastChapterInfo: LastChapterInfos?,
             val altNames: List<String>?
-        )
-
-        data class LastChapterInfos(
-            val sub: LastChapterInfo?,
-            val raw: LastChapterInfo?,
-        )
-
-        data class LastChapterInfo(
-            val chapterString: String?,
-            val notes: String?
         )
 
         data class AvailableChapters(
