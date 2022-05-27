@@ -3,6 +3,7 @@ package ani.saikou.parsers.anime
 import ani.saikou.*
 import ani.saikou.parsers.*
 import ani.saikou.parsers.anime.extractors.StreamTape
+import ani.saikou.parsers.anime.extractors.VidVard
 import ani.saikou.parsers.anime.extractors.VizCloud
 import com.fasterxml.jackson.module.kotlin.readValue
 import kotlinx.coroutines.sync.Mutex
@@ -50,7 +51,7 @@ class NineAnime : AnimeParser() {
         val extractor: VideoExtractor? = when (server.name) {
             "Vidstream"  -> VizCloud(server)
             "MyCloud"    -> VizCloud(server)
-//            "VideoVard"  -> VidVard(server)
+            "VideoVard"  -> VidVard(server)
             "Streamtape" -> StreamTape(server)
             else         -> null
         }
