@@ -1,0 +1,18 @@
+name: Bug Report
+description: Report broken or incorrect behaviour
+labels: bug
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking your time to fill out this form. For real-time support, consider asking in the `#support` channel on our Discord: [LINK_HERE].
+
+        Please note that this form is for bug reports only!
+
+  - type: input
+    attributes:
+      label: Summary
+      description: A short summary of the bug report
+      validations:
+        required: true
