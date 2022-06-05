@@ -14,5 +14,5 @@ body:
     attributes:
       label: Summary
       description: A short summary of the bug report
-      validations:
-        required: true
+    validations:
+      required: true
