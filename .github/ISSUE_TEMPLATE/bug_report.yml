@@ -57,11 +57,12 @@ body:
       options:
         - label: I have searched the open issues for duplicates.
           required: true
-        - label: I have read the Planned Stuff and Rejected Stuff on the README.
+        - label: >
+          I have read the [Planned Stuff](https://github.com/saikou-app/saikou#planned-stuff) and [Rejected Stuff](https://github.com/saikou-app/saikou#rejected-stuff) on the README.
           required: true
 
-    - type: textarea
-      attributes:
-        label: Additional Information
-        description: If there is anything else to say, please do so here.
+  - type: textarea
+    attributes:
+      label: Additional Information
+      description: If there is anything else to say, please do so here.
 
