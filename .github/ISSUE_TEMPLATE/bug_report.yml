@@ -42,22 +42,25 @@ body:
     attributes:
       label: Device Information
       description: Please provide some information of the device you are using.
-      placeholder: |
-        ## Example:
+      placeholder: >
+        # Example:
+
         Samsung galaxy note 20
         Android 12
-        Saikou version: 0.0.0 
+        Saikou version 0.0.0 
     validations:
       required: true
 
   - type: checkboxes
     attributes:
       label: Checklist
-      description: Let's make sure that you have reported this bug properly.
+      description: >
+        Let's make sure that you have reported this bug properly.
       options:
         - label: I have searched the open issues for duplicates.
           required: true
-        - label: I have read the [Planned Stuff](https://github.com/saikou-app/saikou#planned-stuff) and [Rejected Stuff](https://github.com/saikou-app/saikou#rejected-stuff) on the README.
+        - label: >
+          I have read the [Planned Stuff](https://github.com/saikou-app/saikou#planned-stuff) and [Rejected Stuff](https://github.com/saikou-app/saikou#rejected-stuff) on the README.
           required: true
 
     - type: textarea
