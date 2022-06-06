@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Please make sure thay you have read the entire README.
+        Please make sure that you have read the entire README.
         Especially the [Planned Stuff](https://github.com/saikou-app/saikou#planned-stuff) and [Rejected Stuff](https://github.com/saikou-app/saikou#rejected-stuff).
 
   - type: input
