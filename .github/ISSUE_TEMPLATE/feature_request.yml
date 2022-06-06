@@ -7,10 +7,7 @@ body:
     attributes:
       value: |
         Please make sure thay you have read the entire README.
-        Especially the [Planned Stuff](http
-s://github.com/saikou-app/saikou#planned-stuff) and [
-Rejected Stuff](https://github.com/saikou-app/saikou#
-rejected-stuff).
+        Especially the [Planned Stuff](https://github.com/saikou-app/saikou#planned-stuff) and [Rejected Stuff](https://github.com/saikou-app/saikou#rejected-stuff).
 
   - type: input
     attributes:
