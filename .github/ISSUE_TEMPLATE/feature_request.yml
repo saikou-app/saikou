@@ -1,0 +1,51 @@
+name: Feature Request
+description: Suggest a feature for Saikou
+labels: feature request
+body:
+
+  - type: markdown
+    attributes:
+      value: |
+        Please make sure thay you have read the entire README.
+        Especially the [Planned Stuff](http
+s://github.com/saikou-app/saikou#planned-stuff) and [
+Rejected Stuff](https://github.com/saikou-app/saikou#
+rejected-stuff).
+
+  - type: input
+    attributes:
+      label: Summary
+      description: A short summary of what your feature request is.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: The Problem
+      description: >
+        What problem is your feature trying to solve?
+        What becomes easier or possible when this feature is implemented?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: The Ideal Solution
+      description: >
+        What is your ideal solution to the problem?
+        What would you like this feature to do?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: The Current Solution
+      description: What is the current solution to the problem, if any?
+    validations:
+      required: false
+  
+  - type: textarea
+    attributes:
+      label: Additional Context
+      description: If there is anything else to say, please do so here.
+
