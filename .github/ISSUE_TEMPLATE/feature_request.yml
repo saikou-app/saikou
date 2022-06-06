@@ -1,6 +1,6 @@
 name: Feature Request
 description: Suggest a feature for Saikou
-labels: feature request
+labels: enhancement
 body:
 
   - type: markdown
