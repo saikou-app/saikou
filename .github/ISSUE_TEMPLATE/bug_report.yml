@@ -16,3 +16,34 @@ body:
       description: A short summary of the bug report
     validations:
       required: true
+
+  - type: textarea
+    attributes:
+      label: Reproduction Steps
+      description: What you did to make it happen.
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Expexted Result
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Actual Result
+      description: What actually happened?
+    validations:
+      required: true
+
+  - type: textarea
+    attributes:
+      label: Device Information
+      description: Please provide some information of the device you are using.
+    validations:
+      required: true
+
+  - type: checkboxes
+
