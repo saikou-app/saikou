@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for taking your time to fill out this form. For real-time support, consider asking in the `#support` channel on our Discord: [LINK_HERE].
+        Thank you for taking your time to fill out this form. For real-time support, consider asking in the `#support` channel on our Discord: https://discord.gg/5TXAWTU5qr
 
         Please note that this form is for bug reports only!
 
@@ -42,8 +42,26 @@ body:
     attributes:
       label: Device Information
       description: Please provide some information of the device you are using.
+      placeholder: |
+        ## Example:
+        Samsung galaxy note 20
+        Android 12
+        Saikou version: 0.0.0 
     validations:
       required: true
 
   - type: checkboxes
+    attributes:
+      label: Checklist
+      description: Let's make sure that you have reported this bug properly.
+      options:
+        - label: I have searched the open issues for duplicates.
+          required: true
+        - label: I have read the [Planned Stuff](https://github.com/saikou-app/saikou#planned-stuff) and [Rejected Stuff](https://github.com/saikou-app/saikou#rejected-stuff) on the README.
+          required: true
+
+    - type: textarea
+      attributes:
+        label: Additional Information
+        description: If there is anything else to say, please do so here.
 
