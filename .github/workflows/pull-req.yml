@@ -2,7 +2,10 @@ name: PR Test Builds
 
 on:
   pull_request:
-      branches: [ main ]
+    branches: [ main ]
+    paths-ignore:
+      - '.github/**'
+      - '**.md'
 
 jobs:
   build:
