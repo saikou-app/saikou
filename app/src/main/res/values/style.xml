@@ -49,5 +49,9 @@
         <item name="shapeAppearance">@style/ShapeAppearance.MaterialComponents.Tooltip</item>
     </style>
 
+    <style name="MyPopup" parent="@style/Widget.MaterialComponents.PopupMenu">
+        <item name="android:popupBackground">@color/bg</item>
+    </style>
+
     <style name="BottomNavBar" parent="Widget.Material3.BottomNavigationView.ActiveIndicator"/>
 </resources>

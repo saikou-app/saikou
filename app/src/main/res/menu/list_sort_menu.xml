@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/score"
+        android:title="@string/sort_by_score" />
+    <item
+        android:id="@+id/title"
+        android:title="@string/sort_by_title" />
+    <item
+        android:id="@+id/updated"
+        android:title="@string/sort_by_last_updated" />
+</menu>

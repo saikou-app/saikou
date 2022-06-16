@@ -258,5 +258,8 @@
     <string name="true_colors">True Colors</string>
     <string name="true_colors_info">(32-bit color Mode) Reduces Banding on the images, may affect performance.</string>
     <string name="image_rotation">Image Rotation</string>
+    <string name="sort_by_title">Sort by Title</string>
+    <string name="sort_by_last_updated">Sort by Last Updated</string>
+    <string name="sort_by_score">Sort by Score</string>
 
 </resources>

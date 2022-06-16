@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.lifecycleScope
@@ -51,5 +52,24 @@ class ListActivity : AppCompatActivity() {
                 }
             }
         }
+
+       binding.listSort.setOnClickListener {
+           val popup = PopupMenu(this, it)
+           popup.setOnMenuItemClickListener { item ->
+               val sort = when (item.itemId) {
+                   R.id.score -> "score"
+                   R.id.title -> "title"
+                   R.id.updated -> "updatedAt"
+                   else -> null
+               }
+
+               scope.launch {
+                   withContext(Dispatchers.IO) { model.loadLists(anime, intent.getIntExtra("userId", 0), sort) }
+               }
+               true
+           }
+           popup.inflate(R.menu.list_sort_menu)
+           popup.show()
+       }
     }
 }

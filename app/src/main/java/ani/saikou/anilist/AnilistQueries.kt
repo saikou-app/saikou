@@ -368,7 +368,7 @@ class AnilistQueries {
         return default
     }
 
-    suspend fun getMediaLists(anime: Boolean, userId: Int): MutableMap<String, ArrayList<Media>> {
+    suspend fun getMediaLists(anime: Boolean, userId: Int, sortOrder: String? = null): MutableMap<String, ArrayList<Media>> {
         val response =
             executeQuery<Query.MediaListCollection>("""{ MediaListCollection(userId: $userId, type: ${if (anime) "ANIME" else "MANGA"}) { lists { name entries { status progress score(format:POINT_100) updatedAt media { id idMal isAdult type status chapters episodes nextAiringEpisode {episode} bannerImage meanScore isFavourite coverImage{large} title {english romaji userPreferred } } } } user { mediaListOptions { rowOrder animeList { sectionOrder } mangaList { sectionOrder } } } } }""")
         val sorted = mutableMapOf<String, ArrayList<Media>>()
@@ -414,7 +414,7 @@ class AnilistQueries {
 
         sorted["All"] = all
 
-        val sort = options?.rowOrder
+        val sort = sortOrder ?: options?.rowOrder
         for (i in sorted.keys) {
             when (sort) {
                 "score"     -> sorted[i]?.sortWith { b, a -> compareValuesBy(a, b, { it.userScore }, { it.meanScore }) }
