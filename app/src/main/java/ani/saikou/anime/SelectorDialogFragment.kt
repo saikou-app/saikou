@@ -248,6 +248,11 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                     }
                     startExoplayer(media!!)
                 }
+                itemView.setOnLongClickListener {
+                    val url = extractor.videos[position].url.url
+                    copyToClipboard(url, false)
+                    toastString("Copied video URL to clipboard"); true
+                }
             }
         }
     }
