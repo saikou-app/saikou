@@ -63,6 +63,8 @@ class ListActivity : AppCompatActivity() {
                    else -> null
                }
 
+               binding.listProgressBar.visibility = View.VISIBLE
+               binding.listViewPager.adapter = null
                scope.launch {
                    withContext(Dispatchers.IO) { model.loadLists(anime, intent.getIntExtra("userId", 0), sort) }
                }
