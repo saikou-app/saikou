@@ -66,6 +66,7 @@ Saikou is crafted based on simplistic yet state-of-the-art elegance. It is an [A
 | [MangaDex](https://mangadex.org/)        | WORKING |
 | [MangaReaderTo](https://mangareader.to/) | WORKING |
 | [AllAnime](https://allanime.site)        | WORKING |
+| [NHentai (18+)](https://nhentai.net)           | WORKING |
 
 ## Planned Stuff
 
