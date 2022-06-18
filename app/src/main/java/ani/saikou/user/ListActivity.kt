@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import ani.saikou.R
 import ani.saikou.Refresh
 import ani.saikou.databinding.ActivityListBinding
+import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -20,6 +21,7 @@ import kotlinx.coroutines.withContext
 class ListActivity : AppCompatActivity() {
     private lateinit var binding: ActivityListBinding
     private val scope = lifecycleScope
+    private var selectedTabIdx = 0
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,6 +33,14 @@ class ListActivity : AppCompatActivity() {
         val anime = intent.getBooleanExtra("anime", true)
         binding.listTitle.text = intent.getStringExtra("username") + "'s " + (if (anime) "Anime" else "Manga") + " List"
 
+        binding.listTabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab?) {
+                this@ListActivity.selectedTabIdx = tab?.position ?: 0
+            }
+            override fun onTabUnselected(tab: TabLayout.Tab?) { }
+            override fun onTabReselected(tab: TabLayout.Tab?) { }
+        })
+
         val model: ListViewModel by viewModels()
         model.getLists().observe(this) {
             if (it != null) {
@@ -38,11 +48,14 @@ class ListActivity : AppCompatActivity() {
                 binding.listViewPager.adapter = ListViewPagerAdapter(it.size, this)
                 val keys = it.keys.toList()
                 val values = it.values.toList()
+                val savedTab = this.selectedTabIdx;
                 TabLayoutMediator(binding.listTabLayout, binding.listViewPager) { tab, position ->
                     tab.text = "${keys[position]} (${values[position].size})"
                 }.attach()
+                binding.listViewPager.setCurrentItem(savedTab, false)
             }
         }
+
         val live = Refresh.activity.getOrPut(this.hashCode()) { MutableLiveData(true) }
         live.observe(this) {
             if (it) {
