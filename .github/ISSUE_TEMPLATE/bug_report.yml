@@ -41,7 +41,13 @@ body:
   - type: textarea
     attributes:
       label: Device Information
-      description: Please provide some information of the device you are using.
+      description: |
+        Please provide some information of the device you are using.
+        You can get the device info by doing these steps:
+        1) Open Saikou
+        2) Go to settings
+        3) Scroll to the bottom
+        4) Long press "Version X.X.X"
       placeholder: |
         Example -
         Samsung galaxy note 20
