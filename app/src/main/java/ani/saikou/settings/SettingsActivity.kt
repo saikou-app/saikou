@@ -1,5 +1,7 @@
 package ani.saikou.settings
 
+import android.os.Build.*
+import android.os.Build.VERSION.*
 import android.content.Intent
 import android.graphics.drawable.Animatable
 import android.os.Bundle
@@ -27,6 +29,29 @@ class SettingsActivity : AppCompatActivity() {
         initActivity(this)
 
         binding.settingsVersion.text = getString(R.string.version_current, BuildConfig.VERSION_NAME)
+        binding.settingsVersion.setOnLongClickListener {
+            fun getArch(): String {
+                SUPPORTED_ABIS.forEach {
+                    when(it) {
+                        "arm64-v8a" -> return "aarch64"
+                        "armeabi-v7a" -> return "arm"
+                        "x86_64" -> return "x86_64"
+                        "x86" -> return "i686"}
+                }
+                return System.getProperty("os.arch") ?: System.getProperty("os.product.cpu.abi") ?: "Unknown Architecture"
+            }
+            val info = """
+Saikou Version: ${BuildConfig.VERSION_NAME}
+Brand: $BRAND
+Board: $BOARD
+Architecture: ${getArch()}
+Bootloader: $BOOTLOADER
+OS Version: $CODENAME $RELEASE (SDK v${SDK_INT})
+            """.trimIndent()
+            copyToClipboard(info, false)
+            toast("Copied device info")
+            return@setOnLongClickListener true
+        }
 
         binding.settingsContainer.updateLayoutParams<ViewGroup.MarginLayoutParams> {
             topMargin = statusBarHeight
