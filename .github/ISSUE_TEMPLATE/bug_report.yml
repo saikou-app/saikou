@@ -49,10 +49,10 @@ body:
         3) Scroll to the bottom
         4) Long press "Version X.X.X"
       placeholder: |
-        Example -
-        Samsung galaxy note 20
-        Android 12
-        Saikou version 0.0.0 
+        Saikou Version: X.X.X
+        Brand: Samsung
+        Architecture: aarch64
+        Android Version: 11
     validations:
       required: true
 
