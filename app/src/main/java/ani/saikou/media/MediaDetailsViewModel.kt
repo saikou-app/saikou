@@ -197,7 +197,7 @@ class MediaDetailsViewModel : ViewModel() {
     suspend fun overrideMangaChapters(i: Int, source: ShowResponse, id: Int) {
         mangaReadSources?.saveResponse(i, id, source)
         tryWithSuspend {
-            mangaLoaded[i] = mangaReadSources?.loadChapters(i, source.link) ?: return@tryWithSuspend
+            mangaLoaded[i] = mangaReadSources?.loadChapters(i, source) ?: return@tryWithSuspend
         }
         mangaChapters.postValue(mangaLoaded)
     }

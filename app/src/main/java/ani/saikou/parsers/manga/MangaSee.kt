@@ -17,7 +17,7 @@ class MangaSee : MangaParser() {
     override val saveName = "manga_see"
     override val hostUrl = host
 
-    override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
+    override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
 
         val json = client.get("$hostUrl/manga/$mangaLink").document.select("script")
             .lastOrNull()?.toString()?.findBetween("vm.Chapters = ", ";")?: return listOf()
@@ -62,13 +62,10 @@ class MangaSee : MangaParser() {
         suspend fun getSearchData(): List<ShowResponse> {
             response = if (response != null) response ?: listOf()
             else {
-                val json = client.get("$host/search/").document.select("script").last().toString()
-                    .findBetween("vm.Directory = ", "\n")!!.replace(";", "")
+                val json = client.get("$host/search/").document.select("script")
+                    .last().toString().findBetween("vm.Directory = ", "\n")!!.replace(";", "")
                 mapper.readValue<List<SearchResponse>>(json).map {
-                    ShowResponse(
-                        it.s,
-                        it.i,
-                        "https://cover.nep.li/cover/${it.i}.jpg"
+                    ShowResponse(it.s, it.i, "https://cover.nep.li/cover/${it.i}.jpg"
                     )
                 }
             }

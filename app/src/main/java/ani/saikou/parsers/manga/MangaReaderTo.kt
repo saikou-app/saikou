@@ -30,7 +30,7 @@ class MangaReaderTo : MangaParser() {
 
     private val transformation = MangaReaderToTransformation()
 
-    override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
+    override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
 
         return client.get(mangaLink).document.select("#en-chapters > .chapter-item > a").reversed()
             .mapIndexed { i: Int, it: Element ->
@@ -42,27 +42,21 @@ class MangaReaderTo : MangaParser() {
     }
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
-
         val id = client.get(chapterLink).document.select("#wrapper").attr("data-reading-id")
-
         val res = client.get("$hostUrl/ajax/image/list/chap/$id?mode=vertical&quality=high&hozPageSize=1")
-                .parsed<HtmlResponse>().html ?: return listOf()
-
+            .parsed<HtmlResponse>().html ?: return listOf()
         return Jsoup.parse(res).select(".iv-card").map {
             val link = it.attr("data-url")
             val trans = it.hasClass("shuffled")
             MangaImage(link, trans)
         }
-
     }
 
     override fun getTransformation(): Transformation<File> = transformation
 
     override suspend fun search(query: String): List<ShowResponse> {
-
         val res = client.get("$hostUrl/ajax/manga/search/suggest?keyword=${encode(query)}")
             .parsed<HtmlResponse>().html ?: return listOf()
-
         return Jsoup.parse(res).select("a:not(.nav-bottom)").map {
             val link = hostUrl + it.attr("href")
             val title = it.select(".manga-name").text()

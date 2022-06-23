@@ -41,15 +41,15 @@ abstract class MangaReadSources : BaseSources() {
     suspend fun loadChaptersFromMedia(i: Int, media: Media): MutableMap<String, MangaChapter> {
         return tryWithSuspend {
             val res = get(i).autoSearch(media) ?: return@tryWithSuspend mutableMapOf()
-            loadChapters(i, res.link)
+            loadChapters(i, res)
         } ?: mutableMapOf()
     }
 
-    suspend fun loadChapters(i: Int, showLink: String): MutableMap<String, MangaChapter> {
+    suspend fun loadChapters(i: Int, show: ShowResponse): MutableMap<String, MangaChapter> {
         val map = mutableMapOf<String, MangaChapter>()
         val parser = get(i)
         tryWithSuspend {
-            parser.loadChapters(showLink).forEach {
+            parser.loadChapters(show.link, show.extra).forEach {
                 map[it.number] = MangaChapter(it)
             }
         }

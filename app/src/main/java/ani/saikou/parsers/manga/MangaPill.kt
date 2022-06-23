@@ -12,7 +12,7 @@ class MangaPill : MangaParser() {
     override val saveName = "manga_pill"
     override val hostUrl = "https://mangapill.com"
 
-    override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
+    override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
         return client.get(mangaLink).document.select("#chapters > div > a").reversed().map {
             val chap = it.text().replace("Chapter ", "")
             MangaChapter(chap, hostUrl + it.attr("href"))

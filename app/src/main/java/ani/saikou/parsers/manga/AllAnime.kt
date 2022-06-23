@@ -16,8 +16,7 @@ class AllAnime : MangaParser() {
     private val idRegex = Regex("${hostUrl}/manga/(\\w+)")
     private val epNumRegex = Regex("/[sd]ub/(\\d+)")
 
-
-    override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
+    override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
         val responseArray = mutableListOf<MangaChapter>()
         tryWithSuspend {
             val showId = idRegex.find(mangaLink)?.groupValues?.get(1)
@@ -52,7 +51,6 @@ class AllAnime : MangaParser() {
                 chapter?.pictureUrls?.sortedBy { it.num }?.forEach { images.add(MangaImage("""${chapter.pictureUrlHead}${it.url}""")) }
             }
         }
-
         return images
     }
 
@@ -71,16 +69,9 @@ class AllAnime : MangaParser() {
                     show.nativeName?.let { otherNames.add(it) }
                     show.altNames?.forEach { otherNames.add(it) }
                     responseArray.add(
-                        ShowResponse(
-                            show.name,
-                            link,
-                            show.thumbnail,
-                            otherNames,
-                            show.availableChapters.sub
-                        )
+                        ShowResponse(show.name, link, show.thumbnail, otherNames, show.availableChapters.sub)
                     )
                 }
-
             }
         }
         return responseArray

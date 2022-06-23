@@ -15,14 +15,12 @@ class MangaKakalot : MangaParser() {
 
     val headers = mapOf("referer" to hostUrl)
 
-    override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
-
+    override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
         val res = client.get(mangaLink).document
             .select(
                 if (mangaLink.contains("readmanganato.com")) ".row-content-chapter > .a-h"
                 else ".chapter-list > .row > span"
             ).reversed()
-
         return res.mapNotNull {
             val chap = Regex("((?<=Chapter )[0-9.]+)([\\s:]+)?(.+)?").find(it.select("a").text())?.destructured
             if (chap != null) {
@@ -30,11 +28,9 @@ class MangaKakalot : MangaParser() {
                 MangaChapter(chap.component1(), link, chap.component3())
             } else null
         }
-
     }
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
-
         return client.get(chapterLink).document.select(".container-chapter-reader > img").map {
             val file = FileUrl(it.attr("src"), headers)
             MangaImage(file)
@@ -42,11 +38,9 @@ class MangaKakalot : MangaParser() {
     }
 
     override suspend fun search(query: String): List<ShowResponse> {
-
         val res = client
             .get("$hostUrl/search/story/${query.replace(" ", "_").replace(Regex("\\W"), "")}")
             .document.select(".story_item")
-
         return res.mapNotNull {
             if (it.select(".story_name > a").text() != "") {
                 ShowResponse(

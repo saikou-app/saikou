@@ -15,7 +15,7 @@ class MangaDex : MangaParser() {
 
     val host = "https://api.mangadex.org"
 
-    override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
+    override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
         val old = showUserText
         setUserText("Getting Chapters...")
         val list = mutableListOf<MangaChapter>()
@@ -50,9 +50,7 @@ class MangaDex : MangaParser() {
     }
 
     override suspend fun search(query: String): List<ShowResponse> {
-        val json = client.get("$host/manga?limit=15&title=$query&order[followedCount]=desc&includes[]=cover_art")
-            .parsed<SearchResponse>()
-
+        val json = client.get("$host/manga?limit=15&title=$query&order[followedCount]=desc&includes[]=cover_art").parsed<SearchResponse>()
         return json.data?.mapNotNull {
             val id = it.id ?: return@mapNotNull null
             val title = it.attributes?.title?.en ?: return@mapNotNull null

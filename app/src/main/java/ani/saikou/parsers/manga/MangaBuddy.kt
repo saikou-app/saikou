@@ -16,7 +16,7 @@ class MangaBuddy : MangaParser() {
 
     val headers = mapOf("referer" to hostUrl)
 
-    override suspend fun loadChapters(mangaLink: String): List<MangaChapter> {
+    override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
 
         val res = client.get("$hostUrl/api/manga${mangaLink}/chapters?source=detail")
             .document.select("#chapter-list>li").reversed()
@@ -39,7 +39,6 @@ class MangaBuddy : MangaParser() {
     }
 
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
-
         val res = client.get(chapterLink).text
         val cdn = res.findBetween("var mainServer = \"", "\";")
         val arr = res.findBetween("var chapImages = ", "\n")?.trim('\'')?.split(",")
@@ -51,7 +50,6 @@ class MangaBuddy : MangaParser() {
     }
 
     override suspend fun search(query: String): List<ShowResponse> {
-
         val doc = client.get("$hostUrl/search?status=all&sort=views&q=$query")
             .document.select(".list > .book-item > .book-detailed-item > .thumb > a")
 
