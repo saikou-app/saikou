@@ -5,6 +5,7 @@ import ani.saikou.parsers.MangaChapter
 import ani.saikou.parsers.MangaImage
 import ani.saikou.parsers.MangaParser
 import ani.saikou.parsers.ShowResponse
+import ani.saikou.toast
 
 class Comickfun : MangaParser() {
 
@@ -22,9 +23,14 @@ class Comickfun : MangaParser() {
     }
 
     override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
+        // You only need "hid" from here
         val resp = client.get(mangaLink).parsed<MangaChapterData>()
+        // Contains other languages too. So filter it
         val filtered = resp.chapters.filter { chapter -> chapter.lang == "en" }
-        val weirdUrl = "https://comick.fun/_next/data/AME6vwUgUUAUopPyx9QYb/comic/${extra!!["slug"]}/${filtered[0].hid}-chapter-0-en.json"
+        val buildManifestId = getBuildManifest()
+        // Maybe useful in future if website changes/breaks
+        if (buildManifestId == null) { toast("getBuildManifest() returned null") }
+        val weirdUrl = "https://comick.fun/_next/data/${buildManifestId}/comic/${extra!!["slug"]}/${filtered[0].hid}-chapter-0-en.json"
         val secondResp = client.get(weirdUrl).parsed<WeirdUrlData>()
         return secondResp.pageProps.chapters.reversed().map {
             val chapterLink = "$hostUrl/chapter/${it.hid}?tachiyomi=true"
@@ -36,13 +42,21 @@ class Comickfun : MangaParser() {
         val resp = client.get(chapterLink).parsed<MangaImageData>()
         return resp.chapter.images.map { MangaImage(url = it.url) }
     }
+
+    companion object {
+        private suspend fun getBuildManifest(): String? {
+            val document = client.get("https://comick.fun/").document.html()
+            val buildIdRe = Regex("buildId\":\"(\\w+)\"")
+            return buildIdRe.find(document, 0)?.groupValues?.get(1)
+        }
+    }
 }
 
 // --- dataclasses --- //
 
 private data class WeirdUrlData(val pageProps: Data) {
-    data class Data(val chapters: List<Chapters>) {
-        data class Chapters(
+    data class Data(val chapters: List<Chapter>) {
+        data class Chapter(
             val chap: String?, // chapter number
             val hid: String,
         )
@@ -53,11 +67,11 @@ private data class SearchData(
     val title: String,
     val id: Int,
     val slug: String,
-    val md_titles: List<MdTitles>,
+    val md_titles: List<MdTitles>, // other titles
     val cover_url: String,
 ) {
     data class MdTitles(
-        val title: String, // other titles
+        val title: String,
     )
 }
 
