@@ -1,6 +1,5 @@
 package ani.saikou.parsers.manga
 
-import android.util.Log
 import ani.saikou.client
 import ani.saikou.parsers.MangaChapter
 import ani.saikou.parsers.MangaImage
