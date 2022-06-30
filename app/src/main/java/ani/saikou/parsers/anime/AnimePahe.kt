@@ -27,9 +27,11 @@ class AnimePahe : AnimeParser() {
 
     override suspend fun loadVideoServers(episodeLink: String, extra: Any?): List<VideoServer> {
         val resp = client.get(episodeLink).parsed<KwikUrls>()
-        return resp.data.toList().map { it.entries.map {
-                o -> VideoServer(name = "Kwik ${o.key}p", embedUrl = o.value.kwik.toString())
-        } }[0]
+        val servers = mutableListOf<VideoServer>()
+        resp.data.forEach { it.entries.map { o -> servers.add(
+            VideoServer(name = "Kwik - ${o.key}p", embedUrl = o.value.kwik.toString())
+        )} }
+        return servers
     }
 
     override suspend fun getVideoExtractor(server: VideoServer): VideoExtractor? = AnimePaheExtractor(server)
@@ -44,7 +46,8 @@ class AnimePahe : AnimeParser() {
             val i = obfUrl?.split('|')?.reversed()!!
             val m3u8Url = "${i[0]}://${i[1]}-${i[2]}.${i[3]}.${i[4]}.${i[5]}/${i[6]}/${i[7]}/${i[8]}/${i[9]}.${i[10]}"  // :pepega:
             return VideoContainer(
-                videos = listOf(Video(quality = null, isM3U8 = true, url = FileUrl(m3u8Url, mapOf("Referer" to "https://kwik.cx/"))))
+                videos = listOf(Video(quality = null, isM3U8 = true,
+                    url = FileUrl(m3u8Url, mapOf("Referer" to "https://kwik.cx/", "Accept" to "*/*"))))
             )
         }
     }
