@@ -27,7 +27,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
 
-
 class SelectorDialogFragment : BottomSheetDialogFragment() {
     private var _binding: BottomSheetSelectorBinding? = null
     private val binding get() = _binding!!
@@ -262,16 +261,8 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                 }
                 itemView.setOnLongClickListener {
                     val video = extractor.videos[position]
-                    copyToClipboard(video.url.url, false)
                     // 1DM integration
                     val episode = media!!.anime!!.episodes!![media!!.anime!!.selectedEpisode!!]!!
-
-                    // if package "idm.internet.download.manager.plus" is installed, then set appName to "idm.internet.download.manager.plus"
-                    // if package "idm.internet.download.manager" is installed, then set appName to "idm.internet.download.manager"
-                    // if package "idm.internet.download.manager.lite" is installed, then set appName to "idm.internet.download.manager.lite"
-                    // if any of the above packages are installed, then define the val intent to be launched with the appName
-                    // if none of the above packages are installed, then copy the url to clipboard and show a toast
-
                     val pm = context!!.packageManager
                     val appName = if (isPackageInstalled("idm.internet.download.manager.plus", pm)) {
                         "idm.internet.download.manager.plus"
