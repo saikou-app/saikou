@@ -251,8 +251,19 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                 itemView.setOnLongClickListener {
                     val video = extractor.videos[position]
                     copyToClipboard(video.url.url, false)
-                    if (video.isM3U8) toast("Copied m3u8 URL to clipboard")
-                    else toast("Copied video URL to clipboard"); true
+                    val episode = media!!.anime!!.episodes!![media!!.anime!!.selectedEpisode!!]!!
+                    val intent = Intent(Intent.ACTION_VIEW, "idm.internet.download.manager.plus".toUri())
+                    intent.data = video.url.url.toUri()
+                    intent.`package` = "idm.internet.download.manager.plus"
+                    intent.setClassName(
+                        "idm.internet.download.manager.plus",
+                        "idm.internet.download.manager.Downloader"
+                    )
+                    intent.addCategory(Intent.CATEGORY_DEFAULT)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    intent.putExtra("extra_filename", ("[EP " + episode.number.toString() + "] " + episode.title.toString()))
+                    startActivity(intent)
+                    toast("Link sent to 1DM")
                 }
             }
         }
