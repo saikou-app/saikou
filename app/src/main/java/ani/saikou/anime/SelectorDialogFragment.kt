@@ -265,28 +265,38 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                     copyToClipboard(video.url.url, false)
                     // 1DM integration
                     val episode = media!!.anime!!.episodes!![media!!.anime!!.selectedEpisode!!]!!
+
+                    // if package "idm.internet.download.manager.plus" is installed, then set appName to "idm.internet.download.manager.plus"
+                    // if package "idm.internet.download.manager" is installed, then set appName to "idm.internet.download.manager"
+                    // if package "idm.internet.download.manager.lite" is installed, then set appName to "idm.internet.download.manager.lite"
+                    // if any of the above packages are installed, then define the val intent to be launched with the appName
+                    // if none of the above packages are installed, then copy the url to clipboard and show a toast
+
                     val pm = context!!.packageManager
                     val appName = if (isPackageInstalled("idm.internet.download.manager.plus", pm)) {
                         "idm.internet.download.manager.plus"
                     } else if (isPackageInstalled("idm.internet.download.manager", pm)) {
                         "idm.internet.download.manager"
+                    }
+                    else if (isPackageInstalled("idm.internet.download.manager.lite", pm)) {
+                        "idm.internet.download.manager.adm.lite"
                     } else {
                         ""
                     }
-                    if (appName != "") {
+                    if (appName.isNotEmpty()) {
                         val intent = Intent(Intent.ACTION_VIEW).apply {
                             addCategory(Intent.CATEGORY_DEFAULT)
                             data = Uri.parse(video.url.url)
                             putExtra("extra_filename", "[EP " + episode.number + "] " + episode.title.toString())
                             setPackage(appName)
-                            setClassName("idm.internet.download.manager.plus", "idm.internet.download.manager.Downloader")
+                            setClassName(appName, "idm.internet.download.manager.Downloader")
                         }
                         startActivity(intent)
                         toast("Link sent to 1DM"); true
                     }
-                    else{
-                        if (video.isM3U8) toast("Copied m3u8 URL to clipboard")
-                        else toast("Copied video URL to clipboard"); true
+                    else {
+                        copyToClipboard(video.url.url, false)
+                        toast("Link copied to clipboard"); true
                     }
                 }
             }
