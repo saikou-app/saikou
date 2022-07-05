@@ -3,7 +3,7 @@ The branch 'main' works with 1DM**+**
 If you want the same functionality with normal 1DM, please build from the branch "1dm".
 
 # **Changes to Original**
-+ Added support to send downloadlink to 1Dm when longpressing on the source selector.
++ Added support to send the download link to 1DM when longpressing on the source selector.
 
 # Note
 I am in no way familiar with Kotlin, so I cant gurantee, that everything works without problems.
