@@ -19,7 +19,8 @@ object MangaSources : MangaReadSources() {
 
 object HMangaSources : MangaReadSources() {
     val aList: List<Lazier<BaseParser>> = lazyList(
-        "NHentai" to ::NHentai
+        "NHentai" to ::NHentai,
+        "NineHentai" to ::NineHentai,
     )
     override val list = listOf(aList,MangaSources.list).flatten()
 }
