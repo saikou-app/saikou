@@ -274,7 +274,6 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                     } else {
                         ""
                     }
-                    toast(appName)
                     if (appName.isNotEmpty()) {
                         val intent = Intent(Intent.ACTION_VIEW).apply {
                             addCategory(Intent.CATEGORY_DEFAULT)
