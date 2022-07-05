@@ -1,9 +1,3 @@
-# **Changes to Original**
-+ Added support to send the download link to 1DM when longpressing on the source selector.
-
-# Note
-I am in no way familiar with Kotlin so I cant gurantee that everything works without problems. The changes were tested on an Android 12 emulator.
-
 # **Saikou**
 <p align="center">
    <a href="https://discord.gg/5TXAWTU5qr"><img src="https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white"></a>
