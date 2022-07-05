@@ -17,11 +17,11 @@ class NineHentai : MangaParser() {
     override val isNSFW = true
 
     override suspend fun search(query: String): List<ShowResponse> {
-        val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
-        val requestBody = RequestBody.create(mediaType, "{\"search\":{\"text\":\"${encode(query)}\",\"page\":0,\"sort\":0,\"pages\":{\"range\":[0,2000]},\"tag\":{\"text\":\"\",\"type\":1,\"tags\":[],\"items\":{\"included\":[],\"excluded\":[]}}}}")
+        //val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+        //val requestBody = RequestBody.create(mediaType, "{\"search\":{\"text\":\"${encode(query)}\",\"page\":0,\"sort\":0,\"pages\":{\"range\":[0,2000]},\"tag\":{\"text\":\"\",\"type\":1,\"tags\":[],\"items\":{\"included\":[],\"excluded\":[]}}}}")
         val resp = client.post(
-            "https://9hentai.to/api/getBook",
-            requestBody = requestBody
+            "https://9hentai.to/api/getBook", json = mapOf()
+            //requestBody = requestBody
         ).parsed<SearchResponse>()
         if (resp.status) {
             return resp.results.map {
@@ -42,7 +42,7 @@ class NineHentai : MangaParser() {
 
     override suspend fun loadChapters(mangaLink: String, extra: Map<String, String>?): List<MangaChapter> {
         val imageServer = extra!!["imageServer"]
-        val totalPages = extra["totalPages"]!!.toInt()
+        val totalPages = extra["totalPages"]
         val id = extra["id"]
         // There's no "chapters" here on 9hentai so we just return it as the first chapter.
         return listOf(
