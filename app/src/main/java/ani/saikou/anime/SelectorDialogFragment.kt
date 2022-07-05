@@ -264,7 +264,7 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     intent.putExtra("extra_filename", ("[EP " + episode.number.toString() + "] " + episode.title.toString()))
                     startActivity(intent)
-                    toast("Link sent to 1DM")
+                    toast("Link sent to 1DM"); true
                 }
             }
         }
