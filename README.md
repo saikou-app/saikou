@@ -1,3 +1,11 @@
+# **⚠️WARNING⚠️**
+The branch 'main' works with 1DM**+**
+If you want the same functionality with normal 1DM, please build from the branch "1dm".
+
+# **Channges to Original**
++ Added support to send downloadlink to 1Dm when longpressing on the source selector.
+
+
 # **Saikou**
 <p align="center">
    <a href="https://discord.gg/5TXAWTU5qr"><img src="https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white"></a>
