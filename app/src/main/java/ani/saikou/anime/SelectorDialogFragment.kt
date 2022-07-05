@@ -3,11 +3,12 @@ package ani.saikou.anime
 import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.net.Uri
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +26,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.text.DecimalFormat
+
 
 class SelectorDialogFragment : BottomSheetDialogFragment() {
     private var _binding: BottomSheetSelectorBinding? = null
@@ -237,6 +239,15 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
 
         override fun getItemCount(): Int = extractor.videos.size
 
+        private fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
+            return try {
+                packageManager.getPackageInfo(packageName, 0)
+                true
+            } catch (e: PackageManager.NameNotFoundException) {
+                false
+            }
+        }
+
         private inner class UrlViewHolder(val binding: ItemUrlBinding) : RecyclerView.ViewHolder(binding.root) {
             init {
                 itemView.setSafeOnClickListener {
@@ -254,15 +265,29 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                     copyToClipboard(video.url.url, false)
                     // 1DM integration
                     val episode = media!!.anime!!.episodes!![media!!.anime!!.selectedEpisode!!]!!
-                    val intent = Intent(Intent.ACTION_VIEW).apply {
-                        addCategory(Intent.CATEGORY_DEFAULT)
-                        data = Uri.parse(video.url.url)
-                        putExtra("extra_filename", "[EP " + episode.number.toString() + "] " + episode.title.toString())
-                        setPackage("idm.internet.download.manager.plus")
-                        setClassName("idm.internet.download.manager.plus", "idm.internet.download.manager.Downloader")
+                    val pm = context!!.packageManager
+                    val appName = if (isPackageInstalled("idm.internet.download.manager.plus", pm)) {
+                        "idm.internet.download.manager.plus"
+                    } else if (isPackageInstalled("idm.internet.download.manager", pm)) {
+                        "idm.internet.download.manager"
+                    } else {
+                        ""
                     }
-                    startActivity(intent)
-                    toast("Link sent to 1DM"); true
+                    if (appName != "") {
+                        val intent = Intent(Intent.ACTION_VIEW).apply {
+                            addCategory(Intent.CATEGORY_DEFAULT)
+                            data = Uri.parse(video.url.url)
+                            putExtra("extra_filename", "[EP " + episode.number + "] " + episode.title.toString())
+                            setPackage(appName)
+                            setClassName("idm.internet.download.manager.plus", "idm.internet.download.manager.Downloader")
+                        }
+                        startActivity(intent)
+                        toast("Link sent to 1DM"); true
+                    }
+                    else{
+                        if (video.isM3U8) toast("Copied m3u8 URL to clipboard")
+                        else toast("Copied video URL to clipboard"); true
+                    }
                 }
             }
         }
