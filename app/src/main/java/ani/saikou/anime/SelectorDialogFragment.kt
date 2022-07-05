@@ -253,16 +253,13 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                     copyToClipboard(video.url.url, false)
                     // 1DM integration
                     val episode = media!!.anime!!.episodes!![media!!.anime!!.selectedEpisode!!]!!
-                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse("idm.internet.download.manager.plus"))
-                    intent.data = Uri.parse(video.url.url)
-                    intent.`package` = "idm.internet.download.manager.plus"
-                    intent.setClassName(
-                        "idm.internet.download.manager.plus",
-                        "idm.internet.download.manager.Downloader"
-                    )
-                    intent.addCategory(Intent.CATEGORY_DEFAULT)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    intent.putExtra("extra_filename", ("[EP " + episode.number.toString() + "] " + episode.title.toString()))
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                        addCategory(Intent.CATEGORY_DEFAULT)
+                        data = Uri.parse(video.url.url)
+                        putExtra("extra_filename", "[EP " + episode.number.toString() + "] " + episode.title.toString())
+                        setPackage("idm.internet.download.manager.plus")
+                        setClassName("idm.internet.download.manager.plus", "idm.internet.download.manager.Downloader")
+                    }
                     startActivity(intent)
                     toast("Link sent to 1DM"); true
                 }
