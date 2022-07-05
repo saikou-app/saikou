@@ -269,11 +269,12 @@ class SelectorDialogFragment : BottomSheetDialogFragment() {
                     } else if (isPackageInstalled("idm.internet.download.manager", pm)) {
                         "idm.internet.download.manager"
                     }
-                    else if (isPackageInstalled("idm.internet.download.manager.lite", pm)) {
+                    else if (isPackageInstalled("idm.internet.download.manager.adm.lite", pm)) {
                         "idm.internet.download.manager.adm.lite"
                     } else {
                         ""
                     }
+                    toast(appName)
                     if (appName.isNotEmpty()) {
                         val intent = Intent(Intent.ACTION_VIEW).apply {
                             addCategory(Intent.CATEGORY_DEFAULT)
