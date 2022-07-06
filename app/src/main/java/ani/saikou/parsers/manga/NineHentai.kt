@@ -53,22 +53,20 @@ class NineHentai : MangaParser() {
     override suspend fun loadImages(chapterLink: String): List<MangaImage> {
         val url = chapterLink.substringBefore("TOTALPAGES=")
         val totalPages = chapterLink.substringAfter("TOTALPAGES=").toInt()
-        return (1..totalPages).map {
-            MangaImage(url = "$url$it.jpg")
-        }
+        return (1..totalPages).map { MangaImage(url = "$url$it.jpg") }
     }
 
-}
 
-private data class SearchResponse(
-    val status: Boolean,
-    val results: List<Result>
-) {
-    data class Result(
-        val id: Int,
-        val title: String,
-        val alt_title: String,
-        val total_page: Int,
-        val image_server: String,
-    )
+    private data class SearchResponse(
+        @SerializedName("status") val status: Boolean,
+        @SerializedName("results") val results: List<Result>
+    ) {
+        data class Result(
+            @SerializedName("id") val id: Int,
+            @SerializedName("title") val title: String,
+            @SerializedName("alt_title") val alt_title: String,
+            @SerializedName("total_page") val total_page: Int,
+            @SerializedName("image_server") val image_server: String,
+        )
+    }
 }
