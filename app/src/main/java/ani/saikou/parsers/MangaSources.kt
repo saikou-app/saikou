@@ -14,6 +14,7 @@ object MangaSources : MangaReadSources() {
         "MangaReaderTo" to ::MangaReaderTo,
         "AllAnime" to ::AllAnime,
         "Comickfun" to ::ComickFun,
+        "MangaHub" to ::MangaHub,
     )
 }
 
