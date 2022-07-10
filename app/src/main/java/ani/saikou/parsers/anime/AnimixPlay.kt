@@ -32,8 +32,7 @@ class AnimixPlay : AnimeParser()  {
             val title = it.first.select("p").text()
             val link = it.first.attr("href").substringAfter("\\&quot;").substringBefore("\\&quot;")
             val cover = it.second.attr("src").substringAfter("\\&quot;").substringBefore("\\&quot;")
-            val finalLink = "$hostUrl/$link${if (selectDub) "-dub" else ""}"
-            ShowResponse(name = title, link = finalLink, coverUrl = cover)
+            ShowResponse(name = title, link = "$hostUrl/$link${if (selectDub) "-dub" else ""}", coverUrl = cover)
         }
     }
 
