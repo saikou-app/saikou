@@ -31,7 +31,7 @@ class AnimePahe : AnimeParser() {
         val resp = client.get(episodeLink).parsed<KwikUrls>()
         val servers = mutableListOf<VideoServer>()
         resp.data.forEach { it.entries.map { o -> servers.add(
-            VideoServer(name = "Kwik - ${o.key}p", embedUrl = o.value.kwik.toString())
+            VideoServer(name = "Kwik - ${o.key}p (${if (o.value.audio == "eng") "DUB" else "SUB"})", embedUrl = o.value.kwik.toString())
         )} }
         return servers
     }
@@ -63,8 +63,7 @@ class AnimePahe : AnimeParser() {
             resp.data!!.map { ep ->
                 val kwikEpLink = "$hostUrl/api?m=links&id=${ep.anime_id}&session=${ep.session}&p=kwik"
                 episodes.add(
-                    Episode(number = ep.episode.toString(), link = kwikEpLink, title = ep.title,
-                        extra = mapOf("session" to ep.session, "releaseId" to releaseId))
+                    Episode(number = ep.episode.toString(), link = kwikEpLink, title = ep.title)
                 )
             }
         }
@@ -105,6 +104,7 @@ class AnimePahe : AnimeParser() {
 
         @Serializable
         data class Url(
+            @SerialName("audio") val audio: String?,
             @SerialName("kwik") val kwik: String?,
         )
     }
