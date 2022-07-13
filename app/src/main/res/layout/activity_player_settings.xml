@@ -259,7 +259,6 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/poppins_bold"
                 android:insetTop="0dp"
