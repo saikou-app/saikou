@@ -177,5 +177,14 @@ class PlayerSettingsActivity : AppCompatActivity() {
             saveData(player, settings)
         }
 
+        val resizeModes = arrayOf("Original", "Zoom", "Stretch")
+        val resizeDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Default Resize Mode")
+        binding.playerResizeMode.setOnClickListener {
+            resizeDialog.setSingleChoiceItems(resizeModes, settings.resize) { dialog, count ->
+                settings.resize = count
+                saveData(player, settings)
+                dialog.dismiss()
+            }.show()
+        }
     }
 }

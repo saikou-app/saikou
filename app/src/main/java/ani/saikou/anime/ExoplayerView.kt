@@ -719,6 +719,14 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             }
         }
 
+        isFullscreen = settings.resize
+        playerView.resizeMode = when (settings.resize) {
+            0    -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+            1    -> AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+            2    -> AspectRatioFrameLayout.RESIZE_MODE_FILL
+            else -> AspectRatioFrameLayout.RESIZE_MODE_FIT
+        }
+
         preloading = false
         val showProgressDialog = if (settings.askIndividual) loadData<Boolean>("${media.id}_progressDialog") ?: true else false
         if (showProgressDialog && Anilist.userid != null && if (media.isAdult) settings.updateForH else true)

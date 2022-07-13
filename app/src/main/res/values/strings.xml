@@ -209,6 +209,7 @@
     <string name="show_cast_button">Show Cast Button</string>
     <string name="show_cast_button_info">Requires \"Web Video Caster\" app to cast.</string>
     <string name="picture_in_picture">Picture in Picture</string>
+    <string name="resize_mode_button">Set default resize mode</string>
     <string name="always_minimize">Always Minimize</string>
     <string name="always_minimize_info">Requires PiP to be enabled, Makes the player behave like Youtube Player but better.\nAlso hides the PiP button.</string>
 
