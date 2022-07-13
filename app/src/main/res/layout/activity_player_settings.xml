@@ -254,6 +254,27 @@
                 app:showText="false"
                 app:thumbTint="@color/button_switch_track" />
 
+            <Button
+                android:id="@+id/playerResizeMode"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/poppins_bold"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:text="@string/resize_mode_button"
+                android:textAlignment="viewStart"
+                android:textAllCaps="false"
+                android:textColor="@color/bg_opp"
+                app:cornerRadius="0dp"
+                app:icon="@drawable/ic_round_fullscreen_24"
+                app:iconPadding="16dp"
+                app:iconSize="24dp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -784,27 +805,6 @@
                 android:paddingEnd="32dp"
                 android:text="@string/show_cast_button_info"
                 android:textSize="14sp" />
-
-            <Button
-                android:id="@+id/playerResizeMode"
-                style="@style/Widget.Material3.Button.TextButton"
-                android:layout_width="match_parent"
-                android:layout_height="64dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="@font/poppins_bold"
-                android:insetTop="0dp"
-                android:insetBottom="0dp"
-                android:paddingStart="32dp"
-                android:paddingEnd="32dp"
-                android:text="@string/resize_mode_button"
-                android:textAlignment="viewStart"
-                android:textAllCaps="false"
-                android:textColor="@color/bg_opp"
-                app:cornerRadius="0dp"
-                app:icon="@drawable/ic_round_fullscreen_24"
-                app:iconPadding="16dp"
-                app:iconSize="24dp" />
 
         </LinearLayout>
 
