@@ -186,5 +186,32 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 dialog.dismiss()
             }.show()
         }
+        val colorsPrimary = arrayOf("Black","Dark Gray","Gray","Light Gray","White","Red","Yellow","Green","Cyan","Blue","Magenta")
+        val primaryColorDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Primary Sub Color")
+        binding.videoSubColorPrimary.setOnClickListener {
+            primaryColorDialog.setSingleChoiceItems(colorsPrimary, settings.primaryColor) { dialog, count1 ->
+                settings.primaryColor = count1
+                saveData(player, settings)
+                dialog.dismiss()
+            }.show()
+        }
+        val colorsSecondary = arrayOf("Black","Dark Gray","Gray","Light Gray","White","Red","Yellow","Green","Cyan","Blue","Magenta","Transparent")
+        val secondaryColorDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Outline Sub Color")
+        binding.videoSubColorSecondary.setOnClickListener {
+            secondaryColorDialog.setSingleChoiceItems(colorsSecondary, settings.secondaryColor) { dialog, count2 ->
+                settings.secondaryColor = count2
+                saveData(player, settings)
+                dialog.dismiss()
+            }.show()
+        }
+        val typesOutline = arrayOf("Outline","Shine","Drop Shadow","None")
+        val outlineDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Outline Type")
+        binding.videoSubOutline.setOnClickListener {
+            outlineDialog.setSingleChoiceItems(typesOutline, settings.outline) { dialog, count3 ->
+                settings.outline = count3
+                saveData(player, settings)
+                dialog.dismiss()
+            }.show()
+        }
     }
 }

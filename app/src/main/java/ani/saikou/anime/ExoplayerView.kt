@@ -56,7 +56,7 @@ import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.CaptionStyleCompat
-import com.google.android.exoplayer2.ui.CaptionStyleCompat.EDGE_TYPE_OUTLINE
+import com.google.android.exoplayer2.ui.CaptionStyleCompat.*
 import com.google.android.exoplayer2.ui.StyledPlayerView
 import com.google.android.exoplayer2.ui.TrackSelectionDialogBuilder
 import com.google.android.exoplayer2.upstream.DataSource
@@ -236,13 +236,51 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             orientationListener?.enable()
         }
 
+        val primaryColor = when(settings.primaryColor) {
+            0 -> Color.BLACK
+            1 -> Color.DKGRAY
+            2 -> Color.GRAY
+            3 -> Color.LTGRAY
+            4 -> Color.WHITE
+            5 -> Color.RED
+            6 -> Color.YELLOW
+            7 -> Color.GREEN
+            8 -> Color.CYAN
+            9 -> Color.BLUE
+            10 -> Color.MAGENTA
+            11 -> Color.TRANSPARENT
+            else -> Color.WHITE
+        }
+        val secondaryColor = when(settings.secondaryColor) {
+            0 -> Color.BLACK
+            1 -> Color.DKGRAY
+            2 -> Color.GRAY
+            3 -> Color.LTGRAY
+            4 -> Color.WHITE
+            5 -> Color.RED
+            6 -> Color.YELLOW
+            7 -> Color.GREEN
+            8 -> Color.CYAN
+            9 -> Color.BLUE
+            10 -> Color.MAGENTA
+            11 -> Color.TRANSPARENT
+            else -> Color.BLACK
+        }
+        val outline = when(settings.outline) {
+            0 -> EDGE_TYPE_OUTLINE // Normal
+            1 -> EDGE_TYPE_DEPRESSED // Shine
+            2 -> EDGE_TYPE_DROP_SHADOW // Drop shadow
+            3 -> EDGE_TYPE_NONE // No outline
+            else -> EDGE_TYPE_OUTLINE // Normal
+        }
+
         playerView.subtitleView?.setStyle(
             CaptionStyleCompat(
-                Color.WHITE,
+                primaryColor,
                 Color.TRANSPARENT,
                 Color.TRANSPARENT,
-                EDGE_TYPE_OUTLINE,
-                Color.BLACK,
+                outline,
+                secondaryColor,
                 ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
             )
         )
