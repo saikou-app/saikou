@@ -179,6 +179,7 @@
     <string name="default_playback_speed">Default Playback Speed - %1$s</string>
     <string name="cursed_speeds">Cursed Speeds</string>
     <string name="subtitle_language_button">Subtitle Language</string>
+    <string name="subtitle_language_info"><b>Note:</b>The Subtitle-language can only be changed for <b>Kamyroll</b>. The change will restart the app.</string>
 
     <string name="auto">Auto</string>
     <string name="auto_play_next_episode">Autoplay Next Episode</string>
