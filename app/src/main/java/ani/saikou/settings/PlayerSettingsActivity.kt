@@ -188,7 +188,7 @@ class PlayerSettingsActivity : AppCompatActivity() {
             }.show()
         }
         val locales = arrayOf("[en-US] English", "[es-ES] Spanish", "[pt-PT] Portuguese", "[pt-BR] Brazilian Portuguese", "[fr-FR] French", "[de-DE] German", "[ar-ME] Arabic", "[ru-RU] Russian")
-        val localeDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Default Resize Mode")
+        val localeDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Subtitle Language")
         binding.subLang.setOnClickListener {
             localeDialog.setSingleChoiceItems(locales, settings.locale) { dialog, count2 ->
                 settings.locale = count2
