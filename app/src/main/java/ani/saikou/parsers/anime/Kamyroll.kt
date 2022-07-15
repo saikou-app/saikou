@@ -1,10 +1,9 @@
 package ani.saikou.parsers.anime
 
-import ani.saikou.FileUrl
-import ani.saikou.client
-import ani.saikou.levenshtein
+import ani.saikou.*
 import ani.saikou.media.Media
 import ani.saikou.parsers.*
+import ani.saikou.settings.PlayerSettings
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -208,9 +207,25 @@ class Kamyroll : AnimeParser() {
     }
 
     companion object {
+        private val player = "player_settings"
+        val settings = loadData<PlayerSettings>(player, toast = false) ?: PlayerSettings().apply { saveData(player, this) }
+        private val locales = when(settings.locale) {
+            0 -> "en-US"
+            1 -> "en-GB"
+            2 -> "pt-BR"
+            3 -> "es-LA"
+            4 -> "es-ES"
+            5 -> "pt-PT"
+            6 -> "fr-FR"
+            7 -> "de-DE"
+            8 -> "ar-ME"
+            9 -> "it-IT"
+            10 -> "ru-RU"
+            else -> "en-US"
+        }
         private const val apiUrl = "https://kamyroll.herokuapp.com"
         private const val channel = "crunchyroll"
-        private const val locale = "en-US"
+        private val locale = locales
         private const val service = "google"
 
         private var headers: Map<String, String>? = null

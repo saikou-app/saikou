@@ -186,5 +186,14 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 dialog.dismiss()
             }.show()
         }
+        val locales = arrayOf("en-US", "en-GB", "pt-BR", "es-LA", "es-ES", "pt-PT", "fr-FR", "de-DE", "ar-ME", "it-IT", "ru-RU")
+        val localeDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Default Resize Mode")
+        binding.subLang.setOnClickListener {
+            localeDialog.setSingleChoiceItems(locales, settings.resize) { dialog, count ->
+                settings.resize = count
+                saveData(player, settings)
+                dialog.dismiss()
+            }.show()
+        }
     }
 }
