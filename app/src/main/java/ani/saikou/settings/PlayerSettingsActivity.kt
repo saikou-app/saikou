@@ -12,6 +12,7 @@ import androidx.core.widget.addTextChangedListener
 import ani.saikou.*
 import ani.saikou.databinding.ActivityPlayerSettingsBinding
 import kotlin.math.roundToInt
+import kotlin.system.exitProcess
 
 
 class PlayerSettingsActivity : AppCompatActivity() {
@@ -186,13 +187,14 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 dialog.dismiss()
             }.show()
         }
-        val locales = arrayOf("en-US", "en-GB", "pt-BR", "es-LA", "es-ES", "pt-PT", "fr-FR", "de-DE", "ar-ME", "it-IT", "ru-RU")
+        val locales = arrayOf("[en-US] English", "[es-ES] Spanish", "[pt-PT] Portuguese", "[pt-BR] Brazilian Portuguese", "[fr-FR] French", "[de-DE] German", "[ar-ME] Arabic", "[ru-RU] Russian")
         val localeDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Default Resize Mode")
         binding.subLang.setOnClickListener {
-            localeDialog.setSingleChoiceItems(locales, settings.resize) { dialog, count ->
-                settings.resize = count
+            localeDialog.setSingleChoiceItems(locales, settings.locale) { dialog, count2 ->
+                settings.locale = count2
                 saveData(player, settings)
                 dialog.dismiss()
+                exitProcess(0)
             }.show()
         }
     }

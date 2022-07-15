@@ -209,23 +209,19 @@ class Kamyroll : AnimeParser() {
     companion object {
         private val player = "player_settings"
         val settings = loadData<PlayerSettings>(player, toast = false) ?: PlayerSettings().apply { saveData(player, this) }
-        private val locales = when(settings.locale) {
+        private val locale = when(settings.locale) {
             0 -> "en-US"
-            1 -> "en-GB"
-            2 -> "pt-BR"
-            3 -> "es-LA"
-            4 -> "es-ES"
-            5 -> "pt-PT"
-            6 -> "fr-FR"
-            7 -> "de-DE"
-            8 -> "ar-ME"
-            9 -> "it-IT"
-            10 -> "ru-RU"
+            1 -> "es-ES"
+            2 -> "pt-PT"
+            3 -> "pt-BR"
+            4 -> "fr-FR"
+            5 -> "de-DE"
+            6 -> "ar-ME"
+            7 -> "ru-RU"
             else -> "en-US"
         }
         private const val apiUrl = "https://kamyroll.herokuapp.com"
         private const val channel = "crunchyroll"
-        private val locale = locales
         private const val service = "google"
 
         private var headers: Map<String, String>? = null
