@@ -213,5 +213,14 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 dialog.dismiss()
             }.show()
         }
+        val fonts = arrayOf("Poppins Semi Bold","Poppins Bold","Poppins","Poppins Thin")
+        val fontDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Subtitle Font")
+        binding.videoSubFont.setOnClickListener {
+            fontDialog.setSingleChoiceItems(fonts, settings.font) { dialog, count4 ->
+                settings.font = count4
+                saveData(player, settings)
+                dialog.dismiss()
+            }.show()
+        }
     }
 }

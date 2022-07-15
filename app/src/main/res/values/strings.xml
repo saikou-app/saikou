@@ -182,7 +182,8 @@
     <string name="primary_sub_color_select">Set Subtitle Color</string>
     <string name="secondary_sub_color_select">Set Subtitle Outline Color</string>
     <string name="secondary_sub_outline_type_select">Set Outline Type</string>
-    <string name="sub_color_info"><b>Note:</b> Changing Subtitle colors only work with Zoro!</string>
+    <string name="sub_color_info"><b>Note:</b> Changing Subtitle formatting only work with Zoro!</string>
+    <string name="sub_font_select">Subtitle Font</string>
 
     <string name="auto">Auto</string>
     <string name="auto_play_next_episode">Autoplay Next Episode</string>

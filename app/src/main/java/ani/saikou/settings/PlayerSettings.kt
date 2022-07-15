@@ -11,6 +11,7 @@ data class PlayerSettings(
     var primaryColor: Int = 4,
     var secondaryColor: Int = 0,
     var outline: Int = 0,
+    var font: Int = 0,
 
     //Auto
     var autoPlay: Boolean = true,

@@ -273,6 +273,13 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             3 -> EDGE_TYPE_NONE // No outline
             else -> EDGE_TYPE_OUTLINE // Normal
         }
+        val font = when(settings.font) {
+            0 -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
+            1 -> ResourcesCompat.getFont(this, R.font.poppins_bold)
+            2 -> ResourcesCompat.getFont(this, R.font.poppins)
+            3 -> ResourcesCompat.getFont(this, R.font.poppins_thin)
+            else -> ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
+        }
 
         playerView.subtitleView?.setStyle(
             CaptionStyleCompat(
@@ -281,7 +288,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 Color.TRANSPARENT,
                 outline,
                 secondaryColor,
-                ResourcesCompat.getFont(this, R.font.poppins_semi_bold)
+                font
             )
         )
         playerView.subtitleView?.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
