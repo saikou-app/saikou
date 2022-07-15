@@ -274,6 +274,17 @@
                 app:iconPadding="16dp"
                 app:iconSize="24dp" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/poppins_bold"
+                android:paddingStart="32dp"
+                android:paddingEnd="32dp"
+                android:text="@string/subtitles"
+                android:textColor="?attr/colorSecondary"
+                tools:ignore="TextContrastCheck" />
+
             <Button
                 android:id="@+id/videoSubColorPrimary"
                 style="@style/Widget.Material3.Button.TextButton"

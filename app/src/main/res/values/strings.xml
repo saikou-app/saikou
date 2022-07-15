@@ -179,6 +179,7 @@
     <string name="default_playback_speed">Default Playback Speed - %1$s</string>
     <string name="cursed_speeds">Cursed Speeds</string>
     <string name="resize_mode_button">Set default resize mode</string>
+    <string name="subtitles">Subtitles</string>
     <string name="primary_sub_color_select">Set Subtitle Color</string>
     <string name="secondary_sub_color_select">Set Subtitle Outline Color</string>
     <string name="secondary_sub_outline_type_select">Set Outline Type</string>
