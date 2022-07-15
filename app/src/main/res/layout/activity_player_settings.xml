@@ -290,7 +290,7 @@
                 android:textAllCaps="false"
                 android:textColor="@color/bg_opp"
                 app:cornerRadius="0dp"
-                app:icon="@drawable/ic_round_fullscreen_24"
+                app:icon="@drawable/ic_round_translate_variant_24"
                 app:iconPadding="16dp"
                 app:iconSize="24dp" />
 
