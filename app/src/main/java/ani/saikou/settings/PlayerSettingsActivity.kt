@@ -1,6 +1,7 @@
 package ani.saikou.settings
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.View
@@ -11,8 +12,8 @@ import androidx.core.view.updateLayoutParams
 import androidx.core.widget.addTextChangedListener
 import ani.saikou.*
 import ani.saikou.databinding.ActivityPlayerSettingsBinding
+import com.google.android.material.snackbar.Snackbar
 import kotlin.math.roundToInt
-import kotlin.system.exitProcess
 
 
 class PlayerSettingsActivity : AppCompatActivity() {
@@ -223,7 +224,7 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 dialog.dismiss()
             }.show()
         }
-        private fun restartApp() {
+        fun restartApp() {
         Snackbar.make(
             binding.root,
             R.string.restart_app, Snackbar.LENGTH_SHORT
