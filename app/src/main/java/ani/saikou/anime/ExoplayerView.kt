@@ -291,7 +291,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 font
             )
         )
-        playerView.subtitleView?.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 20f)
+        val fontSize = settings.fontSize.toFloat()
+        playerView.subtitleView?.setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
 
         if (savedInstanceState != null) {
             currentWindow = savedInstanceState.getInt(resumeWindow)

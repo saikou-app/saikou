@@ -233,5 +233,19 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 exitProcess(0)
             }.show()
         }
+        binding.subtitleFontSize.setText(settings.fontSize.toString())
+        binding.subtitleFontSize.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                binding.subtitleFontSize.clearFocus()
+            }
+            false
+        }
+        binding.subtitleFontSize.addTextChangedListener {
+            val size = binding.subtitleFontSize.text.toString().toIntOrNull()
+            if (size != null) {
+                settings.fontSize = size
+                saveData(player, settings)
+            }
+        }
     }
 }

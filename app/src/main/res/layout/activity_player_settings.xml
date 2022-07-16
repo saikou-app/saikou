@@ -408,6 +408,68 @@
                 android:text="@string/subtitle_language_info"
                 android:textSize="14sp" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="32dp"
+                android:layout_marginEnd="32dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:drawablePadding="16dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="@string/subtitle_font_size"
+                    app:drawableStartCompat="@drawable/ic_round_font_size_24"
+                    app:drawableTint="?attr/colorPrimary" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/subtitle_font_size_card"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="8dp"
+                    app:cardBackgroundColor="@color/nav_bg_inv"
+                    app:cardCornerRadius="16dp"
+                    app:rippleColor="#54FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="8dp"
+                        tools:ignore="UseCompoundDrawables">
+
+                        <EditText
+                            android:id="@+id/subtitleFontSize"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:fontFamily="@font/poppins_bold"
+                            android:importantForAutofill="no"
+                            android:inputType="number"
+                            android:maxLength="3"
+                            android:minWidth="48dp"
+                            android:padding="4dp"
+                            android:text="20"
+                            android:textAlignment="center"
+                            android:textColor="?attr/colorSecondary"
+                            android:background="@android:color/transparent"
+                            android:textSize="14sp"
+                            tools:ignore="HardcodedText,LabelFor,TouchTargetSizeCheck" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

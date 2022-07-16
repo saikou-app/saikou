@@ -185,6 +185,7 @@
     <string name="secondary_sub_outline_type_select">Set Outline Type</string>
     <string name="sub_color_info"><b>Note:</b> Changing Subtitle formatting only work with Zoro!</string>
     <string name="sub_font_select">Subtitle Font</string>
+    <string name="subtitle_font_size">Subtitle Size</string>
     <string name="subtitle_language_button">Subtitle Language</string>
     <string name="subtitle_language_info"><b>Note:</b> The Subtitle-language can only be changed for <b>Kamyroll</b>. The change will restart the app.</string>
 

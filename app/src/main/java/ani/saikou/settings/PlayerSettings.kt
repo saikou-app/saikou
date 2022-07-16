@@ -12,6 +12,7 @@ data class PlayerSettings(
     var secondaryColor: Int = 0,
     var outline: Int = 0,
     var font: Int = 0,
+    var fontSize: Int = 20,
     var locale: Int = 0,
 
     //Auto
