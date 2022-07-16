@@ -178,6 +178,13 @@
     <string name="default_quality_info">Automatically uses the closest quality provided by default, ONLY applied for \"Multi Quality\" Servers. Auto changes upon playing a video.</string>
     <string name="default_playback_speed">Default Playback Speed - %1$s</string>
     <string name="cursed_speeds">Cursed Speeds</string>
+    <string name="resize_mode_button">Set default resize mode</string>
+    <string name="subtitles">Subtitles</string>
+    <string name="primary_sub_color_select">Set Subtitle Color</string>
+    <string name="secondary_sub_color_select">Set Subtitle Outline Color</string>
+    <string name="secondary_sub_outline_type_select">Set Outline Type</string>
+    <string name="sub_color_info"><b>Note:</b> Changing Subtitle formatting only work with Zoro!</string>
+    <string name="sub_font_select">Subtitle Font</string>
     <string name="subtitle_language_button">Subtitle Language</string>
     <string name="subtitle_language_info"><b>Note:</b> The Subtitle-language can only be changed for <b>Kamyroll</b>. The change will restart the app.</string>
 
@@ -211,7 +218,6 @@
     <string name="show_cast_button">Show Cast Button</string>
     <string name="show_cast_button_info">Requires \"Web Video Caster\" app to cast.</string>
     <string name="picture_in_picture">Picture in Picture</string>
-    <string name="resize_mode_button">Set default resize mode</string>
     <string name="always_minimize">Always Minimize</string>
     <string name="always_minimize_info">Requires PiP to be enabled, Makes the player behave like Youtube Player but better.\nAlso hides the PiP button.</string>
 
