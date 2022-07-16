@@ -122,6 +122,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private var extractor: VideoExtractor? = null
     private var video: Video? = null
     private var subtitle: Subtitle? = null
+    private val player = "player_settings"
 
     private var notchHeight: Int = 0
     private var currentWindow = 0
@@ -359,6 +360,17 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
             playerView.findViewById<View>(R.id.exo_skip).setOnClickListener {
                 if (isInitialized)
                     exoPlayer.seekTo(exoPlayer.currentPosition + settings.skipTime * 1000)
+            }
+            playerView.findViewById<View>(R.id.exo_skip).setOnLongClickListener {
+                val times = arrayOf("0", "5", "10", "15", "20", "25", "30", "35", "40", "45", "50", "55", "60", "65", "70", "75", "80", "85", "90", "95", "100", "105", "110", "115", "120")
+                val timesDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Skip Time")
+                timesDialog.setSingleChoiceItems(times, (settings.skipTime/5)) { dialog, i ->
+                    settings.skipTime = i * 5
+                    saveData(player, settings)
+                    dialog.dismiss()
+                    playerView.findViewById<TextView>(R.id.exo_skip_time).text = settings.skipTime.toString()
+                }.show()
+                true
             }
         } else {
             playerView.findViewById<View>(R.id.exo_skip).visibility = View.GONE
