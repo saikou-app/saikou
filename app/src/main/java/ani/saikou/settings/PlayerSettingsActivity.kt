@@ -12,6 +12,7 @@ import androidx.core.widget.addTextChangedListener
 import ani.saikou.*
 import ani.saikou.databinding.ActivityPlayerSettingsBinding
 import kotlin.math.roundToInt
+import kotlin.system.exitProcess
 
 
 class PlayerSettingsActivity : AppCompatActivity() {
@@ -220,6 +221,16 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 settings.font = count4
                 saveData(player, settings)
                 dialog.dismiss()
+            }.show()
+        }
+        val locales = arrayOf("[en-US] English", "[es-ES] Spanish", "[pt-PT] Portuguese", "[pt-BR] Brazilian Portuguese", "[fr-FR] French", "[de-DE] German", "[ar-ME] Arabic", "[ru-RU] Russian")
+        val localeDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Subtitle Language")
+        binding.subLang.setOnClickListener {
+            localeDialog.setSingleChoiceItems(locales, settings.locale) { dialog, count5 ->
+                settings.locale = count5
+                saveData(player, settings)
+                dialog.dismiss()
+                exitProcess(0)
             }.show()
         }
     }
