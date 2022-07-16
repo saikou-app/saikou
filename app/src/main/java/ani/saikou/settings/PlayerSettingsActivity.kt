@@ -223,6 +223,20 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 dialog.dismiss()
             }.show()
         }
+        private fun restartApp() {
+        Snackbar.make(
+            binding.root,
+            R.string.restart_app, Snackbar.LENGTH_SHORT
+        ).apply {
+            val mainIntent =
+                Intent.makeRestartActivityTask(context.packageManager.getLaunchIntentForPackage(context.packageName)!!.component)
+            setAction("Do it!") {
+                context.startActivity(mainIntent)
+                Runtime.getRuntime().exit(0)
+            }
+            show()
+        }
+    }
         val locales = arrayOf("[en-US] English", "[es-ES] Spanish", "[pt-PT] Portuguese", "[pt-BR] Brazilian Portuguese", "[fr-FR] French", "[de-DE] German", "[ar-ME] Arabic", "[ru-RU] Russian")
         val localeDialog = AlertDialog.Builder(this, R.style.DialogTheme).setTitle("Subtitle Language")
         binding.subLang.setOnClickListener {
@@ -230,7 +244,7 @@ class PlayerSettingsActivity : AppCompatActivity() {
                 settings.locale = count5
                 saveData(player, settings)
                 dialog.dismiss()
-                exitProcess(0)
+                restartApp()
             }.show()
         }
     }
