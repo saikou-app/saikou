@@ -448,13 +448,11 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                         text.text = "-${settings.seekTime * ++seekTimesR}"
                         handler.post { exoPlayer.seekTo(exoPlayer.currentPosition - settings.seekTime * 1000) }
                     }
-                    //if (!seekLock.getAndSet(true)) {
                     startDoubleTapped(
                         view,
                         event,
                         text
                     )
-                    //}
                     if(dir){
                         seekTimerR.reset(object : TimerTask() {
                             override fun run() {
