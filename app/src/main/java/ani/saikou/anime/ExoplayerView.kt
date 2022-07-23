@@ -71,7 +71,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 import java.util.concurrent.*
-import java.util.concurrent.atomic.*
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -434,7 +433,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
 
             val seekTimerF = ResettableTimer()
             val seekTimerR = ResettableTimer()
-            val seekLock = AtomicBoolean(false)
             var seekTimesF = 0
             var seekTimesR = 0
 
@@ -458,7 +456,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                             override fun run() {
                                 stopDoubleTapped(view, text)
                                 seekTimesF = 0
-                                seekLock.set(false)
                             }
                         }, 850)
                     }
@@ -467,7 +464,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                             override fun run() {
                                 stopDoubleTapped(view, text)
                                 seekTimesR = 0
-                                seekLock.set(false)
                             }
                         }, 850)
                     }
