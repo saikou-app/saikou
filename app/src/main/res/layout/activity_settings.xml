@@ -79,7 +79,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/poppins_bold"
-                android:text="@string/common"
+                android:text="@string/general"
                 android:textColor="?attr/colorSecondary"
                 tools:ignore="TextContrastCheck" />
 

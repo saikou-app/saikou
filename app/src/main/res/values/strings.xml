@@ -136,7 +136,7 @@
     <string name="default_ep_view">Default Episode Layout</string>
     <string name="default_chp_view">Default Chapter Layout</string>
     <string name="ui">User Interface</string>
-    <string name="common">Common</string>
+    <string name="general">General</string>
     <string name="theme">Theme</string>
     <string name="ui_settings">UI Settings</string>
     <string name="about">About</string>
@@ -153,18 +153,18 @@
     </string>
     <string name="version_current">Version %1$s</string>
     <string-array name="tips">
-        <item>You can Long Click an episode/chapter to Mark it as Read.</item>
-        <item>Long Clicking Shows can directly open List Editor.</item>
+        <item>You can long press an episode/chapter to mark it as read.</item>
+        <item>Long pressing shows can directly open the List Editor.</item>
         <item>There are few easter eggs hidden in the App.</item>
-        <item>Internet sucks? search taking too much time? try spam-Clicking the Progress Bar</item>
-        <item>Challenge: Go to the very bottom of the Popular Anime &amp; Manga</item>
-        <item>Try Long Clicking the Show\'s Title.</item>
+        <item>Internet sucks? search taking too much time? try spam-clicking the Progress Bar</item>
+        <item>Challenge: Go to the very bottom of the Popular Anime &amp; Manga list</item>
+        <item>Try long pressing the show\'s title.</item>
         <item>Don\'t be like lonely, they meant the Kuro App.</item>
         <item>Damn, why are you wasting your Time?</item>
         <item>Looks like someone likes this Animation.</item>
         <item>Upgrade to Android 12 to get this every time you open the App.</item>
         <item>Lord &amp; Saviour - brahmkshatriya</item>
-        <item>You can Long Click to copy this Message.</item>
+        <item>You can long press to copy this Message.</item>
         <item>Saikou!</item>
     </string-array>
 
@@ -191,15 +191,15 @@
 
     <string name="auto">Auto</string>
     <string name="auto_play_next_episode">Autoplay Next Episode</string>
-    <string name="auto_play_next_episode_info">Automatically disables if there is no interaction with player after 1 hour.</string>
+    <string name="auto_play_next_episode_info">Automatically disabled after an hour of inactivity</string>
     <string name="auto_skip_fillers">Auto Skip Fillers</string>
     <string name="auto_skip_fillers_info">Skips filler episodes when going to next Episode.</string>
 
     <string name="update_progress">Update Progress</string>
-    <string name="ask_update_progress_anime">Ask for each Anime \"Individually\"</string>
-    <string name="ask_update_progress_manga">Ask for each Manga \"Individually\"</string>
-    <string name="ask_update_progress_info_ep">Turning off will always automatically update progress when the episode is watched.</string>
-    <string name="ask_update_progress_info_chap">Turning off will always automatically update progress when the chapter is read.</string>
+    <string name="ask_update_progress_anime">Ask to update each Anime individually</string>
+    <string name="ask_update_progress_manga">Ask to update each Manga individually</string>
+    <string name="ask_update_progress_info_ep">Disable this setting to always update progress after an episode is watched.</string>
+    <string name="ask_update_progress_info_chap">Disable this setting to always update progress after a chapter is read.</string>
     <string name="ask_update_progress_hentai">Update Progress for Hentai</string>
     <string name="ask_update_progress_doujin">Update Progress for Doujins</string>
     <string name="very_bold">very bold of you sar</string>
@@ -215,9 +215,9 @@
     <string name="seek_time">Seek Time</string>
     <string name="seek_time_info">Amount of time in seconds for fast forward &amp; rewind.</string>
     <string name="skip_time">Skip Time</string>
-    <string name="skip_time_info">Setting to 0, hides the Skip Button.</string>
+    <string name="skip_time_info">Setting to 0 hides the Skip Button.</string>
     <string name="show_cast_button">Show Cast Button</string>
-    <string name="show_cast_button_info">Requires \"Web Video Caster\" app to cast.</string>
+    <string name="show_cast_button_info">Requires the \"Web Video Caster\" app to cast.</string>
     <string name="picture_in_picture">Picture in Picture</string>
     <string name="always_minimize">Always Minimize</string>
     <string name="always_minimize_info">Requires PiP to be enabled, Makes the player behave like Youtube Player but better.\nAlso hides the PiP button.</string>
@@ -251,13 +251,12 @@
     <string name="prefer_dub">Prefer Dubbed Anime</string>
     <string name="none">None</string>
     <string name="selected_dns">Selected DNS</string>
-    <string name="dns_info">Change, If your ISP blocks any Source</string>
+    <string name="dns_info">Change this if your ISP blocks any Sources</string>
     <string name="keep_screen_on">Keep Screen On</string>
     <string name="layout">Layout</string>
     <string name="spaced_pages">Spaced Pages</string>
     <string name="direction">Direction</string>
 
-    <string name="general">General</string>
     <string name="show_system_bars">Show Status &amp; Navigation Bars</string>
     <string name="auto_detect_webtoon">Auto Detect Webtoon</string>
     <string name="auto_detect_webtoon_info">If the Manga is not from Japan, the reader will default to Webtoon Reader Settings</string>

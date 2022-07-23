@@ -601,7 +601,7 @@ query (${"$"}page: Int = 1, ${"$"}id: Int, ${"$"}type: MediaType, ${"$"}isAdult:
                 page = pageInfo.currentPage.toString().toIntOrNull() ?: 0,
                 hasNextPage = pageInfo.hasNextPage == true,
             )
-        } else toastString("Empty Response, Does your internet perhaps suck?")
+        } else toastString("Empty Response, Is your internet suck?")
         return null
     }
 
