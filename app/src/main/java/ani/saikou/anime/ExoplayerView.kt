@@ -138,9 +138,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
     private var pipEnabled = false
     private var aspectRatio = Rational(16, 9)
 
-    private var t1 = Timer()
-    private var t2 = Timer()
-
     private var settings = PlayerSettings()
     private var uiSettings = UserInterfaceSettings()
 
@@ -443,6 +440,7 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 if (!locked && isInitialized && settings.doubleTap) {
                     if (dir) text.text = "+${settings.seekTime * ++seekTimes}"
                     else text.text = "-${settings.seekTime * ++seekTimes}"
+                    handler.post{exoPlayer.seekTo(exoPlayer.currentPosition + settings.seekTime * 1000)}
                     if (!seekLock.getAndSet(true)) {
                         startDoubleTapped(
                             view,
@@ -452,9 +450,6 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                     }
                     seekTimer.reset(object : TimerTask() {
                         override fun run() {
-                            var move = settings.seekTime * seekTimes * 1000
-                            if (!dir) move = -move
-                            handler.post{exoPlayer.seekTo(exoPlayer.currentPosition + move)}
                             stopDoubleTapped(view, text)
                             seekTimes = 0
                             seekLock.set(false)
