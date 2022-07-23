@@ -440,12 +440,8 @@ class ExoplayerView : AppCompatActivity(), Player.Listener {
                 if (!locked && isInitialized && settings.doubleTap) {
                     if (dir) text.text = "+${settings.seekTime * ++seekTimes}"
                     else text.text = "-${settings.seekTime * ++seekTimes}"
-                    if(dir) {
-                        handler.post { exoPlayer.seekTo(exoPlayer.currentPosition + settings.seekTime * 1000) }
-                    }
-                    else {
-                        handler.post { exoPlayer.seekTo(exoPlayer.currentPosition - settings.seekTime * 1000) }
-                    }
+                    if(dir) { handler.post { exoPlayer.seekTo(exoPlayer.currentPosition + settings.seekTime * 1000) } }
+                    else { handler.post { exoPlayer.seekTo(exoPlayer.currentPosition - settings.seekTime * 1000) } }
                     if (!seekLock.getAndSet(true)) {
                         startDoubleTapped(
                             view,
